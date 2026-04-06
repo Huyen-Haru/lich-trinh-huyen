@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lịch Trình – Phạm Thị Thanh Huyền</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Display:ital,wght@0,400;0,600;1,400&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0b0c10;
+  --surface: #13141a;
+  --card: #1a1c26;
+  --border: #252836;
+  --gold: #c8972a;
+  --gold2: #f0c76a;
+  --red: #c0392b;
+  --green: #27ae60;
+  --blue: #2980b9;
+  --text: #e8e0d0;
+  --muted: #7a7060;
+  --done: #5be8a8;
+  --pending: #e8d45b;
+  --todo: #e87c5b;
+  --accent: #8b6914;
+  --r: 10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'Be Vietnam Pro',sans-serif;font-size:13px;
+  background-image:radial-gradient(ellipse at 20% 20%,rgba(200,151,42,.05) 0%,transparent 60%),
+                   radial-gradient(ellipse at 80% 80%,rgba(139,105,20,.04) 0%,transparent 60%);
+}
+.app{display:flex;height:100vh;overflow:hidden}
+
+/* ===== SIDEBAR ===== */
+.sidebar{
+  width:230px;min-width:230px;background:var(--surface);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow-y:auto;padding:16px 0;
+}
+.logo{padding:0 16px 16px;border-bottom:1px solid var(--border);margin-bottom:12px;text-align:center}
+.logo-icon{font-size:28px;margin-bottom:4px}
+.logo h1{font-family:'Noto Serif Display',serif;font-size:16px;color:var(--gold2);line-height:1.3}
+.logo p{color:var(--muted);font-size:10px;margin-top:3px}
+.nav-section{padding:0 10px;margin-bottom:6px}
+.nav-label{color:var(--muted);font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:6px 8px 3px}
+.nav-btn{
+  display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:7px;
+  cursor:pointer;transition:all .15s;color:var(--muted);font-size:12px;font-weight:500;
+  border:none;background:none;width:100%;text-align:left;font-family:inherit;
+}
+.nav-btn:hover{background:var(--card);color:var(--text)}
+.nav-btn.active{background:rgba(200,151,42,.15);color:var(--gold2)}
+.nav-btn .icon{font-size:15px;width:18px;text-align:center}
+.sidebar-bottom{margin-top:auto;padding:12px 16px;border-top:1px solid var(--border)}
+.today-stats h4{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.stat-row{display:flex;justify-content:space-between;margin-bottom:5px;font-size:11px}
+.stat-val{font-weight:700}
+.progress-bar{height:3px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:6px}
+.progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:width .5s}
+
+/* ===== MAIN ===== */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{
+  background:var(--surface);border-bottom:1px solid var(--border);
+  padding:10px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+}
+.view-tabs{display:flex;gap:3px;background:var(--card);border-radius:7px;padding:2px}
+.view-tab{
+  padding:5px 12px;border-radius:5px;cursor:pointer;font-size:11px;font-weight:700;
+  transition:all .15s;border:none;background:none;color:var(--muted);font-family:inherit;
+}
+.view-tab.active{background:linear-gradient(135deg,var(--gold),var(--accent));color:#fff}
+.date-nav{display:flex;align-items:center;gap:6px}
+.date-nav button{
+  background:var(--card);border:1px solid var(--border);color:var(--text);
+  border-radius:6px;padding:5px 9px;cursor:pointer;font-size:12px;transition:all .15s;
+}
+.date-nav button:hover{border-color:var(--gold);color:var(--gold)}
+.nav-date-label{font-weight:700;font-size:13px;min-width:150px;text-align:center;color:var(--gold2)}
+.add-btn{
+  margin-left:auto;background:linear-gradient(135deg,var(--gold),var(--accent));color:#fff;
+  border:none;border-radius:7px;padding:7px 16px;cursor:pointer;
+  font-weight:700;font-size:12px;font-family:inherit;transition:opacity .15s;
+}
+.add-btn:hover{opacity:.85}
+.content{flex:1;overflow-y:auto;padding:20px}
+
+/* ===== PANELS ===== */
+.view{display:none}
+.view.active{display:block}
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.section-header h2{font-family:'Noto Serif Display',serif;font-size:20px;color:var(--gold2)}
+
+/* ===== LUNAR BANNER ===== */
+.lunar-banner{
+  background:linear-gradient(135deg,rgba(200,151,42,.12),rgba(139,105,20,.08));
+  border:1px solid rgba(200,151,42,.25);border-radius:var(--r);
+  padding:14px 18px;margin-bottom:16px;display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;
+}
+.lunar-main{flex:1;min-width:180px}
+.lunar-date-big{font-family:'Noto Serif Display',serif;font-size:22px;color:var(--gold2);font-weight:600}
+.lunar-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.lunar-can-chi{font-size:13px;color:var(--gold);font-weight:600;margin-top:4px}
+.lunar-info-grid{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px}
+.lunar-chip{
+  padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;
+  background:rgba(200,151,42,.12);color:var(--gold2);border:1px solid rgba(200,151,42,.2);
+}
+.lunar-chip.good{background:rgba(39,174,96,.12);color:#5be8a8;border-color:rgba(39,174,96,.2)}
+.lunar-chip.bad{background:rgba(192,57,43,.12);color:#e87c5b;border-color:rgba(192,57,43,.2)}
+.lunar-chip.neutral{background:rgba(41,128,185,.12);color:#7ec8f0;border-color:rgba(41,128,185,.2)}
+
+/* ===== TUVI PANEL ===== */
+.tuvi-panel{
+  background:linear-gradient(135deg,rgba(139,105,20,.1),rgba(200,151,42,.05));
+  border:1px solid rgba(200,151,42,.2);border-radius:var(--r);
+  padding:14px 18px;margin-bottom:16px;
+}
+.tuvi-panel h3{font-family:'Noto Serif Display',serif;font-size:15px;color:var(--gold2);margin-bottom:10px}
+.tuvi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.tuvi-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 12px}
+.tuvi-card h4{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.tuvi-val{font-size:13px;font-weight:600;color:var(--text)}
+.tuvi-val small{color:var(--muted);font-weight:400;font-size:11px}
+
+/* ===== GIO HOANG DAO ===== */
+.gio-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin-bottom:16px}
+.gio-cell{
+  background:var(--card);border:1px solid var(--border);border-radius:7px;
+  padding:6px 4px;text-align:center;cursor:pointer;transition:all .15s;
+}
+.gio-cell:hover{border-color:var(--gold)}
+.gio-cell.hoang-dao{
+  background:linear-gradient(135deg,rgba(39,174,96,.15),rgba(91,232,168,.05));
+  border-color:rgba(91,232,168,.3);
+}
+.gio-cell.ho-doi{
+  background:linear-gradient(135deg,rgba(192,57,43,.12),rgba(232,124,91,.05));
+  border-color:rgba(232,124,91,.25);
+}
+.gio-cell.current{border-color:var(--gold);box-shadow:0 0 0 2px rgba(200,151,42,.2)}
+.gio-label{font-size:9px;font-weight:700;color:var(--muted)}
+.gio-time{font-size:9px;color:var(--muted);margin-top:1px}
+.gio-icon{font-size:12px;margin-top:2px}
+
+/* ===== SUGGESTIONS ===== */
+.suggest-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.suggest-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:12px}
+.suggest-card h4{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.suggest-card.good h4{color:var(--done)}
+.suggest-card.bad h4{color:var(--todo)}
+.suggest-card.color h4{color:var(--gold2)}
+.suggest-card.advice h4{color:#7ec8f0}
+.suggest-item{display:flex;align-items:flex-start;gap:6px;margin-bottom:5px;font-size:12px}
+.suggest-item .dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.suggest-card.good .dot{background:var(--done)}
+.suggest-card.bad .dot{background:var(--todo)}
+.color-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:4px}
+.color-chip{
+  display:flex;align-items:center;gap:5px;padding:3px 8px;border-radius:20px;
+  font-size:11px;font-weight:600;background:var(--border);
+}
+.color-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+/* ===== HOUR VIEW ===== */
+.hour-grid{display:flex;flex-direction:column;gap:5px}
+.hour-row{display:flex;align-items:flex-start;gap:10px}
+.hour-label{min-width:44px;font-size:11px;color:var(--muted);font-weight:600;padding-top:10px;text-align:right}
+.hour-slot{
+  flex:1;min-height:40px;background:var(--card);border:1px solid var(--border);
+  border-radius:8px;padding:5px 10px;cursor:pointer;transition:border-color .15s;position:relative;
+}
+.hour-slot:hover{border-color:var(--gold)}
+.hour-slot.has-task{border-left:3px solid var(--gold)}
+.hour-slot.hoang-dao-slot{background:linear-gradient(90deg,rgba(39,174,96,.06),transparent)}
+.hour-slot.ho-doi-slot{background:linear-gradient(90deg,rgba(192,57,43,.06),transparent)}
+.hour-slot.current-slot{border-color:var(--gold2)!important}
+.hour-slot.current-slot::after{
+  content:'▶ Hiện tại';position:absolute;top:4px;right:8px;
+  font-size:9px;color:var(--gold);font-weight:700;
+}
+.gio-badge{
+  position:absolute;top:4px;right:8px;font-size:9px;font-weight:700;
+  padding:1px 5px;border-radius:10px;
+}
+.gio-badge.hd{background:rgba(39,174,96,.15);color:var(--done)}
+.gio-badge.hd-task{top:4px;right:60px}
+.gio-badge.hc{background:rgba(192,57,43,.12);color:var(--todo)}
+.task-chip{
+  display:inline-flex;align-items:center;gap:5px;padding:2px 7px;border-radius:20px;
+  font-size:11px;font-weight:600;margin:2px;cursor:pointer;transition:opacity .15s;
+}
+.task-chip:hover{opacity:.8}
+.task-chip.done{background:rgba(91,232,168,.12);color:var(--done)}
+.task-chip.pending{background:rgba(232,212,91,.12);color:var(--pending)}
+.task-chip.todo{background:rgba(232,124,91,.12);color:var(--todo)}
+
+/* ===== DAY LIST ===== */
+.day-list{display:flex;flex-direction:column;gap:7px}
+.task-card{
+  background:var(--card);border:1px solid var(--border);border-radius:8px;
+  padding:12px 14px;display:flex;align-items:center;gap:10px;
+  transition:all .15s;cursor:pointer;
+}
+.task-card:hover{border-color:var(--gold);transform:translateX(2px)}
+.task-card.done{opacity:.55}
+.task-card.done .task-title{text-decoration:line-through}
+.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.status-dot.done{background:var(--done)}
+.status-dot.pending{background:var(--pending)}
+.status-dot.todo{background:var(--todo)}
+.task-info{flex:1;min-width:0}
+.task-title{font-weight:600;font-size:13px}
+.task-meta{color:var(--muted);font-size:11px;margin-top:2px}
+.task-actions{display:flex;gap:5px}
+.action-btn{
+  background:var(--border);border:none;border-radius:5px;
+  padding:4px 7px;cursor:pointer;color:var(--text);font-size:11px;transition:background .15s;
+}
+.action-btn:hover{background:var(--gold)}
+.action-btn.del:hover{background:#c0392b}
+
+/* ===== CALENDAR ===== */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:12px}
+.cal-header{text-align:center;font-size:10px;font-weight:700;color:var(--muted);padding:5px 0}
+.cal-cell{
+  background:var(--card);border:1px solid var(--border);border-radius:7px;
+  min-height:72px;padding:5px;cursor:pointer;transition:border-color .15s;position:relative;
+}
+.cal-cell:hover{border-color:var(--gold)}
+.cal-cell.today{border-color:var(--gold)}
+.cal-cell.other-month{opacity:.3}
+.cal-cell.ngay-dep{background:linear-gradient(135deg,rgba(39,174,96,.08),transparent)}
+.cal-cell.ngay-xau{background:linear-gradient(135deg,rgba(192,57,43,.06),transparent)}
+.cal-day-num{font-size:11px;font-weight:700;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:3px}
+.cal-cell.today .cal-day-num{background:var(--gold);color:#000}
+.cal-lunar{font-size:9px;color:var(--muted)}
+.cal-dot{width:5px;height:5px;border-radius:50%;display:inline-block;margin:1px}
+
+/* ===== YEAR ===== */
+.year-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.month-mini{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px;cursor:pointer;transition:border-color .15s}
+.month-mini:hover{border-color:var(--gold)}
+.month-mini h3{font-size:12px;font-weight:700;margin-bottom:6px;color:var(--gold2)}
+.mini-bar{height:5px;border-radius:5px;background:var(--border);overflow:hidden;margin-bottom:3px}
+.mini-fill{height:100%;border-radius:5px}
+.mini-stat{font-size:10px;color:var(--muted)}
+
+/* ===== SUMMARY ===== */
+.sum-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+.sum-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px}
+.sum-card h4{font-size:9px;color:var(--muted);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.sum-num{font-family:'Noto Serif Display',serif;font-size:28px;font-weight:600}
+.sum-num.done{color:var(--done)}.sum-num.pending{color:var(--pending)}.sum-num.todo{color:var(--todo)}
+.sum-sub{font-size:10px;color:var(--muted);margin-top:3px}
+
+/* ===== MODAL ===== */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:100}
+.overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;width:420px;max-width:95vw;max-height:90vh;overflow-y:auto}
+.modal h2{font-family:'Noto Serif Display',serif;font-size:18px;color:var(--gold2);margin-bottom:16px}
+.field{margin-bottom:12px}
+.field label{display:block;font-size:11px;font-weight:700;color:var(--muted);margin-bottom:5px;letter-spacing:.5px}
+.field input,.field select,.field textarea{
+  width:100%;background:var(--card);border:1px solid var(--border);border-radius:7px;
+  padding:8px 11px;color:var(--text);font-family:inherit;font-size:12px;outline:none;transition:border-color .15s;
+}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold)}
+.field select option{background:var(--card)}
+.modal-row{display:flex;gap:10px}
+.modal-row .field{flex:1}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+.btn-cancel{background:var(--card);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:8px 16px;cursor:pointer;font-size:12px;font-weight:600;font-family:inherit}
+.btn-save{background:linear-gradient(135deg,var(--gold),var(--accent));color:#fff;border:none;border-radius:7px;padding:8px 16px;cursor:pointer;font-size:12px;font-weight:700;font-family:inherit}
+.empty{text-align:center;padding:40px 20px;color:var(--muted)}
+.empty .ei{font-size:32px;margin-bottom:8px}
+.tag{padding:2px 7px;border-radius:20px;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.tag.work{background:rgba(41,128,185,.15);color:#7ec8f0}
+.tag.personal{background:rgba(91,232,168,.12);color:var(--done)}
+.tag.health{background:rgba(232,124,91,.12);color:var(--todo)}
+.tag.finance{background:rgba(232,212,91,.12);color:var(--pending)}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+@media(max-width:600px){.sidebar{display:none}.year-grid{grid-template-columns:repeat(2,1fr)}.suggest-grid{grid-template-columns:1fr}.gio-grid{grid-template-columns:repeat(6,1fr)}}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ===== SIDEBAR ===== -->
+<div class="sidebar">
+  <div class="logo">
+    <div class="logo-icon">☯️</div>
+    <h1>Lịch Trình<br>Phạm Thị Thanh Huyền</h1>
+    <p id="todayLabel">Hôm nay: --/--/----</p>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Lịch</div>
+    <button class="nav-btn active" onclick="switchView('hour')"><span class="icon">⏰</span>Theo giờ</button>
+    <button class="nav-btn" onclick="switchView('day')"><span class="icon">📋</span>Theo ngày</button>
+    <button class="nav-btn" onclick="switchView('month')"><span class="icon">🗓️</span>Theo tháng</button>
+    <button class="nav-btn" onclick="switchView('year')"><span class="icon">📆</span>Theo năm</button>
+  </div>
+  <div class="nav-section" style="margin-top:6px">
+    <div class="nav-label">Tử Vi & Phong Thủy</div>
+    <button class="nav-btn" onclick="switchView('tuvi-day')"><span class="icon">🌙</span>Tử vi trong ngày</button>
+    <button class="nav-btn" onclick="switchView('tuvi-hour')"><span class="icon">⭐</span>Giờ hoàng đạo</button>
+    <button class="nav-btn" onclick="switchView('ngay-dep')"><span class="icon">✨</span>Ngày đẹp tháng này</button>
+  </div>
+  <div class="nav-section" style="margin-top:6px">
+    <div class="nav-label">Tổng kết</div>
+    <button class="nav-btn" onclick="switchView('sum-day')"><span class="icon">📊</span>Tổng kết ngày</button>
+    <button class="nav-btn" onclick="switchView('sum-month')"><span class="icon">📈</span>Tổng kết tháng</button>
+    <button class="nav-btn" onclick="switchView('sum-quarter')"><span class="icon">📉</span>Tổng kết quý</button>
+    <button class="nav-btn" onclick="switchView('sum-year')"><span class="icon">🏆</span>Tổng kết năm</button>
+  </div>
+  <div class="sidebar-bottom">
+    <div class="today-stats">
+      <h4>Hôm nay</h4>
+      <div class="stat-row"><span style="color:var(--muted)">Hoàn thành</span><span class="stat-val" id="sb-done" style="color:var(--done)">0</span></div>
+      <div class="stat-row"><span style="color:var(--muted)">Còn lại</span><span class="stat-val" id="sb-todo" style="color:var(--todo)">0</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="sb-prog" style="width:0%"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MAIN ===== -->
+<div class="main">
+  <div class="topbar">
+    <div class="view-tabs">
+      <button class="view-tab active" id="tab-hour" onclick="switchView('hour')">Giờ</button>
+      <button class="view-tab" id="tab-day" onclick="switchView('day')">Ngày</button>
+      <button class="view-tab" id="tab-month" onclick="switchView('month')">Tháng</button>
+      <button class="view-tab" id="tab-year" onclick="switchView('year')">Năm</button>
+    </div>
+    <div class="date-nav">
+      <button onclick="navDate(-1)">&#8592;</button>
+      <span class="nav-date-label" id="navLabel">--</span>
+      <button onclick="navDate(1)">&#8594;</button>
+      <button onclick="goToday()" style="font-size:10px;padding:5px 8px">Hôm nay</button>
+    </div>
+    <button class="add-btn" onclick="openModal()">+ Thêm việc</button>
+  </div>
+
+  <div class="content">
+
+    <!-- HOUR VIEW -->
+    <div class="view active" id="view-hour">
+      <div id="lunarBannerHour"></div>
+      <div id="tuviDayPanelHour"></div>
+      <div class="section-header"><h2 id="hourTitle">Lịch trong ngày</h2></div>
+      <div id="gioHoangDaoBar"></div>
+      <div class="hour-grid" id="hourGrid"></div>
+    </div>
+
+    <!-- DAY VIEW -->
+    <div class="view" id="view-day">
+      <div id="lunarBannerDay"></div>
+      <div class="section-header"><h2 id="dayTitle">Danh sách công việc</h2></div>
+      <div class="day-list" id="dayList"></div>
+    </div>
+
+    <!-- MONTH VIEW -->
+    <div class="view" id="view-month">
+      <div class="section-header"><h2 id="monthTitle">Lịch tháng</h2></div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div id="selDayDetail"></div>
+    </div>
+
+    <!-- YEAR VIEW -->
+    <div class="view" id="view-year">
+      <div class="section-header"><h2 id="yearTitle">Tổng quan năm</h2></div>
+      <div class="year-grid" id="yearGrid"></div>
+    </div>
+
+    <!-- TUVI DAY -->
+    <div class="view" id="view-tuvi-day">
+      <div class="section-header"><h2>🌙 Tử Vi Trong Ngày</h2></div>
+      <div id="tuviDayFull"></div>
+    </div>
+
+    <!-- TUVI HOUR -->
+    <div class="view" id="view-tuvi-hour">
+      <div class="section-header"><h2>⭐ Giờ Hoàng Đạo & Hắc Đạo</h2></div>
+      <div id="tuviHourFull"></div>
+    </div>
+
+    <!-- NGAY DEP -->
+    <div class="view" id="view-ngay-dep">
+      <div class="section-header"><h2>✨ Ngày Đẹp Trong Tháng</h2></div>
+      <div id="ngayDepContent"></div>
+    </div>
+
+    <!-- SUMMARIES -->
+    <div class="view" id="view-sum-day"><div class="section-header"><h2>📊 Tổng Kết Ngày</h2></div><div id="sumDayC"></div></div>
+    <div class="view" id="view-sum-month"><div class="section-header"><h2>📈 Tổng Kết Tháng</h2></div><div id="sumMonthC"></div></div>
+    <div class="view" id="view-sum-quarter"><div class="section-header"><h2>📉 Tổng Kết Quý</h2></div><div id="sumQuarterC"></div></div>
+    <div class="view" id="view-sum-year"><div class="section-header"><h2>🏆 Tổng Kết Năm</h2></div><div id="sumYearC"></div></div>
+  </div>
+</div>
+</div>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay" onclick="closeOut(event)">
+  <div class="modal">
+    <h2 id="modalTitle">✏️ Thêm công việc</h2>
+    <div class="field"><label>Tên công việc *</label><input type="text" id="f-title" placeholder="Nhập tên công việc..."></div>
+    <div class="modal-row">
+      <div class="field"><label>Ngày</label><input type="date" id="f-date"></div>
+      <div class="field"><label>Giờ bắt đầu</label><input type="time" id="f-start"></div>
+      <div class="field"><label>Giờ kết thúc</label><input type="time" id="f-end"></div>
+    </div>
+    <div class="modal-row">
+      <div class="field"><label>Trạng thái</label>
+        <select id="f-status"><option value="todo">🔴 Chưa làm</option><option value="pending">🟡 Đang làm</option><option value="done">🟢 Hoàn thành</option></select>
+      </div>
+      <div class="field"><label>Danh mục</label>
+        <select id="f-cat"><option value="work">Công việc</option><option value="personal">Cá nhân</option><option value="health">Sức khỏe</option><option value="finance">Tài chính</option></select>
+      </div>
+    </div>
+    <div class="field"><label>Ghi chú</label><textarea id="f-note" rows="2" placeholder="Ghi chú thêm..."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Hủy</button>
+      <button class="btn-save" onclick="saveTask()">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+//   PERSON INFO (Phạm Thị Thanh Huyền)
+// ============================================================
+const PERSON = {
+  name: 'Phạm Thị Thanh Huyền',
+  birthDate: new Date(1990, 9, 6, 8, 18), // 06/10/1990 8:18 AM
+  gender: 'female'
+};
+
+// ============================================================
+//   LUNAR CALENDAR ENGINE
+// ============================================================
+// Based on the lunar calendar algorithm by Ho Ngoc Duc
+const LUNAR_INFO = [
+  0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,
+  0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,
+  0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970,
+  0x06566,0x0d4a0,0x0ea50,0x06e95,0x05ad0,0x02b60,0x186e3,0x092e0,0x1c8d7,0x0c950,
+  0x0d4a0,0x1d8a6,0x0b550,0x056a0,0x1a5b4,0x025d0,0x092d0,0x0d2b2,0x0a950,0x0b557,
+  0x06ca0,0x0b550,0x15355,0x04da0,0x0a5b0,0x14573,0x052b0,0x0a9a8,0x0e950,0x06aa0,
+  0x0aea6,0x0ab50,0x04b60,0x0aae4,0x0a570,0x05260,0x0f263,0x0d950,0x05b57,0x056a0,
+  0x096d0,0x04dd5,0x04ad0,0x0a4d0,0x0d4d4,0x0d250,0x0d558,0x0b540,0x0b6a0,0x195a6,
+  0x095b0,0x049b0,0x0a974,0x0a4b0,0x0b27a,0x06a50,0x06d40,0x0af46,0x0ab60,0x09570,
+  0x04af5,0x04970,0x064b0,0x074a3,0x0ea50,0x06aa0,0x0a6b6,0x056a0,0x02b40,0x0dae4,
+  0x0ad50,0x12d60,0x0d2e3,0x0d950,0x0d557,0x056a0,0x0a570,0x01452,0x092e0,0x0e950,
+  0x1d256,0x0b54a,0x0b550,0x0b6a0,0x1b965,0x092e0,0x0c960,0x0d954,0x0d4a0
+];
+const LEAP_MONTH_OFFSET = [
+  0x00,0x50,0x04,0x00,0x20,0x05,0x00,0x20,0x05,0x00,0x20,0x06,0x00,0x20,0x06,0x00,
+  0x20,0x06,0x00,0x20,0x06,0x00,0x20,0x06
+];
+function INT(v){return Math.floor(v)}
+function solarToLunar(y,m,d){
+  let offset=Math.floor((new Date(y,m-1,d)-new Date(1900,0,31))/86400000);
+  let i,temp=0;
+  for(i=1900;i<2100&&offset>0;i++){
+    temp=lunarYearDays(i);offset-=temp;
+  }
+  if(offset<0){offset+=temp;i--;}
+  let lunarYear=i;
+  let leapMonth=leapMonthOfYear(lunarYear);
+  let leapDays=leapDays2(lunarYear);
+  let monthDays2=[];
+  for(i=1;i<=12;i++){
+    monthDays2[i]=monthDays(lunarYear,i);
+  }
+  let month,day,leap=false;
+  for(i=1;i<=12&&offset>0;i++){
+    if(leapMonth>0&&i==leapMonth+1&&!leap){
+      --i;leap=true;
+      temp=leapDays;
+    }else{
+      temp=monthDays2[i];
+    }
+    if(leap&&i==leapMonth+1)leap=false;
+    offset-=temp;
+  }
+  if(offset==0&&leapMonth>0&&i==leapMonth+1){
+    if(leap){leap=false;}else{leap=true;--i;}
+  }
+  if(offset<0){offset+=temp;--i;}
+  month=i;day=offset+1;
+  return {day,month,year:lunarYear,leap};
+}
+function lunarYearDays(y){
+  let i,sum=348;
+  for(i=0x8000;i>0x8;i>>=1){sum+=((LUNAR_INFO[y-1900]&i)?1:0);}
+  return sum+leapDays2(y);
+}
+function leapDays2(y){
+  if(leapMonthOfYear(y)){return((LUNAR_INFO[y-1900]&0x10000)?30:29);}return 0;
+}
+function leapMonthOfYear(y){return LUNAR_INFO[y-1900]&0xf;}
+function monthDays(y,m){return((LUNAR_INFO[y-1900]&(0x10000>>m))?30:29);}
+
+// ============================================================
+//   CAN CHI ENGINE
+// ============================================================
+const CAN=['Giáp','Ất','Bính','Đinh','Mậu','Kỷ','Canh','Tân','Nhâm','Quý'];
+const CHI=['Tý','Sửu','Dần','Mão','Thìn','Tỵ','Ngọ','Mùi','Thân','Dậu','Tuất','Hợi'];
+const CHI_ICON=['🐭','🐮','🐯','🐰','🐲','🐍','🐴','🐑','🐵','🐓','🐶','🐷'];
+const NAP_AM=['Kim Thổ','Kim Lửa','Hỏa Đất','Mộc Lửa','Thủy Đất','Thổ Kim','Kim Mộc','Hỏa Kim','Mộc Thủy','Thủy Hỏa','Hỏa Mộc','Thổ Mộc','Mộc Đất','Kim Nước','Thủy Lửa','Hỏa Kim','Mộc Đất','Thổ Hỏa','Kim Mộc','Hỏa Đất','Thủy Kim','Kim Hỏa','Mộc Nước','Thủy Mộc','Hỏa Đất','Thổ Kim','Kim Mộc','Hỏa Thủy','Mộc Kim','Thổ Hỏa'];
+function canYear(y){return CAN[(y-4)%10]}
+function chiYear(y){return CHI[(y-4)%12]}
+function canMonth(y,m){let c=(y*12+m)%10;return CAN[(c+10)%10]}
+function chiMonth(m){return CHI[(m+1)%12]}
+function canDay(y,m,d){
+  let total=julianDay(y,m,d);return CAN[(total+40)%10];
+}
+function chiDay(y,m,d){let total=julianDay(y,m,d);return CHI[(total+12)%12]}
+function julianDay(y,m,d){
+  if(m<=2){m+=12;y--;}
+  return INT(365.25*(y+4716))+INT(30.6001*(m+1))+d-1524;
+}
+function canChiHour(h,dayCanIdx){
+  const gioCan=['Tý','Sửu','Dần','Mão','Thìn','Tỵ','Ngọ','Mùi','Thân','Dậu','Tuất','Hợi'];
+  const gioIdx=Math.floor((h+1)/2)%12;
+  const base=[0,2,4,6,8,0,2,4,6,8,0,2,4,6,8,0,2,4,6,8,0,2,4,6,8,0,2,4,6,8];
+  const canBase=dayCanIdx%5;
+  return CAN[(base[canBase*12+gioIdx])%10]+CHI[gioIdx];
+}
+function getDayCanIdx(y,m,d){return (julianDay(y,m,d)+40)%10}
+
+// ============================================================
+//   GIO HOANG DAO / HAC DAO
+// ============================================================
+// Based on ngày Can Chi – traditional Vietnamese calendar
+// Hoàng Đạo giờ table: index by day chi (0-11)
+const HOANG_DAO_TABLE = {
+  0:[1,3,5,7,9,11],   // Tý
+  1:[2,4,6,8,10,0],   // Sửu
+  2:[1,3,5,7,9,11],   // Dần
+  3:[2,4,6,8,10,0],   // Mão
+  4:[1,3,5,7,9,11],   // Thìn
+  5:[2,4,6,8,10,0],   // Tỵ
+  6:[1,3,5,7,9,11],   // Ngọ
+  7:[2,4,6,8,10,0],   // Mùi
+  8:[1,3,5,7,9,11],   // Thân
+  9:[2,4,6,8,10,0],   // Dậu
+  10:[1,3,5,7,9,11],  // Tuất
+  11:[2,4,6,8,10,0],  // Hợi
+};
+// Refined: 12 hour slots (giờ chi), Hoàng Đạo = specific 6 of 12
+// Mapping from day's Chi index → which hour-chi slots are Hoàng Đạo
+const GIO_HD_MAP = [
+  [0,1,3,5,6,10],   // Ngày Tý
+  [0,2,3,5,9,11],   // Ngày Sửu
+  [0,1,4,6,7,9],    // Ngày Dần
+  [1,2,4,6,8,10],   // Ngày Mão
+  [0,2,3,5,7,11],   // Ngày Thìn
+  [0,1,4,6,9,11],   // Ngày Tỵ
+  [0,1,3,5,6,10],   // Ngày Ngọ
+  [0,2,3,5,9,11],   // Ngày Mùi
+  [0,1,4,6,7,9],    // Ngày Thân
+  [1,2,4,6,8,10],   // Ngày Dậu
+  [0,2,3,5,7,11],   // Ngày Tuất
+  [0,1,4,6,9,11],   // Ngày Hợi
+];
+const GIO_CHI_TIME=[
+  '23-1h','1-3h','3-5h','5-7h','7-9h','9-11h','11-13h','13-15h','15-17h','17-19h','19-21h','21-23h'
+];
+function getGioHD(y,m,d){
+  const jd=julianDay(y,m,d);
+  const dayChiIdx=jd%12;
+  return GIO_HD_MAP[dayChiIdx];
+}
+function hourToGioChi(h){return Math.floor((h+1)/2)%12}
+function isHoangDao(h,y,m,d){return getGioHD(y,m,d).includes(hourToGioChi(h))}
+
+// ============================================================
+//   NGAY DEP / NGAY XAU (simplified traditional)
+// ============================================================
+// Ngày hoàng đạo theo tháng âm lịch: dựa trên quy tắc truyền thống
+function isNgayDep(y,m,d){
+  const jd=julianDay(y,m,d);
+  const dayChiIdx=jd%12;
+  // Ngày Thiên Đức, Nguyệt Đức, Tam Hợp, Lục Hợp (simplified)
+  return [0,3,6,9].includes(dayChiIdx); // Tý, Mão, Ngọ, Dậu
+}
+function isNgayXau(y,m,d){
+  const jd=julianDay(y,m,d);
+  const dayChiIdx=jd%12;
+  // Ngày Nguyệt Kỵ, Tam Nương (3,7,13,18,22,27 âm lịch)
+  const lunar=solarToLunar(y,m,d);
+  return [3,7,13,18,22,27].includes(lunar.day);
+}
+
+// ============================================================
+//   TU VI PERSONAL (Phạm Thị Thanh Huyền)
+// ============================================================
+// Birth: 06/10/1990, 8:18 AM, Female
+// Can Chi năm sinh: Canh Ngọ (1990)
+// Cung mệnh: Tân Mùi? → tính từ tháng & giờ sinh
+const BIRTH = {
+  year:1990, month:10, day:6, hour:8, minute:18,
+  yearCan:'Canh', yearChi:'Ngọ', chiIcon:'🐴',
+  // Ngũ hành năm: Canh Ngọ = Thổ (theo Nạp Âm)
+  nguHanh:'Thổ (Đường Thượng Thổ)',
+  // Cung mệnh nữ 1990: tính theo số 12 - (1990-1900)%9 = 12-0=12 → Khôn (8)
+  cungMenh:'Khôn (☷)',
+  cungMenhDesc:'Đất – hướng Tây Nam, màu vàng & nâu',
+  // Cục: Thủy Nhị Cục (sinh tháng 8 âm, giờ Thìn)
+  cuc:'Thủy Nhị Cục',
+  // Tinh chủ mệnh: Tham Lang (năm Canh)
+  chủMenh:'Sao Tham Lang',
+  chủMenhDesc:'Đa tài, tháo vát, có duyên với thành công muộn',
+  // Hành tương sinh: Hỏa sinh Thổ
+  tuongSinh:'Kim',
+  tuongKhac:'Mộc',
+};
+
+function getTuviDay(y,m,d){
+  // Tính can chi ngày
+  const dc=canDay(y,m,d);const dch=chiDay(y,m,d);
+  const dCanIdx=getDayCanIdx(y,m,d);
+  const dChiIdx=julianDay(y,m,d)%12;
+  const lunar=solarToLunar(y,m,d);
+  const lunarDay=lunar.day;
+
+  // Ngày tốt/xấu với mệnh Thổ
+  const thuHanh=canToHanh(dc);
+  let dayScore=0;
+  if(['Thổ','Hỏa'].includes(thuHanh))dayScore=2; // tương sinh
+  else if(thuHanh==='Kim')dayScore=1; // Thổ sinh Kim
+  else if(thuHanh==='Mộc')dayScore=-1; // Mộc khắc Thổ
+  else if(thuHanh==='Thủy')dayScore=-1; // Thổ khắc Thủy
+
+  // Giờ sinh: 8h18 giờ Thìn
+  const bdGio=getGioHD(y,m,d);
+  const hdCount=bdGio.length; // always 6
+
+  // Màu sắc theo ngũ hành ngày
+  const mauSac=getMauSac(thuHanh,dChiIdx);
+
+  // Gợi ý việc nên làm & không nên
+  const {nen,khong,loiKhuyen}=getGioiThieu(dayScore,dc,dch,lunarDay,thuHanh);
+
+  return {
+    dc,dch,dCanIdx,dChiIdx,
+    thuHanh,dayScore,
+    lunar,
+    mauSac,nen,khong,loiKhuyen,
+    bdGio
+  };
+}
+
+function canToHanh(can){
+  const m={'Giáp':'Mộc','Ất':'Mộc','Bính':'Hỏa','Đinh':'Hỏa','Mậu':'Thổ','Kỷ':'Thổ','Canh':'Kim','Tân':'Kim','Nhâm':'Thủy','Quý':'Thủy'};
+  return m[can]||'Thổ';
+}
+
+function getMauSac(thuHanh,chiIdx){
+  const base={
+    'Hỏa':['#e74c3c','#c0392b','#e67e22'],
+    'Thổ':['#c8972a','#8B6914','#d4a843'],
+    'Kim':['#bdc3c7','#95a5a6','#f5f5f0'],
+    'Mộc':['#27ae60','#2ecc71','#1abc9c'],
+    'Thủy':['#2980b9','#3498db','#1a6a9a'],
+  };
+  const names={
+    'Hỏa':['Đỏ','Đỏ sẫm','Cam'],
+    'Thổ':['Vàng','Nâu vàng','Vàng đất'],
+    'Kim':['Trắng','Bạc','Kem'],
+    'Mộc':['Xanh lá','Xanh non','Ngọc lam'],
+    'Thủy':['Xanh dương','Xanh biển','Xanh đậm'],
+  };
+  // Lucky for mệnh Thổ: Hỏa (sinh), Thổ (bản mệnh)
+  const main=base[thuHanh]||base['Thổ'];
+  const mainNames=names[thuHanh]||names['Thổ'];
+  // Add mệnh color
+  const menh=base['Thổ'];const menhN=names['Thổ'];
+  return [
+    {color:main[0],name:mainNames[0],note:'Màu ngũ hành ngày'},
+    {color:menh[0],name:menhN[0],note:'Màu bản mệnh (Thổ)'},
+    {color:main[1],name:mainNames[1],note:'Phụ trợ'},
+    // Lucky number based on chi
+    {color:['#8e44ad','#9b59b6'][chiIdx%2],name:['Tím','Tím nhạt'][chiIdx%2],note:'Màu may mắn hôm nay'},
+  ];
+}
+
+function getGioiThieu(score,can,chi,lunarDay,hanh){
+  const base_nen=[
+    '🤝 Ký kết hợp đồng, gặp gỡ đối tác',
+    '📚 Học tập, nghiên cứu, tiếp thu kiến thức mới',
+    '🏠 Chỉnh trang nhà cửa, trang trí nội thất',
+    '💰 Đầu tư, mở rộng kinh doanh',
+    '🌱 Bắt đầu dự án mới',
+    '👗 Mua sắm quần áo, trang sức',
+    '🍜 Họp mặt gia đình, bạn bè thân thiết',
+    '✈️ Du lịch, di chuyển xa',
+    '🧘 Thiền định, chăm sóc sức khỏe',
+    '📝 Viết lách, sáng tạo nội dung',
+  ];
+  const base_khong=[
+    '😡 Tranh luận, cãi vã, giải quyết mâu thuẫn',
+    '💊 Phẫu thuật, điều trị lớn (trừ cấp cứu)',
+    '💸 Cho vay, đòi nợ',
+    '⚰️ Đám tang, viếng thăm người bệnh nặng',
+    '🚗 Di chuyển hướng Đông Bắc (hướng xung)',
+    '🔨 Khởi công xây dựng lớn',
+    '📌 Quyết định quan trọng vội vàng',
+  ];
+
+  let nen=[...base_nen];let khong=[...base_khong];
+  let loiKhuyen='';
+
+  if(score>=2){
+    loiKhuyen=`✨ Ngày ${can} ${chi} rất thuận với mệnh Thổ của bạn. Đây là ngày đại cát – nên tiến hành các việc quan trọng, đặc biệt là tài chính và công việc. Sao Tham Lang chiếu mệnh giúp bạn nhạy bén và quyết đoán.`;
+    nen.unshift('⭐ ƯU TIÊN: Ký kết, đàm phán, quyết định quan trọng');
+  } else if(score===1){
+    loiKhuyen=`🌟 Ngày ${can} ${chi} tương đối tốt với mệnh của bạn. Phù hợp cho công việc thường ngày và phát triển các mối quan hệ. Hãy chọn giờ Hoàng Đạo để tiến hành việc quan trọng.`;
+  } else if(score===-1){
+    loiKhuyen=`⚠️ Ngày ${can} ${chi} có phần xung khắc với mệnh Thổ. Hành ${hanh} ngày nay khắc mệnh. Nên thận trọng trong quyết định, tránh xung đột và nên tập trung vào việc nhẹ nhàng, ổn định.`;
+    khong.unshift('❌ TRÁNH: Ký kết hợp đồng lớn, giao dịch tài chính quan trọng hôm nay');
+  } else {
+    loiKhuyen=`☯️ Ngày ${can} ${chi} trung bình với mệnh của bạn. Ngày bình ổn, phù hợp duy trì công việc thường ngày. Không phải ngày tốt đặc biệt nhưng cũng không có hung khí lớn.`;
+  }
+
+  // Lunar day specials
+  if([1,15].includes(lunarDay)){
+    loiKhuyen+=' 🌕 Ngày mùng 1 / Rằm âm lịch – ngày tốt để cầu an, lễ Phật, làm việc thiện.';
+    nen.push('🙏 Cầu an, lễ chùa, làm việc thiện nguyện');
+  }
+
+  return {nen:nen.slice(0,5),khong:khong.slice(0,4),loiKhuyen};
+}
+
+// ============================================================
+//   STATE
+// ============================================================
+let tasks=JSON.parse(localStorage.getItem('lh-tasks')||'[]');
+let currentView='hour';
+let currentDate=new Date();
+let editingId=null;
+let selCalDay=null;
+
+const MONTHS_VI=['Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6','Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'];
+const DAYS_VI=['CN','T2','T3','T4','T5','T6','T7'];
+const QUARTERS=[{name:'Quý I',m:[0,1,2]},{name:'Quý II',m:[3,4,5]},{name:'Quý III',m:[6,7,8]},{name:'Quý IV',m:[9,10,11]}];
+
+function save(){localStorage.setItem('lh-tasks',JSON.stringify(tasks))}
+function fmt(d){return`${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')}/${d.getFullYear()}`}
+function dk(d){return`${d.getFullYear()}-${(d.getMonth()+1).toString().padStart(2,'0')}-${d.getDate().toString().padStart(2,'0')}`}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2)}
+
+// ============================================================
+//   INIT
+// ============================================================
+window.onload=()=>{
+  if(!tasks.length)seedDemo();
+  document.getElementById('todayLabel').textContent='Hôm nay: '+fmt(new Date());
+  render();updateSidebar();
+};
+function seedDemo(){
+  const d=dk(new Date());
+  tasks=[
+    {id:uid(),title:'Họp team buổi sáng',date:d,startTime:'08:00',endTime:'09:00',status:'done',category:'work',note:'Review sprint'},
+    {id:uid(),title:'Gửi báo cáo tháng',date:d,startTime:'10:00',endTime:'10:30',status:'pending',category:'work',note:''},
+    {id:uid(),title:'Tập yoga',date:d,startTime:'12:00',endTime:'13:00',status:'todo',category:'health',note:'Giữ sức khỏe'},
+    {id:uid(),title:'Học tiếng Anh',date:d,startTime:'19:00',endTime:'20:00',status:'todo',category:'personal',note:'IELTS Writing'},
+    {id:uid(),title:'Thanh toán điện nước',date:d,startTime:'20:30',endTime:'21:00',status:'todo',category:'finance',note:''},
+  ];
+  save();
+}
+
+// ============================================================
+//   VIEWS
+// ============================================================
+function switchView(v){
+  currentView=v;
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.view-tab').forEach(el=>el.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>{if(b.getAttribute('onclick')===`switchView('${v}')`)b.classList.add('active')});
+  const tmap={hour:'tab-hour',day:'tab-day',month:'tab-month',year:'tab-year'};
+  if(tmap[v])document.getElementById(tmap[v]).classList.add('active');
+  render();
+}
+
+function render(){
+  updateNavLabel();
+  if(currentView==='hour')renderHour();
+  else if(currentView==='day')renderDay();
+  else if(currentView==='month')renderMonth();
+  else if(currentView==='year')renderYear();
+  else if(currentView==='tuvi-day')renderTuviDay();
+  else if(currentView==='tuvi-hour')renderTuviHour();
+  else if(currentView==='ngay-dep')renderNgayDep();
+  else if(currentView.startsWith('sum-'))renderSummary(currentView.replace('sum-',''));
+  updateSidebar();
+}
+
+function updateNavLabel(){
+  const d=currentDate;
+  const labels={
+    hour:fmt(d),day:fmt(d),month:`${MONTHS_VI[d.getMonth()]} ${d.getFullYear()}`,
+    year:`Năm ${d.getFullYear()}`,'tuvi-day':fmt(d),'tuvi-hour':fmt(d),
+    'ngay-dep':`${MONTHS_VI[d.getMonth()]} ${d.getFullYear()}`,
+    'sum-day':fmt(d),'sum-month':`${MONTHS_VI[d.getMonth()]} ${d.getFullYear()}`,
+    'sum-quarter':`Năm ${d.getFullYear()}`,'sum-year':`Năm ${d.getFullYear()}`,
+  };
+  document.getElementById('navLabel').textContent=labels[currentView]||'';
+}
+
+function navDate(dir){
+  if(['hour','day','tuvi-day','tuvi-hour','sum-day'].includes(currentView)){
+    currentDate=new Date(currentDate.getTime()+dir*86400000);
+  }else if(['month','sum-month','ngay-dep'].includes(currentView)){
+    currentDate=new Date(currentDate.getFullYear(),currentDate.getMonth()+dir,1);
+  }else{
+    currentDate=new Date(currentDate.getFullYear()+dir,currentDate.getMonth(),1);
+  }
+  render();
+}
+function goToday(){currentDate=new Date();render()}
+
+// ============================================================
+//   LUNAR BANNER
+// ============================================================
+function lunarBannerHTML(d){
+  const y=d.getFullYear(),m=d.getMonth()+1,day=d.getDate();
+  const lunar=solarToLunar(y,m,day);
+  const dc=canDay(y,m,day);const dch=chiDay(y,m,day);
+  const mc=canMonth(y,m);const mch=chiMonth(m);
+  const yc=canYear(y);const ych=chiYear(y);
+  const chiIdx=julianDay(y,m,day)%12;
+  const hdList=getGioHD(y,m,day);
+  const isGoodDay=isNgayDep(y,m,day)&&!isNgayXau(y,m,day);
+  const isBadDay=isNgayXau(y,m,day);
+  const hanh=canToHanh(dc);
+  const score=getTuviDay(y,m,day).dayScore;
+  const scoreLabel=score>=2?'🌟 Đại Cát':score===1?'✅ Cát':score===-1?'⚠️ Bình thường':'☯️ Trung bình';
+  const scoreClass=score>=2?'good':score===-1||score<0?'bad':'neutral';
+  return`<div class="lunar-banner">
+    <div class="lunar-main">
+      <div class="lunar-date-big">🌙 ${lunar.day}/${lunar.month}${lunar.leap?' (Nhuận)':''} Âm lịch</div>
+      <div class="lunar-can-chi">Ngày ${dc} ${dch} · Tháng ${mc} ${mch} · Năm ${yc} ${ych} ${CHI_ICON[CHI.indexOf(ych)]}</div>
+      <div class="lunar-sub">Ngũ Hành ngày: <strong>${hanh}</strong> · Cung mệnh bạn: <strong>Khôn (Thổ)</strong></div>
+      <div class="lunar-info-grid" style="margin-top:8px">
+        <span class="lunar-chip ${scoreClass}">${scoreLabel}</span>
+        ${isGoodDay?'<span class="lunar-chip good">✨ Ngày Hoàng Đạo</span>':''}
+        ${isBadDay?'<span class="lunar-chip bad">⛔ Ngày Nguyệt Kỵ</span>':''}
+        <span class="lunar-chip">🕐 ${hdList.length} giờ Hoàng Đạo</span>
+        ${[1,15].includes(lunar.day)?'<span class="lunar-chip good">🙏 Sóc/Vọng</span>':''}
+      </div>
+    </div>
+  </div>`;
+}
+
+// ============================================================
+//   HOUR VIEW
+// ============================================================
+function renderHour(){
+  const y=currentDate.getFullYear(),m=currentDate.getMonth()+1,d=currentDate.getDate();
+  const dKey=dk(currentDate);
+  const dayTasks=tasks.filter(t=>t.date===dKey);
+  const now=new Date();const curH=now.getHours();
+  const isToday=dKey===dk(now);
+  const hdList=getGioHD(y,m,d);
+  const tuviData=getTuviDay(y,m,d);
+
+  document.getElementById('hourTitle').textContent='Lịch ngày '+fmt(currentDate);
+  document.getElementById('lunarBannerHour').innerHTML=lunarBannerHTML(currentDate);
+  document.getElementById('tuviDayPanelHour').innerHTML=tuviMiniPanel(tuviData,currentDate);
+  document.getElementById('gioHoangDaoBar').innerHTML=gioBarHTML(hdList,y,m,d,isToday?curH:-1);
+
+  let html='';
+  for(let h=0;h<24;h++){
+    const hTasks=dayTasks.filter(t=>t.startTime&&parseInt(t.startTime.split(':')[0])===h);
+    const gioChiIdx=hourToGioChi(h);
+    const isHD=hdList.includes(gioChiIdx);
+    const isCur=isToday&&h===curH;
+    const hasT=hTasks.length>0;
+    const hd=isHD?'hoang-dao-slot':'ho-doi-slot';
+    html+=`<div class="hour-row">
+      <span class="hour-label">${h.toString().padStart(2,'0')}:00</span>
+      <div class="hour-slot ${hd} ${hasT?'has-task':''} ${isCur?'current-slot':''}" onclick="openModalHour(${h})">
+        ${isHD&&!isCur?`<span class="gio-badge hd ${hasT?'hd-task':''}">🟢 Hoàng Đạo</span>`:''}
+        ${!isHD&&!isCur?`<span class="gio-badge hc">⬛ Hắc Đạo</span>`:''}
+        ${hTasks.map(t=>`<span class="task-chip ${t.status}" onclick="event.stopPropagation();cycleStatus('${t.id}')" title="${t.note||''}">
+          ${sIcon(t.status)} ${t.title}
+          <span onclick="event.stopPropagation();editTask('${t.id}')" style="opacity:.5;cursor:pointer">✎</span>
+          <span onclick="event.stopPropagation();delTask('${t.id}')" style="opacity:.5;cursor:pointer">✕</span>
+        </span>`).join('')}
+      </div>
+    </div>`;
+  }
+  document.getElementById('hourGrid').innerHTML=html;
+  if(isToday){const rows=document.querySelectorAll('.hour-row');if(rows[curH])rows[curH].scrollIntoView({behavior:'smooth',block:'center'})}
+}
+
+function gioBarHTML(hdList,y,m,d,curH){
+  const chiNames=['Tý','Sửu','Dần','Mão','Thìn','Tỵ','Ngọ','Mùi','Thân','Dậu','Tuất','Hợi'];
+  const timesMap=['23-1','1-3','3-5','5-7','7-9','9-11','11-13','13-15','15-17','17-19','19-21','21-23'];
+  let html='<div class="gio-grid" style="margin-bottom:14px">';
+  for(let i=0;i<12;i++){
+    const isHD=hdList.includes(i);
+    const startH=i===0?23:(i*2-1);
+    const isCur=curH>=0&&hourToGioChi(curH)===i;
+    html+=`<div class="gio-cell ${isHD?'hoang-dao':'ho-doi'} ${isCur?'current':''}" title="${chiNames[i]}: ${timesMap[i]}h">
+      <div class="gio-label">${chiNames[i]}</div>
+      <div class="gio-time">${timesMap[i]}h</div>
+      <div class="gio-icon">${isHD?'🟢':'⬛'}</div>
+    </div>`;
+  }
+  html+='</div>';
+  return html;
+}
+
+function tuviMiniPanel(tv,d){
+  const mauHtml=tv.mauSac.slice(0,3).map(c=>`<span class="color-chip"><span class="color-dot" style="background:${c.color}"></span>${c.name}</span>`).join('');
+  const scoreLabel=['',  '☯️ Trung bình','✅ Cát','🌟 Đại Cát'][Math.max(0,tv.dayScore+1)]||'⚠️ Cần thận';
+  return`<div class="tuvi-panel" style="margin-bottom:14px">
+    <h3>🔮 Tử Vi Hôm Nay – ${PERSON.name}</h3>
+    <div class="tuvi-grid">
+      <div class="tuvi-card"><h4>Can Chi Ngày</h4><div class="tuvi-val">${tv.dc} ${tv.dch} <small>(${tv.thuHanh})</small></div></div>
+      <div class="tuvi-card"><h4>Đánh Giá Ngày</h4><div class="tuvi-val">${tv.dayScore>=2?'🌟 Đại Cát':tv.dayScore===1?'✅ Cát':tv.dayScore<0?'⚠️ Cần thận':'☯️ Trung bình'}</div></div>
+      <div class="tuvi-card"><h4>Màu May Mắn</h4><div class="color-chips">${mauHtml}</div></div>
+      <div class="tuvi-card"><h4>Âm Lịch</h4><div class="tuvi-val">${tv.lunar.day}/${tv.lunar.month}${tv.lunar.leap?' Nhuận':''} <small>${canYear(tv.lunar.year)} ${chiYear(tv.lunar.year)}</small></div></div>
+    </div>
+    <div style="margin-top:10px;padding:10px;background:rgba(200,151,42,.06);border-radius:7px;font-size:12px;line-height:1.6;color:var(--text)">
+      ${tv.loiKhuyen}
+    </div>
+  </div>`;
+}
+
+// ============================================================
+//   DAY VIEW
+// ============================================================
+function renderDay(){
+  const dKey=dk(currentDate);
+  const dayTasks=tasks.filter(t=>t.date===dKey);
+  document.getElementById('dayTitle').textContent='Công việc ngày '+fmt(currentDate);
+  document.getElementById('lunarBannerDay').innerHTML=lunarBannerHTML(currentDate);
+  if(!dayTasks.length){document.getElementById('dayList').innerHTML=emptyHTML('Không có công việc nào');return}
+  const sorted=[...dayTasks].sort((a,b)=>(a.startTime||'').localeCompare(b.startTime||''));
+  document.getElementById('dayList').innerHTML=sorted.map(t=>tcHTML(t)).join('');
+}
+
+function tcHTML(t){
+  return`<div class="task-card ${t.status}" onclick="editTask('${t.id}')">
+    <div class="status-dot ${t.status}"></div>
+    <div class="task-info">
+      <div class="task-title">${t.title}</div>
+      <div class="task-meta">${t.startTime?`⏰ ${t.startTime}${t.endTime?' – '+t.endTime:''}`:''} <span class="tag ${t.category}" style="margin-left:5px">${catL(t.category)}</span>${t.note?` · ${t.note}`:''}</div>
+    </div>
+    <div class="task-actions">
+      <button class="action-btn" onclick="event.stopPropagation();cycleStatus('${t.id}')">${sIcon(t.status)}</button>
+      <button class="action-btn del" onclick="event.stopPropagation();delTask('${t.id}')">🗑</button>
+    </div>
+  </div>`;
+}
+
+// ============================================================
+//   MONTH VIEW
+// ============================================================
+function renderMonth(){
+  const y=currentDate.getFullYear(),m=currentDate.getMonth();
+  document.getElementById('monthTitle').textContent=`${MONTHS_VI[m]} ${y}`;
+  const first=new Date(y,m,1);const last=new Date(y,m+1,0);
+  const startDow=(first.getDay()+6)%7;
+  let html=DAYS_VI.map(d=>`<div class="cal-header">${d}</div>`).join('');
+  for(let i=0;i<startDow;i++)html+=`<div class="cal-cell other-month"></div>`;
+  for(let d=1;d<=last.getDate();d++){
+    const date=new Date(y,m,d);
+    const dkk=dk(date);
+    const isToday=dkk===dk(new Date());
+    const dayT=tasks.filter(t=>t.date===dkk);
+    const dots={done:0,pending:0,todo:0};
+    dayT.forEach(t=>dots[t.status]=(dots[t.status]||0)+1);
+    const lunar=solarToLunar(y,m+1,d);
+    const good=isNgayDep(y,m+1,d)&&!isNgayXau(y,m+1,d);
+    const bad=isNgayXau(y,m+1,d);
+    html+=`<div class="cal-cell ${isToday?'today':''} ${good?'ngay-dep':bad?'ngay-xau':''}" onclick="selDay('${dkk}')">
+      <div class="cal-day-num">${d}</div>
+      <div class="cal-lunar">${lunar.day}/${lunar.month}${good?' ✨':bad?' ⛔':''}</div>
+      ${dots.done?`<span class="cal-dot" style="background:var(--done)"></span>`:''}
+      ${dots.pending?`<span class="cal-dot" style="background:var(--pending)"></span>`:''}
+      ${dots.todo?`<span class="cal-dot" style="background:var(--todo)"></span>`:''}
+    </div>`;
+  }
+  document.getElementById('calGrid').innerHTML=html;
+  if(selCalDay)renderSelDay(selCalDay);
+  else document.getElementById('selDayDetail').innerHTML='';
+}
+
+function selDay(dkk){selCalDay=dkk;renderSelDay(dkk)}
+function renderSelDay(dkk){
+  const dt=new Date(dkk);
+  const dayT=tasks.filter(t=>t.date===dkk);
+  const y=dt.getFullYear(),m=dt.getMonth()+1,d=dt.getDate();
+  const tv=getTuviDay(y,m,d);
+  let html=`<div style="margin:10px 0 6px;font-weight:700;color:var(--gold2)">📋 ${fmt(dt)} · ${tv.dc} ${tv.dch}</div>`;
+  html+=`<div style="font-size:11px;color:var(--muted);margin-bottom:8px">${tv.loiKhuyen.slice(0,120)}...</div>`;
+  if(!dayT.length)html+=emptyHTML('Không có công việc');
+  else html+=dayT.map(t=>tcHTML(t)).join('');
+  document.getElementById('selDayDetail').innerHTML=html;
+}
+
+// ============================================================
+//   YEAR VIEW
+// ============================================================
+function renderYear(){
+  const y=currentDate.getFullYear();
+  document.getElementById('yearTitle').textContent=`Tổng quan năm ${y}`;
+  let html='';
+  const golds=['var(--gold)','var(--done)','var(--pending)','var(--todo)'];
+  for(let m=0;m<12;m++){
+    const pref=`${y}-${(m+1).toString().padStart(2,'0')}`;
+    const mt=tasks.filter(t=>t.date&&t.date.startsWith(pref));
+    const done=mt.filter(t=>t.status==='done').length;
+    const total=mt.length;const pct=total?Math.round(done/total*100):0;
+    html+=`<div class="month-mini" onclick="goMonth(${y},${m})">
+      <h3>${MONTHS_VI[m]}</h3>
+      <div class="mini-bar"><div class="mini-fill" style="width:${pct}%;background:${golds[m%4]}"></div></div>
+      <div class="mini-stat">${done}/${total} việc · ${pct}%</div>
+    </div>`;
+  }
+  document.getElementById('yearGrid').innerHTML=html;
+}
+function goMonth(y,m){currentDate=new Date(y,m,1);switchView('month')}
+
+// ============================================================
+//   TUVI DAY FULL
+// ============================================================
+function renderTuviDay(){
+  const y=currentDate.getFullYear(),m=currentDate.getMonth()+1,d=currentDate.getDate();
+  const tv=getTuviDay(y,m,d);
+  const mauHtml=tv.mauSac.map(c=>`<div class="suggest-item"><span class="color-dot" style="background:${c.color};width:14px;height:14px;border-radius:50%;flex-shrink:0"></span><div><strong style="color:var(--text)">${c.name}</strong><br><span style="color:var(--muted);font-size:10px">${c.note}</span></div></div>`).join('');
+  const birthInfo=`<div class="tuvi-grid" style="margin-bottom:14px">
+    <div class="tuvi-card"><h4>Họ Tên</h4><div class="tuvi-val">${PERSON.name}</div></div>
+    <div class="tuvi-card"><h4>Ngày Sinh DL</h4><div class="tuvi-val">06/10/1990 <small>8:18 SA</small></div></div>
+    <div class="tuvi-card"><h4>Năm Sinh Can Chi</h4><div class="tuvi-val">${BIRTH.yearCan} ${BIRTH.yearChi} 🐴</div></div>
+    <div class="tuvi-card"><h4>Ngũ Hành Bản Mệnh</h4><div class="tuvi-val">${BIRTH.nguHanh}</div></div>
+    <div class="tuvi-card"><h4>Cung Mệnh (Bát Quái)</h4><div class="tuvi-val">${BIRTH.cungMenh} <small>${BIRTH.cungMenhDesc}</small></div></div>
+    <div class="tuvi-card"><h4>Sao Chủ Mệnh</h4><div class="tuvi-val">${BIRTH.chủMenh} <small style="display:block;color:var(--muted)">${BIRTH.chủMenhDesc}</small></div></div>
+  </div>`;
+  const dayAnalysis=`<div class="tuvi-panel" style="margin-bottom:14px">
+    <h3>📅 Phân Tích Ngày ${fmt(currentDate)}</h3>
+    <div class="tuvi-grid">
+      <div class="tuvi-card"><h4>Can Chi Ngày</h4><div class="tuvi-val">${tv.dc} ${tv.dch}</div></div>
+      <div class="tuvi-card"><h4>Ngũ Hành Ngày</h4><div class="tuvi-val">${tv.thuHanh}</div></div>
+      <div class="tuvi-card"><h4>Âm Lịch</h4><div class="tuvi-val">${tv.lunar.day}/${tv.lunar.month}${tv.lunar.leap?' (Nhuận)':''}</div></div>
+      <div class="tuvi-card"><h4>Tương Quan Mệnh</h4><div class="tuvi-val">${tv.dayScore>=2?'🌟 Đại Cát – Rất Tốt':tv.dayScore===1?'✅ Cát – Tốt':tv.dayScore<0?'⚠️ Cần Thận':'☯️ Trung Bình'}</div></div>
+    </div>
+    <div style="margin-top:10px;padding:12px;background:rgba(200,151,42,.07);border-radius:8px;font-size:12px;line-height:1.7">${tv.loiKhuyen}</div>
+  </div>`;
+  const suggests=`<div class="suggest-grid">
+    <div class="suggest-card good">
+      <h4>✅ Nên Làm Hôm Nay</h4>
+      ${tv.nen.map(i=>`<div class="suggest-item"><span class="dot"></span><span>${i}</span></div>`).join('')}
+    </div>
+    <div class="suggest-card bad">
+      <h4>❌ Không Nên Làm</h4>
+      ${tv.khong.map(i=>`<div class="suggest-item"><span class="dot"></span><span>${i}</span></div>`).join('')}
+    </div>
+    <div class="suggest-card color">
+      <h4>🎨 Màu Sắc May Mắn</h4>
+      ${mauHtml}
+    </div>
+    <div class="suggest-card advice">
+      <h4>💎 Thông Tin Cá Nhân</h4>
+      <div style="font-size:11px;line-height:1.7;color:var(--text)">
+        <div>🔮 <strong>Hành tương sinh:</strong> ${BIRTH.tuongSinh} (tốt)</div>
+        <div>⚔️ <strong>Hành tương khắc:</strong> ${BIRTH.tuongKhac} (tránh)</div>
+        <div>🧭 <strong>Hướng tốt:</strong> Tây Nam, Bắc</div>
+        <div>🔢 <strong>Số may mắn:</strong> 2, 8, 11</div>
+        <div>💍 <strong>Đá quý:</strong> Thạch anh vàng, Hổ phách</div>
+      </div>
+    </div>
+  </div>`;
+  document.getElementById('tuviDayFull').innerHTML=lunarBannerHTML(currentDate)+birthInfo+dayAnalysis+suggests;
+}
+
+// ============================================================
+//   TUVI HOUR FULL
+// ============================================================
+function renderTuviHour(){
+  const y=currentDate.getFullYear(),m=currentDate.getMonth()+1,d=currentDate.getDate();
+  const hdList=getGioHD(y,m,d);
+  const now=new Date();const curH=now.getHours();
+  const isToday=dk(currentDate)===dk(now);
+  const chiNames=['Tý','Sửu','Dần','Mão','Thìn','Tỵ','Ngọ','Mùi','Thân','Dậu','Tuất','Hợi'];
+  const timePairs=['23:00–01:00','01:00–03:00','03:00–05:00','05:00–07:00','07:00–09:00','09:00–11:00','11:00–13:00','13:00–15:00','15:00–17:00','17:00–19:00','19:00–21:00','21:00–23:00'];
+  const canNames=CAN;
+  const dayCanIdx=getDayCanIdx(y,m,d);
+
+  // Table of meaning per hour-chi
+  const gioMeanings={
+    0:'Giờ Tý: Yên tĩnh, phù hợp suy nghĩ, lên kế hoạch',
+    1:'Giờ Sửu: Bình ổn, phù hợp nghỉ ngơi, chuẩn bị',
+    2:'Giờ Dần: Hoạt lực cao, tốt cho khởi đầu, thể dục',
+    3:'Giờ Mão: Nhẹ nhàng, tốt cho sáng tạo, nghệ thuật',
+    4:'Giờ Thìn: Mạnh mẽ, tốt cho gặp gỡ, đàm phán',
+    5:'Giờ Tỵ: Sắc bén, tốt cho tài chính, hợp đồng',
+    6:'Giờ Ngọ: Đỉnh cao năng lượng, tốt cho quyết định lớn',
+    7:'Giờ Mùi: Ôn hòa, tốt cho giao tiếp, xã giao',
+    8:'Giờ Thân: Linh hoạt, tốt cho di chuyển, networking',
+    9:'Giờ Dậu: Chính xác, tốt cho kiểm tra, hoàn thiện',
+    10:'Giờ Tuất: Thu tàng, tốt cho đánh giá, tổng kết',
+    11:'Giờ Hợi: Nghỉ ngơi, tốt cho thiền định, phục hồi',
+  };
+
+  let html=lunarBannerHTML(currentDate);
+  html+=`<div class="tuvi-panel" style="margin-bottom:14px">
+    <h3>⏰ Bảng Giờ Hoàng Đạo – Hắc Đạo Ngày ${fmt(currentDate)}</h3>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:10px">
+      Ngày <strong style="color:var(--gold2)">${canDay(y,m,d)} ${chiDay(y,m,d)}</strong> · 
+      🟢 = Giờ Hoàng Đạo (tốt lành) · ⬛ = Giờ Hắc Đạo (cần thận)
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px">`;
+  for(let i=0;i<12;i++){
+    const isHD=hdList.includes(i);
+    const gioCanChi=canChiHour(i===0?23:i*2-1,dayCanIdx);
+    const curSlot=isToday&&hourToGioChi(curH)===i;
+    html+=`<div style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:${isHD?'rgba(39,174,96,.07)':'rgba(192,57,43,.04)'};${curSlot?'border-color:var(--gold);':''}">
+      <span style="font-size:16px">${isHD?'🟢':'⬛'}</span>
+      <div style="min-width:90px">
+        <div style="font-weight:700;font-size:13px;color:${isHD?'var(--done)':'var(--todo)'}">Giờ ${chiNames[i]}</div>
+        <div style="font-size:10px;color:var(--muted)">${timePairs[i]} · ${gioCanChi}</div>
+      </div>
+      <div style="flex:1;font-size:11px;color:var(--text)">${gioMeanings[i]}</div>
+      <div style="font-size:11px;font-weight:700;color:${isHD?'var(--done)':'var(--muted)'}">
+        ${isHD?'✅ Hoàng Đạo':'—'}${curSlot?' 👈 Hiện tại':''}
+      </div>
+    </div>`;
+  }
+  html+=`</div></div>
+  <div class="suggest-card advice" style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px">
+    <h4 style="font-size:10px;color:var(--muted);font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">💡 Lời Khuyên Sử Dụng Giờ Tốt</h4>
+    <div style="font-size:12px;line-height:1.8;color:var(--text)">
+      🌟 <strong>Việc quan trọng</strong>: Chỉ thực hiện trong giờ Hoàng Đạo (🟢)<br>
+      📝 <strong>Ký kết, đàm phán</strong>: Ưu tiên giờ Ngọ, Mão, Thìn nếu là Hoàng Đạo<br>
+      💊 <strong>Khám bệnh, uống thuốc</strong>: Tránh giờ Hắc Đạo nếu có thể<br>
+      🚗 <strong>Di chuyển xa</strong>: Xuất phát trong giờ Hoàng Đạo để bình an<br>
+      💰 <strong>Tài chính</strong>: Giờ Tỵ và Thân thường tốt cho việc tiền bạc<br>
+      🧘 <strong>Bản mệnh Thổ</strong>: Bạn được hỗ trợ thêm bởi giờ Thìn và Mùi
+    </div>
+  </div>`;
+  document.getElementById('tuviHourFull').innerHTML=html;
+}
+
+// ============================================================
+//   NGAY DEP
+// ============================================================
+function renderNgayDep(){
+  const y=currentDate.getFullYear(),m=currentDate.getMonth();
+  const last=new Date(y,m+1,0).getDate();
+  let html=`<div style="margin-bottom:14px;font-size:12px;color:var(--muted)">✨ Xanh = Ngày Hoàng Đạo tốt · ⛔ Đỏ = Ngày Nguyệt Kỵ · Số dưới = Ngày âm lịch</div>`;
+  html+=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px">`;
+  for(let d=1;d<=last;d++){
+    const date=new Date(y,m,d);
+    const yy=date.getFullYear(),mm=date.getMonth()+1;
+    const good=isNgayDep(yy,mm,d);
+    const bad=isNgayXau(yy,mm,d);
+    if(!good&&!bad)continue;
+    const lunar=solarToLunar(yy,mm,d);
+    const tv=getTuviDay(yy,mm,d);
+    const dkk=dk(date);
+    const dayTasks=tasks.filter(t=>t.date===dkk);
+    html+=`<div style="background:var(--card);border:1px solid ${good&&!bad?'rgba(39,174,96,.3)':'rgba(192,57,43,.25)'};border-radius:8px;padding:12px;cursor:pointer" onclick="goDay('${dkk}')">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span style="font-size:18px">${good&&!bad?'✨':'⛔'}</span>
+        <div>
+          <div style="font-weight:700;font-size:13px">${fmt(date)}</div>
+          <div style="font-size:10px;color:var(--muted)">🌙 ${lunar.day}/${lunar.month} âm lịch · ${tv.dc} ${tv.dch}</div>
+        </div>
+        <span style="margin-left:auto;font-size:11px;font-weight:700;color:${good&&!bad?'var(--done)':'var(--todo)'}">${good&&!bad?'✅ Tốt':'⛔ Kỵ'}</span>
+      </div>
+      <div style="font-size:11px;color:var(--muted)">${good&&!bad?tv.loiKhuyen.slice(0,80)+'...':'Ngày Nguyệt Kỵ – nên tránh việc quan trọng'}</div>
+      ${dayTasks.length?`<div style="margin-top:6px;font-size:10px;color:var(--gold)">${dayTasks.length} việc đã lên lịch</div>`:''}
+    </div>`;
+  }
+  html+=`</div>`;
+  document.getElementById('ngayDepContent').innerHTML=html;
+}
+function goDay(dkk){currentDate=new Date(dkk);switchView('hour')}
+
+// ============================================================
+//   SUMMARY
+// ============================================================
+function renderSummary(type){
+  if(type==='day')renderSumDay();
+  else if(type==='month')renderSumMonth();
+  else if(type==='quarter')renderSumQuarter();
+  else if(type==='year')renderSumYear();
+}
+
+function sumHTML(filtered){
+  const total=filtered.length;
+  const done=filtered.filter(t=>t.status==='done').length;
+  const pending=filtered.filter(t=>t.status==='pending').length;
+  const todo=filtered.filter(t=>t.status==='todo').length;
+  const pct=total?Math.round(done/total*100):0;
+  const cats={work:0,personal:0,health:0,finance:0};
+  filtered.forEach(t=>cats[t.category]=(cats[t.category]||0)+1);
+  return`<div class="sum-grid">
+    <div class="sum-card"><h4>Hoàn thành</h4><div class="sum-num done">${done}</div><div class="sum-sub">/ ${total} tổng</div></div>
+    <div class="sum-card"><h4>Đang làm</h4><div class="sum-num pending">${pending}</div><div class="sum-sub">việc</div></div>
+    <div class="sum-card"><h4>Chưa làm</h4><div class="sum-num todo">${todo}</div><div class="sum-sub">việc</div></div>
+  </div>
+  <div class="sum-card" style="margin-bottom:12px">
+    <h4>Tỉ lệ hoàn thành</h4>
+    <div style="margin:8px 0 5px;font-family:'Noto Serif Display',serif;font-size:26px;font-weight:600;color:var(--gold2)">${pct}%</div>
+    <div class="progress-bar" style="height:7px"><div class="progress-fill" style="width:${pct}%;background:${pct>=70?'var(--done)':pct>=40?'var(--pending)':'var(--todo)'}"></div></div>
+  </div>
+  <div class="sum-card" style="margin-bottom:12px">
+    <h4>Theo danh mục</h4>
+    <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px">
+      ${Object.entries(cats).map(([c,n])=>`<span class="tag ${c}" style="font-size:11px;padding:3px 10px">${catL(c)}: ${n}</span>`).join('')}
+    </div>
+  </div>
+  ${filtered.length?`<div class="sum-card"><h4>Chi tiết</h4><div style="margin-top:8px">${filtered.map(t=>tcHTML(t)).join('')}</div></div>`:''}`;
+}
+
+function renderSumDay(){
+  const dkk=dk(currentDate);
+  document.getElementById('sumDayC').innerHTML=sumHTML(tasks.filter(t=>t.date===dkk));
+}
+function renderSumMonth(){
+  const pref=`${currentDate.getFullYear()}-${(currentDate.getMonth()+1).toString().padStart(2,'0')}`;
+  document.getElementById('sumMonthC').innerHTML=sumHTML(tasks.filter(t=>t.date&&t.date.startsWith(pref)));
+}
+function renderSumQuarter(){
+  const y=currentDate.getFullYear();
+  let html='';
+  [{name:'Quý I',m:[0,1,2]},{name:'Quý II',m:[3,4,5]},{name:'Quý III',m:[6,7,8]},{name:'Quý IV',m:[9,10,11]}].forEach(q=>{
+    const prefs=q.m.map(m=>`${y}-${(m+1).toString().padStart(2,'0')}`);
+    const f=tasks.filter(t=>t.date&&prefs.some(p=>t.date.startsWith(p)));
+    const done=f.filter(t=>t.status==='done').length;
+    const total=f.length;const pct=total?Math.round(done/total*100):0;
+    html+=`<div class="sum-card" style="margin-bottom:10px">
+      <h4>${q.name}</h4>
+      <div style="display:flex;gap:14px;align-items:center;margin-top:6px">
+        <span style="color:var(--done);font-weight:700">${done} ✓</span>
+        <span style="color:var(--todo)">${total-done} còn</span>
+        <span style="color:var(--gold2);font-weight:700">${pct}%</span>
+      </div>
+      <div class="progress-bar" style="margin-top:7px;height:5px"><div class="progress-fill" style="width:${pct}%"></div></div>
+    </div>`;
+  });
+  document.getElementById('sumQuarterC').innerHTML=html;
+}
+function renderSumYear(){
+  const y=currentDate.getFullYear();
+  const f=tasks.filter(t=>t.date&&t.date.startsWith(`${y}-`));
+  document.getElementById('sumYearC').innerHTML=sumHTML(f);
+}
+
+// ============================================================
+//   SIDEBAR
+// ============================================================
+function updateSidebar(){
+  const dkk=dk(new Date());
+  const today=tasks.filter(t=>t.date===dkk);
+  const done=today.filter(t=>t.status==='done').length;
+  const todo=today.filter(t=>t.status!=='done').length;
+  const pct=today.length?Math.round(done/today.length*100):0;
+  document.getElementById('sb-done').textContent=done;
+  document.getElementById('sb-todo').textContent=todo;
+  document.getElementById('sb-prog').style.width=pct+'%';
+}
+
+// ============================================================
+//   MODAL
+// ============================================================
+function openModal(prefDate,prefH){
+  editingId=null;
+  document.getElementById('modalTitle').textContent='✏️ Thêm công việc';
+  document.getElementById('f-title').value='';
+  document.getElementById('f-date').value=prefDate||dk(currentDate);
+  document.getElementById('f-start').value=prefH!==undefined?`${prefH.toString().padStart(2,'0')}:00`:'';
+  document.getElementById('f-end').value=prefH!==undefined?`${(prefH+1).toString().padStart(2,'0')}:00`:'';
+  document.getElementById('f-status').value='todo';
+  document.getElementById('f-cat').value='work';
+  document.getElementById('f-note').value='';
+  document.getElementById('overlay').classList.add('open');
+  setTimeout(()=>document.getElementById('f-title').focus(),100);
+}
+function openModalHour(h){openModal(dk(currentDate),h)}
+function editTask(id){
+  const t=tasks.find(t=>t.id===id);if(!t)return;
+  editingId=id;
+  document.getElementById('modalTitle').textContent='✏️ Chỉnh sửa';
+  document.getElementById('f-title').value=t.title;
+  document.getElementById('f-date').value=t.date;
+  document.getElementById('f-start').value=t.startTime||'';
+  document.getElementById('f-end').value=t.endTime||'';
+  document.getElementById('f-status').value=t.status;
+  document.getElementById('f-cat').value=t.category;
+  document.getElementById('f-note').value=t.note||'';
+  document.getElementById('overlay').classList.add('open');
+}
+function closeModal(){document.getElementById('overlay').classList.remove('open');editingId=null}
+function closeOut(e){if(e.target===document.getElementById('overlay'))closeModal()}
+function saveTask(){
+  const title=document.getElementById('f-title').value.trim();
+  if(!title){document.getElementById('f-title').style.borderColor='var(--todo)';return}
+  document.getElementById('f-title').style.borderColor='';
+  const t={id:editingId||uid(),title,date:document.getElementById('f-date').value,
+    startTime:document.getElementById('f-start').value,endTime:document.getElementById('f-end').value,
+    status:document.getElementById('f-status').value,category:document.getElementById('f-cat').value,
+    note:document.getElementById('f-note').value.trim()};
+  if(editingId){const i=tasks.findIndex(x=>x.id===editingId);if(i>=0)tasks[i]=t;}
+  else tasks.push(t);
+  save();closeModal();render();
+}
+function delTask(id){if(!confirm('Xóa?'))return;tasks=tasks.filter(t=>t.id!==id);save();render()}
+function cycleStatus(id){
+  const t=tasks.find(t=>t.id===id);if(!t)return;
+  t.status={todo:'pending',pending:'done',done:'todo'}[t.status];
+  save();render();
+}
+
+// ============================================================
+//   HELPERS
+// ============================================================
+function sIcon(s){return{done:'✅',pending:'⏳',todo:'🔴'}[s]||''}
+function catL(c){return{work:'Công việc',personal:'Cá nhân',health:'Sức khỏe',finance:'Tài chính'}[c]||c}
+function emptyHTML(msg){return`<div class="empty"><div class="ei">📭</div><p>${msg}</p><p style="font-size:10px;margin-top:5px">Nhấn + Thêm việc để bắt đầu</p></div>`}
+</script>
+</body>
+</html>
