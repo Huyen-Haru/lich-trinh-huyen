@@ -769,22 +769,22 @@ function seedDemo(){
 }
 function seedTodayRecruit(){
   const d='2026-04-07';
-  if(tasks.some(t=>t.date===d&&t.title.includes('Di chuyển')))return;
+  if(tasks.some(t=>t.date===d&&t.startTime==='08:00'))return;
   const newTasks=[
-    {id:uid(),title:'Di chuyển đến văn phòng',date:d,startTime:'08:00',endTime:'08:30',status:'todo',category:'personal',note:'Lưu ý: mặc đồ màu trắng hoặc vàng nhạt hôm nay – màu may mắn ngày Canh Dần'},
-    {id:uid(),title:'★ Khởi động: kiểm tra email/Zalo 37 đơn vị, lọc 50 fresh tiềm năng nhất',date:d,startTime:'09:00',endTime:'09:30',status:'todo',category:'work',note:'Giờ Tỵ – Xác định top 3 GĐ cần chốt lương hôm nay. Phân loại yêu cầu tuyển dụng cấp bách'},
-    {id:uid(),title:'★ Gửi tin nhắn mass toàn bộ 190 fresh (template giới thiệu chương trình)',date:d,startTime:'09:30',endTime:'10:00',status:'todo',category:'work',note:'Gửi qua Zalo/SMS/LinkedIn – fresh nhận lúc đầu giờ, tỷ lệ đọc và reply cao hơn'},
-    {id:uid(),title:'★ Setup 6 lịch phỏng vấn – gọi xác nhận từng ứng viên (~5 phút/cuộc)',date:d,startTime:'10:00',endTime:'10:30',status:'todo',category:'work',note:'Gửi kèm tin nhắn xác nhận lịch ngay sau khi gọi xong mỗi người'},
-    {id:uid(),title:'⚠ Soạn 10 thư mời ứng viên đã phỏng vấn – CHƯA GỬI',date:d,startTime:'10:30',endTime:'11:00',status:'todo',category:'work',note:'Giờ Tỵ Hắc Đạo – Tập trung soạn thảo, kiểm tra kỹ: tên, vị trí, lương, ngày vào. Gửi lúc 11h'},
-    {id:uid(),title:'★★ GỬI 10 thư mời chính thức – Giờ Ngọ Hoàng Đạo',date:d,startTime:'11:00',endTime:'11:15',status:'todo',category:'work',note:'Giờ Ngọ – Khung giờ vàng nhất để gửi văn bản/offer quan trọng trong ngày'},
-    {id:uid(),title:'★★ Chốt lương với Giám đốc chi nhánh – gọi lần lượt từng GĐ',date:d,startTime:'11:15',endTime:'12:30',status:'todo',category:'work',note:'Giờ Ngọ–Mùi Hoàng Đạo – Gọi GĐ khó nhất TRƯỚC khi năng lượng còn cao. ~10-15 phút/người'},
-    {id:uid(),title:'Nghỉ trưa – bắt buộc để duy trì năng lượng gọi điện buổi chiều',date:d,startTime:'12:30',endTime:'13:00',status:'todo',category:'health',note:'Ăn đủ bữa, nghỉ ngơi 30 phút. Buổi chiều gọi 50 fresh rất tốn sức'},
-    {id:uid(),title:'★★ Gọi điện fresh Batch 1 – ~15 người tiềm năng nhất trong danh sách',date:d,startTime:'13:00',endTime:'13:30',status:'todo',category:'work',note:'Giờ Mùi Hoàng Đạo – Fresh vừa ăn trưa, rảnh, tỷ lệ bắt máy cao nhất trong ngày'},
-    {id:uid(),title:'★★ Gọi điện fresh Batch 2 – ~35 người còn lại trong danh sách ưu tiên',date:d,startTime:'13:30',endTime:'15:00',status:'todo',category:'work',note:'Giờ Mùi Hoàng Đạo – Dành khung đẹp nhất thuyết phục các bạn còn phân vân'},
-    {id:uid(),title:'Đăng bài tuyển dụng 5 đơn vị gấp + tìm ứng viên trên database',date:d,startTime:'15:00',endTime:'15:45',status:'todo',category:'work',note:'Vietnamworks / TopCV / LinkedIn – Đăng đơn vị cấp bách nhất trước. ~15 phút/đơn vị'},
-    {id:uid(),title:'⚠ Kiểm tra tin đăng 37 đơn vị – lọc & phân loại toàn bộ CV mới apply',date:d,startTime:'15:45',endTime:'17:00',status:'todo',category:'work',note:'Giờ Thân Hắc Đạo – Phù hợp xử lý data. Phân loại CV: phù hợp / xem thêm / loại'},
-    {id:uid(),title:'Chuyển hồ sơ phù hợp cho đơn vị + Reply fresh phản hồi tin nhắn sáng',date:d,startTime:'17:00',endTime:'17:30',status:'todo',category:'work',note:'Cập nhật pipeline, thêm fresh quan tâm vào danh sách. Forward CV cho GĐ đơn vị tương ứng'},
-    {id:uid(),title:'★ Báo cáo cuối ngày + Follow-up GĐ chưa chốt & fresh chưa trả lời',date:d,startTime:'17:30',endTime:'18:00',status:'todo',category:'work',note:'Giờ Dậu Hoàng Đạo – Gửi tóm tắt kết quả cho quản lý. Gọi lại GĐ còn phân vân (sau họp chiều)'},
+    {id:uid(),title:'Di chuyển đến văn phòng',date:d,startTime:'08:00',endTime:'08:30',status:'todo',category:'personal',note:'Mặc đồ trắng hoặc vàng nhạt – màu may mắn ngày Canh Dần (Kim tương sinh Thổ)'},
+    {id:uid(),title:'★ Khởi động: lọc 50 fresh tiềm năng & kiểm tra email/Zalo 37 đơn vị',date:d,startTime:'08:30',endTime:'08:45',status:'todo',category:'work',note:'Giờ Thìn Hoàng Đạo – Xác định top 3 GĐ cần chốt lương, phân loại yêu cầu tuyển dụng cấp bách'},
+    {id:uid(),title:'★ Gửi tin nhắn mass toàn bộ 190 fresh (template giới thiệu chương trình)',date:d,startTime:'08:45',endTime:'09:15',status:'todo',category:'work',note:'Giờ Thìn Hoàng Đạo – Gửi qua Zalo/SMS/LinkedIn. Fresh đọc đầu giờ sáng, tỷ lệ reply cao hơn'},
+    {id:uid(),title:'★ Setup 6 lịch phỏng vấn – gọi xác nhận từng ứng viên (~5 phút/cuộc)',date:d,startTime:'09:15',endTime:'09:45',status:'todo',category:'work',note:'Giờ Tỵ – Gửi kèm tin nhắn xác nhận lịch ngay sau mỗi cuộc gọi'},
+    {id:uid(),title:'⚠ Soạn 10 thư mời ứng viên đã phỏng vấn – CHƯA GỬI, đợi 11:00',date:d,startTime:'09:45',endTime:'11:00',status:'todo',category:'work',note:'Giờ Tỵ Hắc Đạo – Tập trung soạn, kiểm tra kỹ: tên, vị trí, đơn vị, lương, ngày vào làm'},
+    {id:uid(),title:'★★ GỬI 10 thư mời chính thức – Giờ Ngọ Hoàng Đạo',date:d,startTime:'11:00',endTime:'11:15',status:'todo',category:'work',note:'Giờ Ngọ – Khung giờ vàng nhất trong ngày để gửi văn bản và offer quan trọng'},
+    {id:uid(),title:'★★ Chốt lương với Giám đốc chi nhánh – gọi lần lượt từng GĐ',date:d,startTime:'11:15',endTime:'12:30',status:'todo',category:'work',note:'Giờ Ngọ–Mùi Hoàng Đạo – Gọi GĐ khó nhất trước khi năng lượng còn cao. ~10-15 phút/người. Ghi kết quả ngay'},
+    {id:uid(),title:'Nghỉ trưa – nạp năng lượng cho buổi gọi 50 fresh buổi chiều',date:d,startTime:'12:30',endTime:'13:00',status:'todo',category:'health',note:'Bắt buộc nghỉ đủ. Buổi chiều gọi 50 fresh rất tốn sức – cần tỉnh táo để thuyết phục'},
+    {id:uid(),title:'★★ Gọi điện fresh Batch 1 – ~15 người tiềm năng nhất',date:d,startTime:'13:00',endTime:'13:30',status:'todo',category:'work',note:'Giờ Mùi Hoàng Đạo – Fresh vừa ăn trưa xong, rảnh, tỷ lệ bắt máy cao nhất trong ngày'},
+    {id:uid(),title:'★★ Gọi điện fresh Batch 2 – ~35 người còn lại trong danh sách ưu tiên',date:d,startTime:'13:30',endTime:'15:00',status:'todo',category:'work',note:'Giờ Mùi Hoàng Đạo – Dành khung giờ đẹp nhất để thuyết phục các bạn còn phân vân'},
+    {id:uid(),title:'Đăng bài tuyển dụng 5 đơn vị gấp + tìm ứng viên trên database',date:d,startTime:'15:00',endTime:'15:45',status:'todo',category:'work',note:'Vietnamworks / TopCV / LinkedIn / Fanpage. Ưu tiên đơn vị cấp bách nhất trước. ~15 phút/đơn vị'},
+    {id:uid(),title:'⚠ Kiểm tra tin đăng 37 đơn vị – lọc & phân loại toàn bộ CV mới apply',date:d,startTime:'15:45',endTime:'17:00',status:'todo',category:'work',note:'Giờ Thân Hắc Đạo – Phù hợp xử lý data. Phân loại CV: phù hợp / cần xem thêm / loại'},
+    {id:uid(),title:'Chuyển hồ sơ phù hợp cho đơn vị + Reply fresh phản hồi sáng',date:d,startTime:'17:00',endTime:'17:30',status:'todo',category:'work',note:'Cập nhật toàn bộ pipeline. Thêm fresh quan tâm vào danh sách theo dõi'},
+    {id:uid(),title:'★ Báo cáo cuối ngày + Follow-up GĐ chưa chốt & fresh chưa reply',date:d,startTime:'17:30',endTime:'18:00',status:'todo',category:'work',note:'Giờ Dậu Hoàng Đạo – Gửi tóm tắt kết quả cho quản lý. Gọi lại GĐ còn phân vân (sau họp chiều)'},
   ];
   tasks=[...tasks.filter(t=>t.date!==d),...newTasks];
   save();
@@ -892,29 +892,37 @@ function renderHour(){
   document.getElementById('tuviDayPanelHour').innerHTML=tuviMiniPanel(tuviData,currentDate);
   document.getElementById('gioHoangDaoBar').innerHTML=gioBarHTML(hdList,y,m,d,isToday?curH:-1);
 
-  let html='';
-  for(let h=8;h<19;h++){
-    const hTasks=dayTasks.filter(t=>t.startTime&&parseInt(t.startTime.split(':')[0])===h);
-    const gioChiIdx=hourToGioChi(h);
-    const isHD=hdList.includes(gioChiIdx);
-    const isCur=isToday&&h===curH;
-    const hasT=hTasks.length>0;
-    const hd=isHD?'hoang-dao-slot':'ho-doi-slot';
-    html+=`<div class="hour-row">
-      <span class="hour-label">${h.toString().padStart(2,'0')}:00</span>
-      <div class="hour-slot ${hd} ${hasT?'has-task':''} ${isCur?'current-slot':''}" onclick="openModalHour(${h})">
-        ${isHD&&!isCur?`<span class="gio-badge hd ${hasT?'hd-task':''}">🟢 Hoàng Đạo</span>`:''}
-        ${!isHD&&!isCur?`<span class="gio-badge hc">⬛ Hắc Đạo</span>`:''}
-        ${hTasks.map(t=>`<span class="task-chip ${t.status}" onclick="event.stopPropagation();cycleStatus('${t.id}')" title="${t.note||''}">
-          ${sIcon(t.status)} ${t.title}
-          <span onclick="event.stopPropagation();editTask('${t.id}')" style="opacity:.5;cursor:pointer">✎</span>
-          <span onclick="event.stopPropagation();delTask('${t.id}')" style="opacity:.5;cursor:pointer">✕</span>
-        </span>`).join('')}
-      </div>
-    </div>`;
+  let html='';let curIdx=-1;let idx=0;
+  const totalNow=curH*60+(isToday?now.getMinutes():0);
+  for(let h=8;h<=18;h++){
+    for(let min=0;min<60;min+=15){
+      if(h===18&&min>0)break;
+      const timeStr=`${h.toString().padStart(2,'0')}:${min.toString().padStart(2,'0')}`;
+      const slotStart=h*60+min;
+      const isCur=isToday&&totalNow>=slotStart&&totalNow<slotStart+15;
+      if(isCur)curIdx=idx;
+      const slotTasks=dayTasks.filter(t=>t.startTime===timeStr);
+      const gioChiIdx=hourToGioChi(h);
+      const isHD=hdList.includes(gioChiIdx);
+      const hasT=slotTasks.length>0;
+      const hd=isHD?'hoang-dao-slot':'ho-doi-slot';
+      html+=`<div class="hour-row">
+        <span class="hour-label">${timeStr}</span>
+        <div class="hour-slot ${hd} ${hasT?'has-task':''} ${isCur?'current-slot':''}" onclick="openModalHour(${h},${min})">
+          ${isHD&&!isCur?`<span class="gio-badge hd ${hasT?'hd-task':''}">🟢 Hoàng Đạo</span>`:''}
+          ${!isHD&&!isCur?`<span class="gio-badge hc">⬛ Hắc Đạo</span>`:''}
+          ${slotTasks.map(t=>`<span class="task-chip ${t.status}" onclick="event.stopPropagation();cycleStatus('${t.id}')" title="${t.note||''}">
+            ${sIcon(t.status)} ${t.title}
+            <span onclick="event.stopPropagation();editTask('${t.id}')" style="opacity:.5;cursor:pointer">✎</span>
+            <span onclick="event.stopPropagation();delTask('${t.id}')" style="opacity:.5;cursor:pointer">✕</span>
+          </span>`).join('')}
+        </div>
+      </div>`;
+      idx++;
+    }
   }
   document.getElementById('hourGrid').innerHTML=html;
-  if(isToday){const rows=document.querySelectorAll('.hour-row');if(rows[curH])rows[curH].scrollIntoView({behavior:'smooth',block:'center'})}
+  if(isToday&&curIdx>=0){const rows=document.querySelectorAll('.hour-row');if(rows[curIdx])rows[curIdx].scrollIntoView({behavior:'smooth',block:'center'})}
 }
 
 function gioBarHTML(hdList,y,m,d,curH){
@@ -1292,20 +1300,23 @@ function updateSidebar(){
 // ============================================================
 //   MODAL
 // ============================================================
-function openModal(prefDate,prefH){
+function openModal(prefDate,prefH,prefMin){
   editingId=null;
   document.getElementById('modalTitle').textContent='✏️ Thêm công việc';
   document.getElementById('f-title').value='';
   document.getElementById('f-date').value=prefDate||dk(currentDate);
-  document.getElementById('f-start').value=prefH!==undefined?`${prefH.toString().padStart(2,'0')}:00`:'';
-  document.getElementById('f-end').value=prefH!==undefined?`${(prefH+1).toString().padStart(2,'0')}:00`:'';
+  const mm=prefMin||0;
+  document.getElementById('f-start').value=prefH!==undefined?`${prefH.toString().padStart(2,'0')}:${mm.toString().padStart(2,'0')}`:'';
+  const endTotalMin=prefH!==undefined?(prefH*60+mm+30):undefined;
+  document.getElementById('f-end').value=endTotalMin!==undefined?`${Math.floor(endTotalMin/60).toString().padStart(2,'0')}:${(endTotalMin%60).toString().padStart(2,'0')}`:'';
+
   document.getElementById('f-status').value='todo';
   document.getElementById('f-cat').value='work';
   document.getElementById('f-note').value='';
   document.getElementById('overlay').classList.add('open');
   setTimeout(()=>document.getElementById('f-title').focus(),100);
 }
-function openModalHour(h){openModal(dk(currentDate),h)}
+function openModalHour(h,min){openModal(dk(currentDate),h,min||0)}
 function editTask(id){
   const t=tasks.find(t=>t.id===id);if(!t)return;
   editingId=id;
