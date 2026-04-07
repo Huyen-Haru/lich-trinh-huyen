@@ -879,50 +879,83 @@ function lunarBannerHTML(d){
 //   HOUR VIEW
 // ============================================================
 function renderHour(){
+  const SLOT_H=48; // px per 15-min slot
+  const START_H=8,END_H=18;
+  const LABEL_W=52;
+
   const y=currentDate.getFullYear(),m=currentDate.getMonth()+1,d=currentDate.getDate();
   const dKey=dk(currentDate);
   const dayTasks=tasks.filter(t=>t.date===dKey);
-  const now=new Date();const curH=now.getHours();
+  const now=new Date();
   const isToday=dKey===dk(now);
+  const totalNow=now.getHours()*60+now.getMinutes();
   const hdList=getGioHD(y,m,d);
   const tuviData=getTuviDay(y,m,d);
 
   document.getElementById('hourTitle').textContent='Lịch ngày '+fmt(currentDate);
   document.getElementById('lunarBannerHour').innerHTML=lunarBannerHTML(currentDate);
   document.getElementById('tuviDayPanelHour').innerHTML=tuviMiniPanel(tuviData,currentDate);
-  document.getElementById('gioHoangDaoBar').innerHTML=gioBarHTML(hdList,y,m,d,isToday?curH:-1);
+  document.getElementById('gioHoangDaoBar').innerHTML=gioBarHTML(hdList,y,m,d,isToday?now.getHours():-1);
 
-  let html='';let curIdx=-1;let idx=0;
-  const totalNow=curH*60+(isToday?now.getMinutes():0);
-  for(let h=8;h<=18;h++){
+  // --- build background grid ---
+  let gridHtml='';
+  let prevChi=-1;
+  for(let h=START_H;h<END_H;h++){
     for(let min=0;min<60;min+=15){
-      if(h===18&&min>0)break;
-      const timeStr=`${h.toString().padStart(2,'0')}:${min.toString().padStart(2,'0')}`;
-      const slotStart=h*60+min;
-      const isCur=isToday&&totalNow>=slotStart&&totalNow<slotStart+15;
-      if(isCur)curIdx=idx;
-      const slotTasks=dayTasks.filter(t=>t.startTime===timeStr);
+      const slotMin=h*60+min;
+      const isCur=isToday&&totalNow>=slotMin&&totalNow<slotMin+15;
       const gioChiIdx=hourToGioChi(h);
       const isHD=hdList.includes(gioChiIdx);
-      const hasT=slotTasks.length>0;
-      const hd=isHD?'hoang-dao-slot':'ho-doi-slot';
-      html+=`<div class="hour-row">
-        <span class="hour-label">${timeStr}</span>
-        <div class="hour-slot ${hd} ${hasT?'has-task':''} ${isCur?'current-slot':''}" onclick="openModalHour(${h},${min})">
-          ${isHD&&!isCur?`<span class="gio-badge hd ${hasT?'hd-task':''}">🟢 Hoàng Đạo</span>`:''}
-          ${!isHD&&!isCur?`<span class="gio-badge hc">⬛ Hắc Đạo</span>`:''}
-          ${slotTasks.map(t=>`<span class="task-chip ${t.status}" onclick="event.stopPropagation();cycleStatus('${t.id}')" title="${t.note||''}">
-            ${sIcon(t.status)} ${t.title}
-            <span onclick="event.stopPropagation();editTask('${t.id}')" style="opacity:.5;cursor:pointer">✎</span>
-            <span onclick="event.stopPropagation();delTask('${t.id}')" style="opacity:.5;cursor:pointer">✕</span>
-          </span>`).join('')}
+      const showBadge=gioChiIdx!==prevChi;prevChi=gioChiIdx;
+      const timeStr=`${h.toString().padStart(2,'0')}:${min.toString().padStart(2,'0')}`;
+      const bgColor=isCur?'rgba(200,151,42,0.10)':isHD?'rgba(39,174,96,0.04)':'rgba(192,57,43,0.03)';
+      const labelOpacity=(min===0)?'1':'0.45';
+      gridHtml+=`<div style="display:flex;height:${SLOT_H}px;background:${bgColor};border-bottom:1px solid rgba(255,255,255,0.03);cursor:pointer;" onclick="openModalHour(${h},${min})">
+        <span style="width:${LABEL_W}px;flex-shrink:0;font-size:10px;font-weight:700;color:rgba(122,112,96,${labelOpacity});text-align:right;padding:5px 8px 0 0;">${timeStr}</span>
+        <div style="flex:1;position:relative;border-left:1px solid var(--border);">
+          ${showBadge?`<span style="position:absolute;top:4px;right:6px;font-size:9px;font-weight:700;padding:1px 6px;border-radius:10px;pointer-events:none;${isHD?'background:rgba(39,174,96,.13);color:var(--done)':'background:rgba(192,57,43,.10);color:var(--todo)'};">${isHD?'🟢 Hoàng Đạo':'⬛ Hắc Đạo'}</span>`:''}
+          ${isCur?`<div style="position:absolute;top:0;left:0;right:0;height:2px;background:var(--gold);pointer-events:none;"></div><span style="position:absolute;top:3px;left:6px;font-size:9px;color:var(--gold);font-weight:700;pointer-events:none;">▶ Hiện tại</span>`:''}
         </div>
       </div>`;
-      idx++;
     }
   }
-  document.getElementById('hourGrid').innerHTML=html;
-  if(isToday&&curIdx>=0){const rows=document.querySelectorAll('.hour-row');if(rows[curIdx])rows[curIdx].scrollIntoView({behavior:'smooth',block:'center'})}
+
+  // --- build task blocks (absolutely positioned) ---
+  let tasksHtml='';
+  const totalSlots=(END_H-START_H)*4;
+  const totalPx=totalSlots*SLOT_H;
+  function timeToY(hh,mm){return((hh*60+mm)-(START_H*60))/15*SLOT_H;}
+
+  for(const t of dayTasks){
+    if(!t.startTime||!t.endTime)continue;
+    const [sh,sm]=t.startTime.split(':').map(Number);
+    const [eh,em]=t.endTime.split(':').map(Number);
+    const startMin=sh*60+sm,endMin=eh*60+em;
+    if(startMin>=END_H*60||endMin<=START_H*60)continue;
+    const top=Math.max(timeToY(sh,sm),0);
+    const bottom=Math.min(timeToY(eh,em),totalPx);
+    const height=Math.max(bottom-top-2,22);
+    const colors={done:'var(--done)',pending:'var(--pending)',todo:'var(--todo)'};
+    const c=colors[t.status]||'var(--gold)';
+    const bg=t.status==='done'?'rgba(91,232,168,0.10)':t.status==='pending'?'rgba(232,212,91,0.10)':'rgba(232,124,91,0.10)';
+    tasksHtml+=`<div style="position:absolute;left:${LABEL_W+6}px;right:8px;top:${top}px;height:${height}px;background:${bg};border:1px solid ${c};border-left:3px solid ${c};border-radius:7px;padding:3px 8px;overflow:hidden;z-index:3;box-sizing:border-box;cursor:pointer;" onclick="cycleStatus('${t.id}')" title="${t.note||''}">
+      <div style="display:flex;align-items:center;gap:6px;height:100%;overflow:hidden;">
+        <span style="font-size:10px;color:${c};font-weight:700;white-space:nowrap;flex-shrink:0;">${t.startTime}–${t.endTime}</span>
+        <span style="font-size:12px;font-weight:600;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">${sIcon(t.status)} ${t.title}</span>
+        <span onclick="event.stopPropagation();editTask('${t.id}')" style="opacity:.45;cursor:pointer;font-size:12px;flex-shrink:0;" title="Sửa">✎</span>
+        <span onclick="event.stopPropagation();delTask('${t.id}')" style="opacity:.45;cursor:pointer;font-size:12px;flex-shrink:0;" title="Xóa">✕</span>
+      </div>
+    </div>`;
+  }
+
+  document.getElementById('hourGrid').innerHTML=`<div style="position:relative;">${gridHtml}<div style="position:absolute;top:0;left:0;right:0;height:${totalPx}px;pointer-events:none;"><div style="pointer-events:all;">${tasksHtml}</div></div></div>`;
+
+  // scroll to current time
+  if(isToday){
+    const curY=Math.max(timeToY(now.getHours(),now.getMinutes())-150,0);
+    const content=document.querySelector('.content');
+    if(content)setTimeout(()=>content.scrollTop=curY,50);
+  }
 }
 
 function gioBarHTML(hdList,y,m,d,curH){
