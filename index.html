@@ -306,6 +306,7 @@ body{
   <div class="nav-section" style="margin-top:6px">
     <div class="nav-label">Tử Vi & Phong Thủy</div>
     <button class="nav-btn" onclick="switchView('tuvi-day')"><span class="icon">🌙</span>Tử vi trong ngày</button>
+    <button class="nav-btn" onclick="switchView('tuvi-month')"><span class="icon">🗺️</span>Tử vi theo tháng</button>
     <button class="nav-btn" onclick="switchView('tuvi-hour')"><span class="icon">⭐</span>Giờ hoàng đạo</button>
     <button class="nav-btn" onclick="switchView('ngay-dep')"><span class="icon">✨</span>Ngày đẹp tháng này</button>
   </div>
@@ -379,6 +380,12 @@ body{
     <div class="view" id="view-tuvi-day">
       <div class="section-header"><h2>🌙 Tử Vi Trong Ngày</h2></div>
       <div id="tuviDayFull"></div>
+    </div>
+
+    <!-- TUVI MONTH -->
+    <div class="view" id="view-tuvi-month">
+      <div class="section-header"><h2>🗺️ Tử Vi Theo Tháng</h2></div>
+      <div id="tuviMonthFull"></div>
     </div>
 
     <!-- TUVI HOUR -->
@@ -929,6 +936,7 @@ function render(){
   else if(currentView==='month')renderMonth();
   else if(currentView==='year')renderYear();
   else if(currentView==='tuvi-day')renderTuviDay();
+  else if(currentView==='tuvi-month')renderTuviMonth();
   else if(currentView==='tuvi-hour')renderTuviHour();
   else if(currentView==='ngay-dep')renderNgayDep();
   else if(currentView.startsWith('sum-'))renderSummary(currentView.replace('sum-',''));
@@ -940,6 +948,7 @@ function updateNavLabel(){
   const labels={
     hour:fmt(d),day:fmt(d),month:`${MONTHS_VI[d.getMonth()]} ${d.getFullYear()}`,
     year:`Năm ${d.getFullYear()}`,'tuvi-day':fmt(d),'tuvi-hour':fmt(d),
+    'tuvi-month':`${MONTHS_VI[d.getMonth()]} ${d.getFullYear()}`,
     'ngay-dep':`${MONTHS_VI[d.getMonth()]} ${d.getFullYear()}`,
     'sum-day':fmt(d),'sum-month':`${MONTHS_VI[d.getMonth()]} ${d.getFullYear()}`,
     'sum-quarter':`Năm ${d.getFullYear()}`,'sum-year':`Năm ${d.getFullYear()}`,
@@ -950,7 +959,7 @@ function updateNavLabel(){
 function navDate(dir){
   if(['hour','day','tuvi-day','tuvi-hour','sum-day'].includes(currentView)){
     currentDate=new Date(currentDate.getTime()+dir*86400000);
-  }else if(['month','sum-month','ngay-dep'].includes(currentView)){
+  }else if(['month','sum-month','ngay-dep','tuvi-month'].includes(currentView)){
     currentDate=new Date(currentDate.getFullYear(),currentDate.getMonth()+dir,1);
   }else{
     currentDate=new Date(currentDate.getFullYear()+dir,currentDate.getMonth(),1);
@@ -1324,6 +1333,229 @@ function renderTuviDay(){
   </div>`;
 
   document.getElementById('tuviDayFull').innerHTML=banner+birthInfo+dayAnalysis+cungPanel+suggests;
+}
+
+// ============================================================
+//   TUVI MONTH FULL
+// ============================================================
+function renderTuviMonth(){
+  const y=currentDate.getFullYear(), mo=currentDate.getMonth()+1;
+  const mc=canMonth(y,mo);
+  const mch=chiMonth(mo);
+  const mChiIdx=CHI.indexOf(mch);
+  const mHanh=canToHanh(mc);
+  const yc=canYear(y), ych=chiYear(y);
+
+  // Điểm tháng với bản mệnh Thổ
+  let mScore=0;
+  if(['Thổ','Hỏa'].includes(mHanh))mScore=2;
+  else if(mHanh==='Kim')mScore=1;
+  else if(mHanh==='Mộc')mScore=-1;
+  else if(mHanh==='Thủy')mScore=-1;
+
+  const scoreLabel=mScore>=2?'🌟 Đại Cát – Tháng rất thuận':mScore===1?'✅ Cát – Tháng tốt':mScore<0?'⚠️ Cần Thận – Tháng có thử thách':'☯️ Trung Bình – Tháng bình ổn';
+  const scoreColor=mScore>=2?'var(--done)':mScore===1?'#7ec8f0':mScore<0?'var(--todo)':'var(--muted)';
+
+  // Lời khuyên tổng tháng
+  const thangKhuyen={
+    2:`✨ Tháng ${mc} ${mch} đại cát với mệnh Thổ của bạn. Hành ${mHanh} tương sinh mạnh – đây là tháng mở rộng, tiến công, ký kết và ra quyết định lớn. Sao Tham Lang được kích hoạt, khả năng thuyết phục và giao tiếp của bạn ở đỉnh cao. Tận dụng tháng này để chốt các mục tiêu quan trọng trong tuyển dụng.`,
+    1:`🌟 Tháng ${mc} ${mch} tương đối thuận lợi với mệnh Thổ. Công việc tiến triển ổn định, các mối quan hệ được củng cố. Tập trung hoàn thiện những gì đang dang dở và xây dựng nền tảng cho giai đoạn tiếp theo.`,
+    '-1':`⚠️ Tháng ${mc} ${mch} có hành ${mHanh} xung khắc với mệnh Thổ. Cần thận trọng trong quyết định lớn, tránh nóng vội. Tập trung vào những việc chắc chắn, duy trì quan hệ tốt với cấp trên và đồng nghiệp. Đây là tháng tích lũy, không phải tháng tiến công.`,
+    0:`☯️ Tháng ${mc} ${mch} bình ổn với mệnh của bạn. Phù hợp duy trì nhịp làm việc đều đặn, hoàn thành các nhiệm vụ thường ngày và chuẩn bị kế hoạch cho tháng tiếp theo.`,
+  }[mScore]||'';
+
+  // Màu sắc may mắn tháng
+  const mauThang=getMauSac(mHanh, mChiIdx);
+
+  // Đếm ngày tốt/xấu trong tháng
+  const lastDay=new Date(y,mo,0).getDate();
+  let ngayTotCount=0, ngayXauCount=0;
+  const hotDays=[];
+  for(let dd=1;dd<=lastDay;dd++){
+    const isGood=isNgayDep(y,mo,dd)&&!isNgayXau(y,mo,dd);
+    const isBad=isNgayXau(y,mo,dd);
+    if(isGood){ngayTotCount++;if(hotDays.length<5)hotDays.push(dd);}
+    if(isBad)ngayXauCount++;
+  }
+
+  // ── BANNER THÁNG ──────────────────────────────────────────
+  const lunarMo=solarToLunar(y,mo,1);
+  const banner=`<div class="lunar-banner" style="margin-bottom:14px">
+    <div class="lunar-main">
+      <div class="lunar-date-big">🗺️ ${MONTHS_VI[mo-1]} ${y}</div>
+      <div class="lunar-can-chi">Tháng ${mc} ${mch} · Năm ${yc} ${ych} ${CHI_ICON[CHI.indexOf(ych)]}</div>
+      <div class="lunar-sub">Ngũ Hành tháng: <strong>${mHanh}</strong> · Cung mệnh: <strong>Khôn (Thổ)</strong></div>
+      <div class="lunar-info-grid" style="margin-top:8px">
+        <span class="lunar-chip" style="color:${scoreColor};border-color:${scoreColor}">${scoreLabel}</span>
+        <span class="lunar-chip">✨ ${ngayTotCount} ngày đẹp</span>
+        <span class="lunar-chip bad">⛔ ${ngayXauCount} ngày kỵ</span>
+        ${hotDays.length?`<span class="lunar-chip good">📅 Ngày đẹp: ${hotDays.map(d=>`${d}/${mo}`).join(', ')}...</span>`:''}
+      </div>
+    </div>
+  </div>`;
+
+  // ── TỔNG QUAN THÁNG ──────────────────────────────────────
+  const tongQuan=`<div class="tuvi-panel" style="margin-bottom:14px">
+    <h3>📅 Tổng Quan Tháng ${mc} ${mch} – ${MONTHS_VI[mo-1]} ${y}</h3>
+    <div class="tuvi-grid">
+      <div class="tuvi-card"><h4>Can Chi Tháng</h4><div class="tuvi-val">${mc} ${mch}</div></div>
+      <div class="tuvi-card"><h4>Ngũ Hành Tháng</h4><div class="tuvi-val">${mHanh}</div></div>
+      <div class="tuvi-card"><h4>Tương Quan Mệnh</h4><div class="tuvi-val" style="color:${scoreColor}">${scoreLabel.split('–')[0].trim()}</div></div>
+      <div class="tuvi-card"><h4>Năm</h4><div class="tuvi-val">${yc} ${ych} ${CHI_ICON[CHI.indexOf(ych)]}</div></div>
+    </div>
+    <div style="margin-top:10px;padding:12px;background:rgba(200,151,42,.07);border-radius:8px;font-size:12px;line-height:1.7">${thangKhuyen}</div>
+    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <span style="font-size:11px;color:var(--muted);font-weight:700">Màu may mắn tháng:</span>
+      ${mauThang.slice(0,3).map(c=>`<span class="color-chip"><span class="color-dot" style="background:${c.color}"></span>${c.name}</span>`).join('')}
+    </div>
+  </div>`;
+
+  // ── 12 CUNG THEO THÁNG ───────────────────────────────────
+  // Tháng ảnh hưởng mạnh hơn ngày: dùng mChiIdx để tính
+  // Thêm context tháng vào mô tả
+  const CUNG_MONTH_CONTEXT={
+    'menh':'Tháng ảnh hưởng trực tiếp đến hình ảnh bản thân, sức khỏe tổng thể và định hướng lớn trong tháng.',
+    'phu-mau':'Quan hệ với cấp trên, sếp và khách hàng VIP có diễn biến đáng chú ý trong tháng này.',
+    'phuc-duc':'Vận may tích lũy, tài lộc nền tảng và phúc phận trong tháng được định hình bởi cung này.',
+    'dien-trach':'Nhà ở, văn phòng, bất động sản và môi trường làm việc chịu ảnh hưởng của tháng.',
+    'quan-loc':'Sự nghiệp và thăng tiến trong tháng – cung này quyết định vận nghề nghiệp suốt 30 ngày.',
+    'no-boc':'Cộng sự, nhân viên, đối tác thực hiện và các mối quan hệ hỗ trợ trong tháng.',
+    'thien-di':'Di chuyển, công tác, mở rộng vùng hoạt động – đặc biệt quan trọng với công việc quản lý 37 đơn vị.',
+    'tat-ach':'Sức khỏe thể chất và tinh thần trong tháng – cần chú ý theo dõi cung này.',
+    'tai-bach':'Thu nhập, dòng tiền, các giao dịch tài chính lớn nhỏ trong tháng.',
+    'tu-tuc':'Các dự án mới, sáng kiến, và việc hướng dẫn người khác trong tháng.',
+    'phu-the':'Tình cảm, hôn nhân và các mối quan hệ thân thiết nhất trong tháng.',
+    'huynh-de':'Đồng nghiệp ngang cấp, bạn bè và các liên kết ngang hàng trong tháng.',
+  };
+
+  const cungCards=CUNG_DATA.map(cung=>{
+    const inf=getCungDayInfluence(cung,mChiIdx,mScore,mHanh);
+    const sc=inf.score;
+    const c=sc>=3?'var(--done)':sc>=2?'var(--done)':sc>=1?'#7ec8f0':sc===0?'var(--muted)':sc===-1?'var(--pending)':'var(--todo)';
+    const bgAlpha=sc>=2?'rgba(91,232,168,0.05)':sc<0?'rgba(232,124,91,0.05)':'transparent';
+    const borderL=sc>=2?'border-left:3px solid var(--done)':sc<0?'border-left:3px solid var(--todo)':'border-left:3px solid var(--border)';
+
+    // Gợi ý cụ thể theo công việc tuyển dụng + tháng
+    const context=CUNG_MONTH_CONTEXT[cung.loai]||'';
+
+    // Highlight tháng tốt nhất cho cung này trong năm
+    let bestMonth=''; let bestScore=-99;
+    for(let bm=1;bm<=12;bm++){
+      const bmc=canMonth(y,bm); const bmch=chiMonth(bm);
+      const bmChiIdx=CHI.indexOf(bmch);
+      const bmHanh=canToHanh(bmc);
+      let bms=0;
+      if(['Thổ','Hỏa'].includes(bmHanh))bms=2;
+      else if(bmHanh==='Kim')bms=1;
+      else if(bmHanh==='Mộc')bms=-1;
+      else if(bmHanh==='Thủy')bms=-1;
+      const bi=getCungDayInfluence(cung,bmChiIdx,bms,bmHanh);
+      if(bi.score>bestScore){bestScore=bi.score;bestMonth=`T${bm}/${y}`;}
+    }
+
+    const nenItems=cung.totCho.map(t=>`<div style="display:flex;gap:5px;margin-bottom:3px"><span style="color:var(--done);flex-shrink:0">▸</span><span>${t}</span></div>`).join('');
+    const tranhItems=cung.tranh.map(t=>`<div style="display:flex;gap:5px;margin-bottom:3px"><span style="color:var(--todo);flex-shrink:0">▸</span><span>${t}</span></div>`).join('');
+
+    return`<div style="background:${bgAlpha};border:1px solid var(--border);${borderL};border-radius:10px;padding:14px;margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+        <span style="font-size:20px">${cung.icon}</span>
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:14px;color:var(--gold2)">Cung ${cung.ten}</div>
+          <div style="font-size:10px;color:var(--muted)">${cung.mucDich} · Sao: ${cung.saoChinh.join(', ')}</div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0">
+          <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(255,255,255,0.05);color:${c};border:1px solid ${c}">${inf.tag}</span>
+          <span style="font-size:9px;color:var(--muted)">Tháng đỉnh: <strong style="color:var(--gold)">${bestMonth}</strong></span>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:6px;padding:8px;background:rgba(255,255,255,0.02);border-radius:6px;font-style:italic">
+        ${context}
+      </div>
+      <div style="font-size:12px;color:var(--text);line-height:1.6;margin-bottom:8px;padding:8px;background:rgba(200,151,42,0.04);border-radius:6px">
+        <strong style="color:var(--gold);font-size:10px;text-transform:uppercase;letter-spacing:0.5px">Tháng này:</strong><br>${inf.detail}
+      </div>
+      <div style="font-size:11px;line-height:1.6;color:var(--muted);margin-bottom:8px">${cung.natalDesc}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="background:rgba(91,232,168,0.06);border-radius:6px;padding:8px">
+          <div style="font-size:9px;font-weight:700;color:var(--done);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">✅ Nên làm tháng này</div>
+          <div style="font-size:11px;color:var(--text);line-height:1.6">${nenItems}</div>
+        </div>
+        <div style="background:rgba(232,124,91,0.06);border-radius:6px;padding:8px">
+          <div style="font-size:9px;font-weight:700;color:var(--todo);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">❌ Tránh tháng này</div>
+          <div style="font-size:11px;color:var(--text);line-height:1.6">${tranhItems}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const cungPanel=`<div style="margin-bottom:14px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">
+      <h2 style="font-family:'Noto Serif Display',serif;font-size:18px;color:var(--gold2)">🔮 12 Cung Tử Vi – ${MONTHS_VI[mo-1]} ${y}</h2>
+      <span style="font-size:11px;color:var(--muted)">Tháng ${mc} ${mch} (${mHanh}) chiếu cung ${CUNG_DATA.find(c=>c.chiIdx===mChiIdx)?.ten||CHI[mChiIdx]}</span>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;font-size:10px">
+      <span style="padding:2px 8px;background:rgba(91,232,168,0.12);color:var(--done);border-radius:20px;border:1px solid rgba(91,232,168,0.2)">🌟 Trực Chiếu / Tam Hợp = Rất Tốt</span>
+      <span style="padding:2px 8px;background:rgba(126,200,240,0.1);color:#7ec8f0;border-radius:20px;border:1px solid rgba(126,200,240,0.2)">☀️ Lục Hợp = Tốt</span>
+      <span style="padding:2px 8px;background:rgba(122,112,96,0.1);color:var(--muted);border-radius:20px;border:1px solid rgba(122,112,96,0.2)">☯️ Bình Thường</span>
+      <span style="padding:2px 8px;background:rgba(232,124,91,0.10);color:var(--todo);border-radius:20px;border:1px solid rgba(232,124,91,0.2)">⚠️ Hình/Xung = Cẩn thận</span>
+    </div>
+    ${cungCards}
+  </div>`;
+
+  // ── TOP 5 NGÀY TỐT & NÊN/TRÁNH THÁNG ────────────────────
+  const allGoodDays=[];
+  for(let dd=1;dd<=lastDay;dd++){
+    if(isNgayDep(y,mo,dd)&&!isNgayXau(y,mo,dd)){
+      const tv2=getTuviDay(y,mo,dd);
+      allGoodDays.push({dd,score:tv2.dayScore,dc:tv2.dc,dch:tv2.dch});
+    }
+  }
+  allGoodDays.sort((a,b)=>b.score-a.score);
+  const topDaysHtml=allGoodDays.slice(0,8).map(x=>`
+    <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:7px;background:rgba(91,232,168,0.06);border:1px solid rgba(91,232,168,0.15);margin-bottom:5px">
+      <span style="font-size:16px">✨</span>
+      <div style="flex:1"><strong style="color:var(--gold2)">${x.dd}/${mo}/${y}</strong> <span style="color:var(--muted);font-size:10px">– ${x.dc} ${x.dch}</span></div>
+      <span style="font-size:10px;color:var(--done)">${x.score>=2?'🌟 Đại Cát':'✅ Cát'}</span>
+    </div>`).join('');
+
+  const bottomPanel=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px">
+      <div style="font-size:10px;font-weight:700;color:var(--done);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">✨ Ngày Đẹp Tháng ${mo}/${y} (Top ${Math.min(allGoodDays.length,8)})</div>
+      ${topDaysHtml||'<div style="color:var(--muted);font-size:12px">Không có ngày đặc biệt tốt trong tháng này</div>'}
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px">
+      <div style="font-size:10px;font-weight:700;color:var(--gold2);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">💡 Chiến Lược Tháng</div>
+      <div style="font-size:12px;line-height:1.8;color:var(--text)">
+        ${mScore>=2?`
+        🚀 <strong>Tháng tiến công:</strong> Ra quyết định lớn, ký kết, mở rộng<br>
+        🤝 <strong>Quan hệ:</strong> Chủ động tiếp cận GĐ chi nhánh mới<br>
+        💰 <strong>Tài chính:</strong> Thời điểm tốt đàm phán lương & thưởng<br>
+        📢 <strong>Tuyển dụng:</strong> Tháng đẩy mạnh số lượng ứng viên<br>
+        🌱 <strong>Phát triển:</strong> Mở rộng kênh tuyển dụng mới
+        `:mScore>=1?`
+        ✅ <strong>Tháng ổn định:</strong> Duy trì và củng cố<br>
+        📝 <strong>Hoàn thiện:</strong> Xử lý các hồ sơ còn dang dở<br>
+        🤝 <strong>Quan hệ:</strong> Nuôi dưỡng mối quan hệ hiện có<br>
+        📊 <strong>Đánh giá:</strong> Review hiệu quả tuyển dụng tháng trước<br>
+        🎯 <strong>Chuẩn bị:</strong> Lên kế hoạch cho tháng tiếp theo
+        `:mScore<0?`
+        ⚠️ <strong>Tháng thận trọng:</strong> Không vội vàng quyết định lớn<br>
+        🔍 <strong>Kiểm tra:</strong> Rà soát lại quy trình và hồ sơ<br>
+        🤝 <strong>Quan hệ:</strong> Tránh xung đột với GĐ đơn vị<br>
+        💊 <strong>Sức khỏe:</strong> Chú ý nghỉ ngơi, không làm quá sức<br>
+        🛡️ <strong>Phòng thủ:</strong> Xử lý ổn định, tránh rủi ro mới
+        `:`
+        ☯️ <strong>Tháng bình ổn:</strong> Làm đều đặn, không đột biến<br>
+        📋 <strong>Hoàn thành:</strong> Tập trung dứt điểm backlog<br>
+        📚 <strong>Học hỏi:</strong> Nâng cao kỹ năng chuyên môn<br>
+        🌿 <strong>Cân bằng:</strong> Duy trì cân bằng công việc–sức khỏe<br>
+        🔗 <strong>Kết nối:</strong> Duy trì mạng lưới hiện có
+        `}
+      </div>
+    </div>
+  </div>`;
+
+  document.getElementById('tuviMonthFull').innerHTML=banner+tongQuan+cungPanel+bottomPanel;
 }
 
 // ============================================================
