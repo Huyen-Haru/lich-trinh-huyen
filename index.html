@@ -764,31 +764,29 @@ window.onload=()=>{
   render();updateSidebar();
 };
 function seedDemo(){
-  const d=dk(new Date());
-  tasks=[
-    {id:uid(),title:'Kiểm tra email & phân loại yêu cầu tuyển dụng',date:d,startTime:'08:30',endTime:'08:45',status:'todo',category:'work',note:''},
-  ];
+  tasks=[];
   save();
 }
 function seedTodayRecruit(){
   const d='2026-04-07';
-  if(tasks.some(t=>t.date===d))return;
+  if(tasks.some(t=>t.date===d&&t.title.includes('Di chuyển')))return;
   const newTasks=[
-    {id:uid(),title:'★ Khởi động: lọc 50 fresh tiềm năng & kiểm tra email/Zalo 37 đơn vị',date:d,startTime:'08:30',endTime:'08:45',status:'todo',category:'work',note:'Giờ Thìn Hoàng Đạo – Mặc đồ trắng hoặc vàng nhạt hôm nay'},
-    {id:uid(),title:'★ Gửi tin nhắn mass 190 fresh (giới thiệu chương trình tuyển dụng)',date:d,startTime:'08:45',endTime:'09:15',status:'todo',category:'work',note:'Giờ Thìn Hoàng Đạo – Gửi sớm để fresh đọc đầu giờ sáng, tỷ lệ reply cao hơn'},
-    {id:uid(),title:'★ Setup 6 lịch phỏng vấn – gọi xác nhận ứng viên',date:d,startTime:'09:15',endTime:'09:45',status:'todo',category:'work',note:'3 người cuối giờ Hoàng Đạo + 3 người đầu giờ tiếp theo'},
-    {id:uid(),title:'⚠ Soạn 10 thư mời ứng viên đã phỏng vấn (CHƯA GỬI)',date:d,startTime:'09:45',endTime:'11:00',status:'todo',category:'work',note:'Hắc Đạo – Chỉ soạn & kiểm tra kỹ: tên, vị trí, lương, ngày vào làm. Gửi lúc 11h'},
-    {id:uid(),title:'★★ Gửi 10 thư mời chính thức – Giờ Ngọ Hoàng Đạo',date:d,startTime:'11:00',endTime:'11:15',status:'todo',category:'work',note:'Giờ Ngọ – Khung vàng nhất trong ngày để gửi văn bản/offer quan trọng'},
-    {id:uid(),title:'★★ Chốt lương với Giám đốc chi nhánh (gọi lần lượt từng GĐ)',date:d,startTime:'11:15',endTime:'12:30',status:'todo',category:'work',note:'Giờ Ngọ–Mùi Hoàng Đạo – Gọi GĐ khó nhất trước. ~10-15 phút/người. Ghi kết quả ngay'},
-    {id:uid(),title:'Nghỉ trưa – nạp năng lượng cho buổi gọi 50 fresh',date:d,startTime:'12:30',endTime:'13:00',status:'todo',category:'health',note:'Bắt buộc nghỉ đủ để chiều gọi điện hiệu quả và thuyết phục'},
-    {id:uid(),title:'★★ Gọi điện fresh Batch 1 – ~15 người tiềm năng nhất',date:d,startTime:'13:00',endTime:'13:30',status:'todo',category:'work',note:'Giờ Mùi Hoàng Đạo – Fresh vừa ăn trưa xong, rảnh, tỷ lệ bắt máy cao nhất'},
-    {id:uid(),title:'★★ Gọi điện fresh Batch 2 – ~30 người còn lại trong danh sách ưu tiên',date:d,startTime:'13:30',endTime:'15:00',status:'todo',category:'work',note:'Giờ Mùi Hoàng Đạo – Dành khung giờ đẹp nhất cho các bạn cần thuyết phục kỹ'},
-    {id:uid(),title:'Đăng bài tuyển dụng 5 đơn vị gấp + tìm ứng viên trên database',date:d,startTime:'15:00',endTime:'15:45',status:'todo',category:'work',note:'Vietnamworks / TopCV / LinkedIn – Ưu tiên đơn vị cấp bách nhất đăng trước'},
-    {id:uid(),title:'⚠ Kiểm tra tin đăng 37 đơn vị – lọc & phân loại CV mới apply',date:d,startTime:'15:45',endTime:'17:00',status:'todo',category:'work',note:'Hắc Đạo – Việc xử lý data phù hợp. Lọc CV: phù hợp / xem thêm / loại'},
-    {id:uid(),title:'Xử lý CV + chuyển hồ sơ phù hợp cho đơn vị – Reply fresh phản hồi sáng',date:d,startTime:'17:00',endTime:'17:30',status:'todo',category:'work',note:'Cập nhật pipeline, thêm fresh quan tâm vào danh sách theo dõi'},
-    {id:uid(),title:'★ Báo cáo cuối ngày + Follow-up GĐ chưa chốt & fresh chưa reply',date:d,startTime:'17:30',endTime:'18:00',status:'todo',category:'work',note:'Giờ Dậu Hoàng Đạo – Gửi tóm tắt kết quả cho quản lý. Gọi lại GĐ còn phân vân'},
+    {id:uid(),title:'Di chuyển đến văn phòng',date:d,startTime:'08:00',endTime:'08:30',status:'todo',category:'personal',note:'Lưu ý: mặc đồ màu trắng hoặc vàng nhạt hôm nay – màu may mắn ngày Canh Dần'},
+    {id:uid(),title:'★ Khởi động: kiểm tra email/Zalo 37 đơn vị, lọc 50 fresh tiềm năng nhất',date:d,startTime:'09:00',endTime:'09:30',status:'todo',category:'work',note:'Giờ Tỵ – Xác định top 3 GĐ cần chốt lương hôm nay. Phân loại yêu cầu tuyển dụng cấp bách'},
+    {id:uid(),title:'★ Gửi tin nhắn mass toàn bộ 190 fresh (template giới thiệu chương trình)',date:d,startTime:'09:30',endTime:'10:00',status:'todo',category:'work',note:'Gửi qua Zalo/SMS/LinkedIn – fresh nhận lúc đầu giờ, tỷ lệ đọc và reply cao hơn'},
+    {id:uid(),title:'★ Setup 6 lịch phỏng vấn – gọi xác nhận từng ứng viên (~5 phút/cuộc)',date:d,startTime:'10:00',endTime:'10:30',status:'todo',category:'work',note:'Gửi kèm tin nhắn xác nhận lịch ngay sau khi gọi xong mỗi người'},
+    {id:uid(),title:'⚠ Soạn 10 thư mời ứng viên đã phỏng vấn – CHƯA GỬI',date:d,startTime:'10:30',endTime:'11:00',status:'todo',category:'work',note:'Giờ Tỵ Hắc Đạo – Tập trung soạn thảo, kiểm tra kỹ: tên, vị trí, lương, ngày vào. Gửi lúc 11h'},
+    {id:uid(),title:'★★ GỬI 10 thư mời chính thức – Giờ Ngọ Hoàng Đạo',date:d,startTime:'11:00',endTime:'11:15',status:'todo',category:'work',note:'Giờ Ngọ – Khung giờ vàng nhất để gửi văn bản/offer quan trọng trong ngày'},
+    {id:uid(),title:'★★ Chốt lương với Giám đốc chi nhánh – gọi lần lượt từng GĐ',date:d,startTime:'11:15',endTime:'12:30',status:'todo',category:'work',note:'Giờ Ngọ–Mùi Hoàng Đạo – Gọi GĐ khó nhất TRƯỚC khi năng lượng còn cao. ~10-15 phút/người'},
+    {id:uid(),title:'Nghỉ trưa – bắt buộc để duy trì năng lượng gọi điện buổi chiều',date:d,startTime:'12:30',endTime:'13:00',status:'todo',category:'health',note:'Ăn đủ bữa, nghỉ ngơi 30 phút. Buổi chiều gọi 50 fresh rất tốn sức'},
+    {id:uid(),title:'★★ Gọi điện fresh Batch 1 – ~15 người tiềm năng nhất trong danh sách',date:d,startTime:'13:00',endTime:'13:30',status:'todo',category:'work',note:'Giờ Mùi Hoàng Đạo – Fresh vừa ăn trưa, rảnh, tỷ lệ bắt máy cao nhất trong ngày'},
+    {id:uid(),title:'★★ Gọi điện fresh Batch 2 – ~35 người còn lại trong danh sách ưu tiên',date:d,startTime:'13:30',endTime:'15:00',status:'todo',category:'work',note:'Giờ Mùi Hoàng Đạo – Dành khung đẹp nhất thuyết phục các bạn còn phân vân'},
+    {id:uid(),title:'Đăng bài tuyển dụng 5 đơn vị gấp + tìm ứng viên trên database',date:d,startTime:'15:00',endTime:'15:45',status:'todo',category:'work',note:'Vietnamworks / TopCV / LinkedIn – Đăng đơn vị cấp bách nhất trước. ~15 phút/đơn vị'},
+    {id:uid(),title:'⚠ Kiểm tra tin đăng 37 đơn vị – lọc & phân loại toàn bộ CV mới apply',date:d,startTime:'15:45',endTime:'17:00',status:'todo',category:'work',note:'Giờ Thân Hắc Đạo – Phù hợp xử lý data. Phân loại CV: phù hợp / xem thêm / loại'},
+    {id:uid(),title:'Chuyển hồ sơ phù hợp cho đơn vị + Reply fresh phản hồi tin nhắn sáng',date:d,startTime:'17:00',endTime:'17:30',status:'todo',category:'work',note:'Cập nhật pipeline, thêm fresh quan tâm vào danh sách. Forward CV cho GĐ đơn vị tương ứng'},
+    {id:uid(),title:'★ Báo cáo cuối ngày + Follow-up GĐ chưa chốt & fresh chưa trả lời',date:d,startTime:'17:30',endTime:'18:00',status:'todo',category:'work',note:'Giờ Dậu Hoàng Đạo – Gửi tóm tắt kết quả cho quản lý. Gọi lại GĐ còn phân vân (sau họp chiều)'},
   ];
-  tasks=[...tasks,...newTasks];
+  tasks=[...tasks.filter(t=>t.date!==d),...newTasks];
   save();
 }
 
