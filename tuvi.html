@@ -110,6 +110,41 @@ body{background-image:radial-gradient(ellipse at 20% 10%,rgba(200,151,42,.06) 0%
 .legend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;font-size:10px}
 .legend span{padding:2px 8px;border-radius:20px;border:1px solid}
 
+/* TỨ TRỤ */
+.tu-tru-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.tru-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center}
+.tru-label{font-size:9px;font-weight:700;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.tru-can{font-size:18px;font-weight:700;color:var(--gold2);margin-bottom:2px}
+.tru-chi{font-size:15px;color:var(--text);margin-bottom:4px}
+.tru-hanh{font-size:10px;padding:2px 8px;border-radius:20px;display:inline-block;font-weight:700}
+.tru-hanh.Kim{background:rgba(189,195,199,.15);color:#bdc3c7}
+.tru-hanh.Moc{background:rgba(39,174,96,.12);color:#2ecc71}
+.tru-hanh.Hoa{background:rgba(231,76,60,.12);color:#e74c3c}
+.tru-hanh.Tho{background:rgba(200,151,42,.15);color:var(--gold2)}
+.tru-hanh.Thuy{background:rgba(41,128,185,.12);color:#3498db}
+
+/* ĐẠI VẬN */
+.dai-van-section{margin-bottom:20px}
+.dai-van-section h3{font-family:'Noto Serif Display',serif;font-size:16px;color:var(--gold2);margin-bottom:12px}
+.dv-table{display:flex;flex-direction:column;gap:6px}
+.dv-row{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:12px 14px;display:grid;grid-template-columns:90px 80px 1fr 90px;align-items:center;gap:10px;transition:border-color .2s}
+.dv-row.active{border-color:var(--gold);background:rgba(200,151,42,.06)}
+.dv-row.past{opacity:.55}
+.dv-age{font-size:13px;font-weight:700;color:var(--gold2)}
+.dv-canchi{font-size:14px;font-weight:700;color:var(--text)}
+.dv-desc{font-size:11px;color:var(--muted);line-height:1.5}
+.dv-score{text-align:right;font-size:11px;font-weight:700}
+
+/* TIỂU VẬN */
+.tieu-van-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:16px}
+.tv-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:9px 6px;text-align:center;transition:border-color .2s}
+.tv-card.active{border-color:var(--gold);background:rgba(200,151,42,.06)}
+.tv-card.past{opacity:.5}
+.tv-year{font-size:10px;color:var(--muted);margin-bottom:3px}
+.tv-canchi{font-size:12px;font-weight:700;color:var(--text)}
+.tv-hanh{font-size:9px;margin-top:3px}
+.tv-score-dot{width:8px;height:8px;border-radius:50%;margin:4px auto 0}
+
 /* NAM CHART */
 .nam-months{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
 .nam-month{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px;cursor:pointer;transition:all .15s}
@@ -171,9 +206,10 @@ body{background-image:radial-gradient(ellipse at 20% 10%,rgba(200,151,42,.06) 0%
     <div class="person-banner" id="personBanner"></div>
     <div class="tab-bar">
       <button class="tab-btn active" id="tab-ban-menh" onclick="switchTab('ban-menh')">🌟 Bản Mệnh</button>
+      <button class="tab-btn" id="tab-dai-van" onclick="switchTab('dai-van')">🌊 Đại/Tiểu Vận</button>
       <button class="tab-btn" id="tab-ngay" onclick="switchTab('ngay')">📅 Theo Ngày</button>
-      <button class="tab-btn" id="tab-thang" onclick="switchTab('thang')">🗓️ Theo Tháng</button>
-      <button class="tab-btn" id="tab-nam" onclick="switchTab('nam')">📆 Theo Năm</button>
+      <button class="tab-btn" id="tab-thang" onclick="switchTab('thang')">🗓️ Tháng</button>
+      <button class="tab-btn" id="tab-nam" onclick="switchTab('nam')">📆 Năm</button>
     </div>
     <div id="tab-content"></div>
   </div>
@@ -377,6 +413,88 @@ function scoreClass(s){return s>=3?'great':s>=1?'good':s===0?'neutral':'bad'}
 function scoreColor(s){return s>=3?'var(--done)':s>=2?'var(--done)':s>=1?'#7ec8f0':s===0?'var(--muted)':s===-1?'var(--pending)':'var(--todo)'}
 
 // ============================================================
+//  TỨ TRỤ & ĐẠI VẬN ENGINE
+// ============================================================
+function canHourIdx(dayCanIdx,hourChiIdx){return(dayCanIdx*2+hourChiIdx)%10}
+function canHour(dayCanIdx,hourChiIdx){return CAN[canHourIdx(dayCanIdx,hourChiIdx)]}
+
+// Tiết khí (jié) dates: [solar_month, approx_day] for lunar month 1-12
+const SOLAR_TERM=[
+  [2,4],[3,6],[4,5],[5,6],[6,6],[7,7],
+  [8,7],[9,8],[10,8],[11,7],[12,7],[1,5]
+];
+function getTermDate(lunarMonth,solarYear){
+  const[sm,sd]=SOLAR_TERM[(lunarMonth-1)%12];
+  const ty=lunarMonth===12?solarYear+1:solarYear;
+  return new Date(ty,sm-1,sd);
+}
+function getDaiVanDir(birthYear,gender){
+  // Yang year can index = even; male+yang or female+yin = thuận(+1)
+  const isYang=canYearIdx(birthYear)%2===0;
+  return((gender==='male')===isYang)?1:-1;
+}
+function calcStartAge(birthYear,birthMonth,birthDay,lunarMonth,dir){
+  const bd=new Date(birthYear,birthMonth-1,birthDay);
+  let tm=getTermDate(lunarMonth,birthYear);
+  if(dir===1){
+    if(tm<=bd){const nl=lunarMonth===12?1:lunarMonth+1;const ny=lunarMonth===12?birthYear+1:birthYear;tm=getTermDate(nl,ny);}
+  }else{
+    if(tm>=bd){const pl=lunarMonth===1?12:lunarMonth-1;const py=lunarMonth===1?birthYear-1:birthYear;tm=getTermDate(pl,py);}
+  }
+  const days=Math.abs(tm-bd)/86400000;
+  return Math.round(days/3*10)/10;
+}
+function calcDaiVanList(birthYear,birthMonth,birthDay,lunarMonth,gender){
+  const dir=getDaiVanDir(birthYear,gender);
+  const startAge=calcStartAge(birthYear,birthMonth,birthDay,lunarMonth,dir);
+  let canIdx=canMonthIdx(birthYear,lunarMonth);
+  let chiIdx=chiMonthIdx(lunarMonth);
+  const list=[];
+  for(let i=0;i<8;i++){
+    canIdx=((canIdx+dir)%10+10)%10;
+    chiIdx=((chiIdx+dir)%12+12)%12;
+    const ageStart=Math.round(startAge)+i*10;
+    list.push({can:CAN[canIdx],chi:CHI[chiIdx],canIdx,chiIdx,hanh:canToHanh(CAN[canIdx]),ageStart,ageEnd:ageStart+9,i});
+  }
+  return{list,startAge,dir,dirLabel:dir===1?'Thuận (Nam dương / Nữ âm)':'Nghịch (Nam âm / Nữ dương)'};
+}
+function calcTieuVanList(dv,birthYear,gender){
+  const dir=getDaiVanDir(birthYear,gender);
+  let ci=dv.canIdx,xi=dv.chiIdx;
+  const list=[];
+  for(let i=0;i<10;i++){
+    const yr=birthYear+dv.ageStart+i;
+    list.push({can:CAN[ci],chi:CHI[xi],canIdx:ci,chiIdx:xi,hanh:canToHanh(CAN[ci]),age:dv.ageStart+i,year:yr});
+    ci=((ci+dir)%10+10)%10;xi=((xi+dir)%12+12)%12;
+  }
+  return list;
+}
+const HANH_VN={Kim:'Kim',Mộc:'Moc',Hỏa:'Hoa',Thổ:'Tho',Thủy:'Thuy'};
+function hanhClass(h){return HANH_VN[h]||'Tho'}
+function daiVanDesc(hanh,score){
+  const map={
+    2:'Đại vận tương sinh mạnh – vận khí bứt phá, dễ thành công trong sự nghiệp và tài lộc.',
+    1:'Đại vận thuận lợi – tiến triển ổn định, các kế hoạch dễ thực hiện.',
+    0:'Đại vận bình ổn – không có biến động lớn, duy trì nhịp sinh hoạt đều đặn.',
+    '-1':'Đại vận cần thận trọng – có thể gặp thử thách, cần kiên nhẫn và tích lũy.',
+    '-2':'Đại vận khắc mệnh – giai đoạn thử thách lớn, tập trung phòng thủ và học hỏi.',
+  };
+  return map[score]||map[0];
+}
+function getTuTru(u){
+  const yCanIdx=canYearIdx(u.year);
+  const mCanIdx=canMonthIdx(u.year,u.lunar.month);
+  const dCanIdx=canDayIdx(u.year,u.month,u.day);
+  const hCanIdx=canHourIdx(dCanIdx,u.gioChiIdx);
+  return[
+    {label:'Năm',can:CAN[yCanIdx],chi:chiYear(u.year),hanh:canToHanh(CAN[yCanIdx]),chiIcon:CHI_ICON[chiYearIdx(u.year)]},
+    {label:'Tháng',can:CAN[mCanIdx],chi:chiMonth(u.lunar.month),hanh:canToHanh(CAN[mCanIdx]),chiIcon:'🌙'},
+    {label:'Ngày',can:canDay(u.year,u.month,u.day),chi:chiDay(u.year,u.month,u.day),hanh:canToHanh(canDay(u.year,u.month,u.day)),chiIcon:'☀️'},
+    {label:'Giờ',can:CAN[hCanIdx],chi:CHI[u.gioChiIdx],hanh:canToHanh(CAN[hCanIdx]),chiIcon:CHI_ICON[u.gioChiIdx]},
+  ];
+}
+
+// ============================================================
 //  STATE
 // ============================================================
 let USER={};
@@ -404,8 +522,10 @@ function submitForm(){
   const saoMenh=getSaoMenh(year);
   const menhChi=calcMenhChi(lunar.month,hour,gender);
   const gioChiIdx=hourToGioChi(hour);
-  USER={name,gender,day,month,year,hour,lunar,napAm,kua,kuaInfo,saoMenh,menhChi,gioChiIdx};
+  const daiVanData=calcDaiVanList(year,month,day,lunar.month,gender);
+  USER={name,gender,day,month,year,hour,lunar,napAm,kua,kuaInfo,saoMenh,menhChi,gioChiIdx,daiVanData};
   navDate=new Date();
+  selectedDvIdx=null;
   renderPersonBanner();
   document.getElementById('results').classList.add('show');
   switchTab('ban-menh');
@@ -436,10 +556,11 @@ function renderPersonBanner(){
 // ============================================================
 function switchTab(tab){
   currentTab=tab;
-  ['ban-menh','ngay','thang','nam'].forEach(t=>{
+  ['ban-menh','dai-van','ngay','thang','nam'].forEach(t=>{
     document.getElementById('tab-'+t).classList.toggle('active',t===tab);
   });
   if(tab==='ban-menh')renderBanMenh();
+  else if(tab==='dai-van')renderDaiVan();
   else if(tab==='ngay')renderNgay();
   else if(tab==='thang')renderThang();
   else if(tab==='nam')renderNam();
@@ -540,6 +661,116 @@ function render12Cung(transitChiIdx,globalScore,transitHanh){
     </div>`;
   }).join('');
   return legend+cards;
+}
+
+// ============================================================
+//  ĐẠI VẬN & TIỂU VẬN
+// ============================================================
+let selectedDvIdx=null;
+function renderDaiVan(){
+  const u=USER;
+  const now=new Date();
+  const currentAge=now.getFullYear()-u.year;
+  const tuTru=getTuTru(u);
+  const dv=u.daiVanData;
+
+  // Tứ Trụ
+  const tuTruHtml=tuTru.map(t=>`
+    <div class="tru-card">
+      <div class="tru-label">${t.label}</div>
+      <div class="tru-can">${t.can}</div>
+      <div class="tru-chi">${t.chiIcon} ${t.chi}</div>
+      <span class="tru-hanh ${hanhClass(t.hanh)}">${t.hanh}</span>
+    </div>`).join('');
+
+  // Nếu chưa chọn, mặc định vào đại vận đang chạy
+  if(selectedDvIdx===null){
+    selectedDvIdx=dv.list.findIndex(d=>currentAge>=d.ageStart&&currentAge<=d.ageEnd);
+    if(selectedDvIdx===-1)selectedDvIdx=0;
+  }
+  const curDv=dv.list[selectedDvIdx];
+  const tieuVan=calcTieuVanList(curDv,u.year,u.gender);
+
+  // Đại vận rows
+  const dvHtml=dv.list.map((d,i)=>{
+    const isActive=currentAge>=d.ageStart&&currentAge<=d.ageEnd;
+    const isPast=currentAge>d.ageEnd;
+    const isSelected=i===selectedDvIdx;
+    const sc=calcScore(d.hanh,u.napAm.hanh);
+    const c=scoreColor(sc);
+    const scLabel=sc>=2?'Đại Cát':sc>=1?'Cát':sc<=- 1?sc<=-2?'Cần thận':'Hơi khó':'Bình thường';
+    const yearStart=u.year+d.ageStart;
+    const yearEnd=u.year+d.ageEnd;
+    return`<div class="dv-row ${isActive?'active':isPast?'past':''}"
+      style="cursor:pointer;${isSelected?'border-color:var(--gold2)':''}"
+      onclick="selectedDvIdx=${i};renderDaiVan()">
+      <div class="dv-age">
+        ${isActive?'▶ ':''}Tuổi ${d.ageStart}–${d.ageEnd}
+        <div style="font-size:9px;color:var(--muted);margin-top:2px">${yearStart}–${yearEnd}</div>
+      </div>
+      <div class="dv-canchi">
+        <span style="font-size:16px">${d.can} ${d.chi}</span>
+        <span class="tru-hanh ${hanhClass(d.hanh)}" style="font-size:9px;margin-left:4px">${d.hanh}</span>
+      </div>
+      <div class="dv-desc">${daiVanDesc(d.hanh,sc)}</div>
+      <div class="dv-score" style="color:${c}">${scLabel}</div>
+    </div>`;
+  }).join('');
+
+  // Tiểu vận của đại vận đang chọn
+  const tvHtml=tieuVan.map(tv=>{
+    const isActive=tv.year===now.getFullYear();
+    const isPast=tv.year<now.getFullYear();
+    const sc=calcScore(tv.hanh,u.napAm.hanh);
+    const c=scoreColor(sc);
+    const dot=sc>=2?'var(--done)':sc>=1?'#7ec8f0':sc<0?'var(--todo)':'var(--muted)';
+    return`<div class="tv-card ${isActive?'active':isPast?'past':''}">
+      <div class="tv-year">${tv.year}${isActive?' ◀':''}</div>
+      <div class="tv-canchi">${tv.can} ${tv.chi}</div>
+      <div class="tv-hanh" style="color:${c}">${tv.hanh}</div>
+      <div class="tv-score-dot" style="background:${dot}"></div>
+    </div>`;
+  }).join('');
+
+  // Phân tích tổng quan lá số
+  const tongQuanHtml=`
+    <div style="background:linear-gradient(135deg,rgba(200,151,42,.08),rgba(139,105,20,.04));border:1px solid rgba(200,151,42,.2);border-radius:10px;padding:16px;margin-bottom:20px">
+      <h3 style="font-family:'Noto Serif Display',serif;font-size:16px;color:var(--gold2);margin-bottom:12px">📜 Tổng Quan Lá Số Tứ Trụ</h3>
+      <p style="font-size:12px;line-height:1.8;color:var(--text);margin-bottom:8px">
+        <strong style="color:var(--gold2)">Nhật Can (Trụ Ngày):</strong> ${tuTru[2].can} – hành <strong>${tuTru[2].hanh}</strong> – đây là "ngã" của bạn, thể hiện cá tính cốt lõi và cách bạn nhìn nhận thế giới.
+      </p>
+      <p style="font-size:12px;line-height:1.8;color:var(--text);margin-bottom:8px">
+        <strong style="color:var(--gold2)">Năm sinh ${tuTru[0].can} ${tuTru[0].chi}:</strong> hành <strong>${tuTru[0].hanh}</strong> – thể hiện hoàn cảnh gia đình thuở nhỏ và vận mệnh chung.
+      </p>
+      <p style="font-size:12px;line-height:1.8;color:var(--text);margin-bottom:8px">
+        <strong style="color:var(--gold2)">Tháng sinh ${tuTru[1].can} ${tuTru[1].chi}:</strong> hành <strong>${tuTru[1].hanh}</strong> – phản ánh sự nghiệp và mối quan hệ với cha mẹ, cấp trên.
+      </p>
+      <p style="font-size:12px;line-height:1.8;color:var(--text)">
+        <strong style="color:var(--gold2)">Giờ sinh ${tuTru[3].can} ${tuTru[3].chi}:</strong> hành <strong>${tuTru[3].hanh}</strong> – liên quan đến con cái, sự nghiệp về sau và mong muốn sâu xa bên trong.
+      </p>
+      <div style="margin-top:12px;padding:10px;background:rgba(200,151,42,.06);border-radius:7px;font-size:11px;color:var(--muted);line-height:1.7">
+        🌀 <strong style="color:var(--text)">Hướng đại vận:</strong> ${dv.dirLabel} · Bắt đầu hành đại vận đầu tiên từ khoảng <strong style="color:var(--gold2)">${Math.round(dv.startAge)} tuổi</strong>
+      </div>
+    </div>`;
+
+  document.getElementById('tab-content').innerHTML=`
+    <h3 style="font-family:'Noto Serif Display',serif;font-size:16px;color:var(--gold2);margin-bottom:12px">🎴 Tứ Trụ Bát Tự</h3>
+    <div class="tu-tru-grid">${tuTruHtml}</div>
+    ${tongQuanHtml}
+    <div class="dai-van-section">
+      <h3>🌊 Đại Vận – Chu Kỳ 10 Năm <span style="font-size:11px;font-weight:400;color:var(--muted)">(Click vào đại vận để xem tiểu vận)</span></h3>
+      <div class="dv-table">${dvHtml}</div>
+    </div>
+    <div style="margin-bottom:20px">
+      <h3 style="font-family:'Noto Serif Display',serif;font-size:15px;color:var(--gold2);margin-bottom:10px">
+        🔹 Tiểu Vận trong Đại Vận <strong>${curDv.can} ${curDv.chi}</strong> (Tuổi ${curDv.ageStart}–${curDv.ageEnd})
+        <span style="font-size:10px;font-weight:400;color:var(--muted);margin-left:6px">▲ = năm hiện tại</span>
+      </h3>
+      <div class="tieu-van-grid">${tvHtml}</div>
+      <div style="font-size:11px;line-height:1.8;color:var(--muted);padding:10px 12px;background:var(--card);border:1px solid var(--border);border-radius:8px">
+        💡 <strong style="color:var(--text)">Cách đọc tiểu vận:</strong> Mỗi năm trong đại vận chịu ảnh hưởng của một can chi riêng (tiểu vận). Năm nào tiểu vận tương sinh với bản mệnh <strong style="color:var(--gold2)">${u.napAm.hanh}</strong> thì thuận lợi hơn. Kết hợp với lưu niên (can chi năm dương lịch) để có phân tích chính xác nhất.
+      </div>
+    </div>`;
 }
 
 // ============================================================
