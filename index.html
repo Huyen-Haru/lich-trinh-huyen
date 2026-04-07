@@ -599,26 +599,143 @@ function isNgayXau(y,m,d){
 // ============================================================
 //   TU VI PERSONAL (Phạm Thị Thanh Huyền)
 // ============================================================
-// Birth: 06/10/1990, 8:18 AM, Female
-// Can Chi năm sinh: Canh Ngọ (1990)
-// Cung mệnh: Tân Mùi? → tính từ tháng & giờ sinh
+// Birth: 06/10/1990, 8:18 AM, Female — Năm Canh Ngọ — Giờ Thìn
+// Âm lịch sinh: 19/8/Canh Ngọ — Cục: Thủy Nhị Cục
+// Cung Mệnh an tại: Ngọ (nữ sinh tháng 8 âm, giờ Thìn → an từ Dần lùi về Ngọ)
 const BIRTH = {
   year:1990, month:10, day:6, hour:8, minute:18,
   yearCan:'Canh', yearChi:'Ngọ', chiIcon:'🐴',
-  // Ngũ hành năm: Canh Ngọ = Thổ (theo Nạp Âm)
   nguHanh:'Thổ (Đường Thượng Thổ)',
-  // Cung mệnh nữ 1990: tính theo số 12 - (1990-1900)%9 = 12-0=12 → Khôn (8)
-  cungMenh:'Khôn (☷)',
-  cungMenhDesc:'Đất – hướng Tây Nam, màu vàng & nâu',
-  // Cục: Thủy Nhị Cục (sinh tháng 8 âm, giờ Thìn)
+  cungMenh:'Khôn (☷)', cungMenhDesc:'Đất – hướng Tây Nam, màu vàng & nâu',
   cuc:'Thủy Nhị Cục',
-  // Tinh chủ mệnh: Tham Lang (năm Canh)
-  chủMenh:'Sao Tham Lang',
-  chủMenhDesc:'Đa tài, tháo vát, có duyên với thành công muộn',
-  // Hành tương sinh: Hỏa sinh Thổ
-  tuongSinh:'Kim',
-  tuongKhac:'Mộc',
+  chủMenh:'Sao Tham Lang', chủMenhDesc:'Đa tài, tháo vát, duyên thành công muộn nhưng bền',
+  tuongSinh:'Kim', tuongKhac:'Mộc',
 };
+
+// ============================================================
+//   12 CUNG TỬ VI – Phạm Thị Thanh Huyền
+//   An cung từ Mệnh tại Ngọ (Chi index 6), đi thuận chiều
+//   Mỗi cung cách nhau 1 Chi
+// ============================================================
+// chiIdx: vị trí chi của cung trên vòng 12 (Tý=0...Hợi=11)
+const CUNG_DATA = [
+  {
+    ten:'Mệnh', chiIdx:6, icon:'⭐', loai:'menh',
+    saoChinh:['Tham Lang','Thiên Đồng'],
+    mucDich:'Bản ngã, tính cách, vận mệnh tổng thể',
+    natalDesc:'Tham Lang tọa Mệnh: bạn thông minh, linh hoạt, có năng khiếu giao tiếp và thuyết phục. Duyên thành công đến sau tuổi 30. Thiên Đồng đồng cung mang lại tính bình hòa, được quý nhân phù trợ.',
+    totCho:['Phát huy khả năng thuyết phục','Xây dựng mạng lưới quan hệ','Kiên nhẫn với mục tiêu dài hạn'],
+    tranh:['Nóng vội, bỏ cuộc sớm','Phân tán sức lực quá nhiều hướng'],
+  },
+  {
+    ten:'Phụ Mẫu', chiIdx:7, icon:'👨‍👩‍👧', loai:'phu-mau',
+    saoChinh:['Thái Dương','Thiên Lương'],
+    mucDich:'Quan hệ với cấp trên, sếp, khách hàng VIP',
+    natalDesc:'Thái Dương chiếu Phụ Mẫu: được cấp trên chú ý và hỗ trợ. Bạn có khả năng tạo ấn tượng tốt với người có quyền lực. Thiên Lương giúp duy trì quan hệ bền lâu.',
+    totCho:['Báo cáo, cập nhật tiến độ cho sếp','Tiếp đón khách hàng quan trọng','Xin hỗ trợ nguồn lực từ cấp trên'],
+    tranh:['Qua mặt sếp khi chưa được phép','Cứng nhắc trong giao tiếp với cấp trên'],
+  },
+  {
+    ten:'Phúc Đức', chiIdx:8, icon:'🙏', loai:'phuc-duc',
+    saoChinh:['Thiên Phủ','Tả Phù'],
+    mucDich:'Tài lộc tích lũy, phước lành, tâm linh',
+    natalDesc:'Thiên Phủ tọa Phúc Đức: phúc đức dày, tài lộc tích lũy tốt theo thời gian. Bạn có bản năng giữ tiền và xây dựng sự nghiệp bền vững. Tả Phù hỗ trợ quý nhân đến đúng lúc.',
+    totCho:['Tích lũy, tiết kiệm dài hạn','Làm việc thiện nguyện, hỗ trợ người khác','Chăm sóc tinh thần, tâm linh'],
+    tranh:['Lãng phí vào những thứ không cần thiết','Bỏ bê việc chăm sóc bản thân'],
+  },
+  {
+    ten:'Điền Trạch', chiIdx:9, icon:'🏠', loai:'dien-trach',
+    saoChinh:['Vũ Khúc','Thiên Tướng'],
+    mucDich:'Bất động sản, tài sản, nơi làm việc',
+    natalDesc:'Vũ Khúc tọa Điền Trạch: có khả năng tích lũy tài sản, bất động sản ổn định. Thiên Tướng hỗ trợ môi trường làm việc tốt, văn phòng thuận lợi cho công việc.',
+    totCho:['Cải thiện không gian làm việc','Xem xét đầu tư bất động sản dài hạn'],
+    tranh:['Thay đổi chỗ ở/văn phòng đột ngột'],
+  },
+  {
+    ten:'Quan Lộc', chiIdx:10, icon:'💼', loai:'quan-loc',
+    saoChinh:['Thiên Cơ','Thái Âm'],
+    mucDich:'Sự nghiệp, thăng tiến, công danh',
+    natalDesc:'Thiên Cơ tọa Quan Lộc: sự nghiệp phát triển qua trí tuệ và kỹ năng phân tích. Bạn giỏi đọc vị người khác, phù hợp với nghề liên quan đến con người như tuyển dụng, nhân sự, tư vấn. Thái Âm thêm vào sự nhạy cảm trong giao tiếp.',
+    totCho:['Thể hiện năng lực chuyên môn','Đề xuất ý tưởng mới với cấp trên','Networking với đồng nghiệp ngành'],
+    tranh:['Làm việc theo cảm tính, thiếu cơ sở','Bỏ qua cơ hội thăng tiến vì tự ti'],
+  },
+  {
+    ten:'Nô Bộc', chiIdx:11, icon:'🤝', loai:'no-boc',
+    saoChinh:['Thiên Đồng','Cự Môn'],
+    mucDich:'Cộng sự, nhân viên, đối tác thực hiện',
+    natalDesc:'Thiên Đồng tọa Nô Bộc: cộng sự trung thành, ít bị phản bội. Cự Môn đòi hỏi giao tiếp rõ ràng, tránh hiểu lầm. Bạn có khả năng đánh giá và chọn người cộng tác tốt.',
+    totCho:['Giao việc rõ ràng cho cộng sự','Họp brief ngắn gọn, đúng trọng tâm'],
+    tranh:['Ôm đồm mọi việc, không delegate','Kỳ vọng quá cao mà không hướng dẫn'],
+  },
+  {
+    ten:'Thiên Di', chiIdx:0, icon:'✈️', loai:'thien-di',
+    saoChinh:['Liêm Trinh','Thiên Phủ'],
+    mucDich:'Di chuyển, công tác, mở rộng địa bàn',
+    natalDesc:'Liêm Trinh tọa Thiên Di: hay di chuyển, đi xa có lợi. Bạn phù hợp với công việc cần đi lại nhiều, tiếp xúc nhiều vùng địa lý khác nhau. Quản lý 37 đơn vị trải rộng đúng với cung này.',
+    totCho:['Công tác, thăm đơn vị địa phương','Mở rộng vùng tuyển dụng mới'],
+    tranh:['Đi lại không có kế hoạch, lãng phí thời gian'],
+  },
+  {
+    ten:'Tật Ách', chiIdx:1, icon:'🏥', loai:'tat-ach',
+    saoChinh:['Phá Quân','Linh Tinh'],
+    mucDich:'Sức khỏe, tai nạn, bệnh tật',
+    natalDesc:'Phá Quân tọa Tật Ách: dễ bị căng thẳng, áp lực ảnh hưởng đến sức khỏe. Cần chủ động nghỉ ngơi và vận động thể chất. Linh Tinh nhắc nhở chú ý hệ thần kinh và giấc ngủ.',
+    totCho:['Tập thể dục đều đặn','Ngủ đủ giấc, không thức quá 23h','Ăn uống đúng bữa'],
+    tranh:['Bỏ bữa, ăn uống thất thường khi bận','Thức khuya kéo dài'],
+  },
+  {
+    ten:'Tài Bạch', chiIdx:2, icon:'💰', loai:'tai-bach',
+    saoChinh:['Tử Vi','Tham Lang'],
+    mucDich:'Thu nhập, dòng tiền, tài chính cá nhân',
+    natalDesc:'Tử Vi tọa Tài Bạch: tài lộc gắn với vị thế và quyền lực. Thu nhập tăng theo thăng tiến sự nghiệp. Tham Lang đồng cung: có thêm thu nhập từ nhiều nguồn, cần kiên nhẫn tích lũy.',
+    totCho:['Đàm phán lương, hoa hồng, bonus','Mở rộng nguồn thu nhập qua mạng lưới'],
+    tranh:['Chi tiêu bốc đồng, mua sắm không kế hoạch','Cho vay tiền người quen'],
+  },
+  {
+    ten:'Tử Tức', chiIdx:3, icon:'🌱', loai:'tu-tuc',
+    saoChinh:['Thái Dương','Thiên Đức'],
+    mucDich:'Sáng tạo, dự án mới, đội nhóm trẻ',
+    natalDesc:'Thái Dương tọa Tử Tức: các dự án mới được chiếu sáng, dễ thành công. Bạn có khả năng truyền cảm hứng cho thế hệ trẻ hơn. Thiên Đức phù hộ các khởi đầu mới thuận lợi.',
+    totCho:['Triển khai ý tưởng mới','Hướng dẫn, mentoring ứng viên trẻ'],
+    tranh:['Bảo thủ, ngại thay đổi phương pháp cũ'],
+  },
+  {
+    ten:'Phu Thê', chiIdx:4, icon:'💑', loai:'phu-the',
+    saoChinh:['Vũ Khúc','Thiên Tướng'],
+    mucDich:'Hôn nhân, tình cảm, đối tác thân thiết',
+    natalDesc:'Vũ Khúc tọa Phu Thê: hôn nhân/tình cảm cần thực tế, xây dựng trên nền tảng vật chất và sự tin tưởng. Người bạn đời phù hợp là người có tính ổn định, đáng tin cậy.',
+    totCho:['Giao tiếp thẳng thắn, rõ ràng với người thân','Dành thời gian chất lượng cho gia đình'],
+    tranh:['Ôm việc quá nhiều đến mức bỏ bê gia đình'],
+  },
+  {
+    ten:'Huynh Đệ', chiIdx:5, icon:'👥', loai:'huynh-de',
+    saoChinh:['Thiên Lương','Thiên Mã'],
+    mucDich:'Anh chị em, đồng nghiệp ngang cấp, bạn bè',
+    natalDesc:'Thiên Lương tọa Huynh Đệ: quan hệ đồng nghiệp ngang cấp tốt, được tin tưởng. Thiên Mã cho thấy các mối quan hệ này thường xuyên thay đổi, cần chủ động duy trì.',
+    totCho:['Hợp tác với đồng nghiệp cùng cấp','Chia sẻ thông tin, hỗ trợ nhau'],
+    tranh:['Ganh đua, cạnh tranh không lành mạnh nội bộ'],
+  },
+];
+
+// Tính điểm ảnh hưởng của ngày lên từng cung
+function getCungDayInfluence(cung, dayChiIdx, dayScore, dayHanh){
+  const dist = (cung.chiIdx - dayChiIdx + 12) % 12;
+  // Tam hợp: cách 4 và 8 → rất tốt
+  // Lục hợp: cách 1 → tốt
+  // Xung: cách 6 → xấu
+  // Hình: cách 3 và 9 → trung bình xấu
+  let score=0; let tag=''; let detail='';
+  if(dist===0){score=3;tag='🌟 Trực Chiếu';detail='Ngày đóng thẳng vào cung – năng lượng mạnh nhất, mọi việc liên quan đến cung này nổi bật hôm nay.';}
+  else if(dist===4||dist===8){score=2;tag='✅ Tam Hợp';detail='Ngày tam hợp với cung – vận khí hài hòa, thuận lợi cho các hoạt động thuộc lĩnh vực này.';}
+  else if(dist===1||dist===11){score=1;tag='☀️ Lục Hợp';detail='Ngày lục hợp – nhẹ nhàng thuận lợi, dễ tiến triển.';}
+  else if(dist===6){score=-2;tag='⚠️ Xung Chiếu';detail='Ngày xung cung – cần thận trọng, dễ phát sinh trở ngại trong lĩnh vực này.';}
+  else if(dist===3||dist===9){score=-1;tag='⬛ Hình Xung';detail='Ngày hình với cung – có thể gặp ma sát nhỏ, cần kiên nhẫn.';}
+  else{score=0;tag='☯️ Bình Thường';detail='Ngày không có tác động đặc biệt lên cung này.';}
+  // Điều chỉnh thêm theo ngũ hành ngày × bản mệnh
+  if(dayScore>=2&&score>=0)score+=1;
+  if(dayScore<0&&score>0)score-=1;
+  return{score,tag,detail};
+}
 
 function getTuviDay(y,m,d){
   // Tính can chi ngày
@@ -1095,26 +1212,97 @@ function goMonth(y,m){currentDate=new Date(y,m,1);switchView('month')}
 function renderTuviDay(){
   const y=currentDate.getFullYear(),m=currentDate.getMonth()+1,d=currentDate.getDate();
   const tv=getTuviDay(y,m,d);
-  const mauHtml=tv.mauSac.map(c=>`<div class="suggest-item"><span class="color-dot" style="background:${c.color};width:14px;height:14px;border-radius:50%;flex-shrink:0"></span><div><strong style="color:var(--text)">${c.name}</strong><br><span style="color:var(--muted);font-size:10px">${c.note}</span></div></div>`).join('');
-  const birthInfo=`<div class="tuvi-grid" style="margin-bottom:14px">
-    <div class="tuvi-card"><h4>Họ Tên</h4><div class="tuvi-val">${PERSON.name}</div></div>
-    <div class="tuvi-card"><h4>Ngày Sinh DL</h4><div class="tuvi-val">06/10/1990 <small>8:18 SA</small></div></div>
-    <div class="tuvi-card"><h4>Năm Sinh Can Chi</h4><div class="tuvi-val">${BIRTH.yearCan} ${BIRTH.yearChi} 🐴</div></div>
-    <div class="tuvi-card"><h4>Ngũ Hành Bản Mệnh</h4><div class="tuvi-val">${BIRTH.nguHanh}</div></div>
-    <div class="tuvi-card"><h4>Cung Mệnh (Bát Quái)</h4><div class="tuvi-val">${BIRTH.cungMenh} <small>${BIRTH.cungMenhDesc}</small></div></div>
-    <div class="tuvi-card"><h4>Sao Chủ Mệnh</h4><div class="tuvi-val">${BIRTH.chủMenh} <small style="display:block;color:var(--muted)">${BIRTH.chủMenhDesc}</small></div></div>
+  const dayChiIdx=tv.dChiIdx;
+
+  // ── 1. BANNER ──────────────────────────────────────────────
+  const banner=lunarBannerHTML(currentDate);
+
+  // ── 2. THÔNG TIN BẢN MỆNH ──────────────────────────────────
+  const mauHtml=tv.mauSac.slice(0,3).map(c=>`<span class="color-chip"><span class="color-dot" style="background:${c.color}"></span>${c.name}</span>`).join('');
+  const birthInfo=`<div class="tuvi-panel" style="margin-bottom:14px">
+    <h3>🌟 Bản Mệnh – ${PERSON.name}</h3>
+    <div class="tuvi-grid">
+      <div class="tuvi-card"><h4>Sinh</h4><div class="tuvi-val">06/10/1990 <small>8:18 SA</small></div></div>
+      <div class="tuvi-card"><h4>Năm Sinh</h4><div class="tuvi-val">${BIRTH.yearCan} ${BIRTH.yearChi} 🐴</div></div>
+      <div class="tuvi-card"><h4>Ngũ Hành Mệnh</h4><div class="tuvi-val">${BIRTH.nguHanh}</div></div>
+      <div class="tuvi-card"><h4>Cục</h4><div class="tuvi-val">${BIRTH.cuc}</div></div>
+      <div class="tuvi-card"><h4>Cung Mệnh</h4><div class="tuvi-val">${BIRTH.cungMenh} <small style="color:var(--muted)">${BIRTH.cungMenhDesc}</small></div></div>
+      <div class="tuvi-card"><h4>Sao Chủ Mệnh</h4><div class="tuvi-val">${BIRTH.chủMenh} <small style="display:block;color:var(--muted)">${BIRTH.chủMenhDesc}</small></div></div>
+      <div class="tuvi-card"><h4>Hành Tương Sinh</h4><div class="tuvi-val" style="color:var(--done)">✅ ${BIRTH.tuongSinh}</div></div>
+      <div class="tuvi-card"><h4>Hành Tương Khắc</h4><div class="tuvi-val" style="color:var(--todo)">⚠️ ${BIRTH.tuongKhac}</div></div>
+    </div>
   </div>`;
+
+  // ── 3. PHÂN TÍCH NGÀY ──────────────────────────────────────
   const dayAnalysis=`<div class="tuvi-panel" style="margin-bottom:14px">
-    <h3>📅 Phân Tích Ngày ${fmt(currentDate)}</h3>
+    <h3>📅 Ngày ${fmt(currentDate)} – ${tv.dc} ${tv.dch} (${tv.thuHanh})</h3>
     <div class="tuvi-grid">
       <div class="tuvi-card"><h4>Can Chi Ngày</h4><div class="tuvi-val">${tv.dc} ${tv.dch}</div></div>
       <div class="tuvi-card"><h4>Ngũ Hành Ngày</h4><div class="tuvi-val">${tv.thuHanh}</div></div>
       <div class="tuvi-card"><h4>Âm Lịch</h4><div class="tuvi-val">${tv.lunar.day}/${tv.lunar.month}${tv.lunar.leap?' (Nhuận)':''}</div></div>
-      <div class="tuvi-card"><h4>Tương Quan Mệnh</h4><div class="tuvi-val">${tv.dayScore>=2?'🌟 Đại Cát – Rất Tốt':tv.dayScore===1?'✅ Cát – Tốt':tv.dayScore<0?'⚠️ Cần Thận':'☯️ Trung Bình'}</div></div>
+      <div class="tuvi-card"><h4>Tổng Đánh Giá</h4><div class="tuvi-val">${tv.dayScore>=2?'🌟 Đại Cát':tv.dayScore===1?'✅ Cát':tv.dayScore<0?'⚠️ Cần Thận':'☯️ Trung Bình'}</div></div>
     </div>
     <div style="margin-top:10px;padding:12px;background:rgba(200,151,42,.07);border-radius:8px;font-size:12px;line-height:1.7">${tv.loiKhuyen}</div>
+    <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <span style="font-size:11px;color:var(--muted);font-weight:700">Màu may mắn:</span>
+      ${mauHtml}
+    </div>
   </div>`;
-  const suggests=`<div class="suggest-grid">
+
+  // ── 4. 12 CUNG TỬ VI THEO NGÀY ────────────────────────────
+  const scoreColor={3:'var(--done)',2:'var(--done)',1:'#7ec8f0',0:'var(--muted)',' -1':'var(--pending)',' -2':'var(--todo)'};
+  const cungCards=CUNG_DATA.map(cung=>{
+    const inf=getCungDayInfluence(cung,dayChiIdx,tv.dayScore,tv.thuHanh);
+    const sc=inf.score;
+    const c=sc>=3?'var(--done)':sc>=2?'var(--done)':sc>=1?'#7ec8f0':sc===0?'var(--muted)':sc===-1?'var(--pending)':'var(--todo)';
+    const bgAlpha=sc>=2?'rgba(91,232,168,0.05)':sc<0?'rgba(232,124,91,0.05)':'transparent';
+    const borderL=sc>=2?`border-left:3px solid var(--done)`:`border-left:3px solid ${sc<0?'var(--todo)':'var(--border)'}`;
+    const nenItems=cung.totCho.map(t=>`<div style="display:flex;gap:5px;margin-bottom:3px"><span style="color:var(--done);flex-shrink:0">▸</span><span>${t}</span></div>`).join('');
+    const tranhItems=cung.tranh.map(t=>`<div style="display:flex;gap:5px;margin-bottom:3px"><span style="color:var(--todo);flex-shrink:0">▸</span><span>${t}</span></div>`).join('');
+    return`<div style="background:${bgAlpha};border:1px solid var(--border);${borderL};border-radius:10px;padding:14px;margin-bottom:10px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+        <span style="font-size:18px">${cung.icon}</span>
+        <div style="flex:1">
+          <div style="font-weight:700;font-size:14px;color:var(--gold2)">Cung ${cung.ten}</div>
+          <div style="font-size:10px;color:var(--muted)">${cung.mucDich} · Sao: ${cung.saoChinh.join(', ')}</div>
+        </div>
+        <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(255,255,255,0.05);color:${c};border:1px solid ${c};flex-shrink:0">${inf.tag}</span>
+      </div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:8px;padding:8px;background:rgba(255,255,255,0.02);border-radius:6px">
+        ${inf.detail}
+      </div>
+      <div style="font-size:11px;line-height:1.6;color:var(--text);margin-bottom:6px">
+        <span style="color:var(--muted);font-weight:700;font-size:9px;letter-spacing:1px;text-transform:uppercase">Bản mệnh:</span><br>${cung.natalDesc}
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+        <div style="background:rgba(91,232,168,0.06);border-radius:6px;padding:8px">
+          <div style="font-size:9px;font-weight:700;color:var(--done);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">✅ Nên làm</div>
+          <div style="font-size:11px;color:var(--text);line-height:1.6">${nenItems}</div>
+        </div>
+        <div style="background:rgba(232,124,91,0.06);border-radius:6px;padding:8px">
+          <div style="font-size:9px;font-weight:700;color:var(--todo);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">❌ Tránh</div>
+          <div style="font-size:11px;color:var(--text);line-height:1.6">${tranhItems}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const cungPanel=`<div style="margin-bottom:14px">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+      <h2 style="font-family:'Noto Serif Display',serif;font-size:18px;color:var(--gold2)">🔮 12 Cung Tử Vi Hôm Nay</h2>
+      <span style="font-size:11px;color:var(--muted)">Ngày ${tv.dc} ${tv.dch} – Chi ${CHI[dayChiIdx]} chiếu cung ${CUNG_DATA.find(c=>c.chiIdx===dayChiIdx)?.ten||''}</span>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;font-size:10px">
+      <span style="padding:2px 8px;background:rgba(91,232,168,0.12);color:var(--done);border-radius:20px;border:1px solid rgba(91,232,168,0.2)">🌟 Trực Chiếu / Tam Hợp = Rất Tốt</span>
+      <span style="padding:2px 8px;background:rgba(126,200,240,0.1);color:#7ec8f0;border-radius:20px;border:1px solid rgba(126,200,240,0.2)">☀️ Lục Hợp = Tốt</span>
+      <span style="padding:2px 8px;background:rgba(122,112,96,0.1);color:var(--muted);border-radius:20px;border:1px solid rgba(122,112,96,0.2)">☯️ Bình Thường</span>
+      <span style="padding:2px 8px;background:rgba(232,124,91,0.10);color:var(--todo);border-radius:20px;border:1px solid rgba(232,124,91,0.2)">⚠️ Hình/Xung = Cẩn thận</span>
+    </div>
+    ${cungCards}
+  </div>`;
+
+  // ── 5. NÊN / TRÁNH + SỐ MAY ───────────────────────────────
+  const suggests=`<div class="suggest-grid" style="margin-bottom:14px">
     <div class="suggest-card good">
       <h4>✅ Nên Làm Hôm Nay</h4>
       ${tv.nen.map(i=>`<div class="suggest-item"><span class="dot"></span><span>${i}</span></div>`).join('')}
@@ -1123,22 +1311,19 @@ function renderTuviDay(){
       <h4>❌ Không Nên Làm</h4>
       ${tv.khong.map(i=>`<div class="suggest-item"><span class="dot"></span><span>${i}</span></div>`).join('')}
     </div>
-    <div class="suggest-card color">
-      <h4>🎨 Màu Sắc May Mắn</h4>
-      ${mauHtml}
-    </div>
     <div class="suggest-card advice">
-      <h4>💎 Thông Tin Cá Nhân</h4>
-      <div style="font-size:11px;line-height:1.7;color:var(--text)">
-        <div>🔮 <strong>Hành tương sinh:</strong> ${BIRTH.tuongSinh} (tốt)</div>
-        <div>⚔️ <strong>Hành tương khắc:</strong> ${BIRTH.tuongKhac} (tránh)</div>
-        <div>🧭 <strong>Hướng tốt:</strong> Tây Nam, Bắc</div>
+      <h4>💎 Phong Thủy Cá Nhân</h4>
+      <div style="font-size:11px;line-height:1.8;color:var(--text)">
+        <div>🧭 <strong>Hướng xuất hành tốt:</strong> Tây Nam, Bắc</div>
         <div>🔢 <strong>Số may mắn:</strong> 2, 8, 11</div>
-        <div>💍 <strong>Đá quý:</strong> Thạch anh vàng, Hổ phách</div>
+        <div>💍 <strong>Đá hợp mệnh:</strong> Thạch anh vàng, Hổ phách, Mắt hổ</div>
+        <div>🕯️ <strong>Hương phù hợp:</strong> Trầm hương, Gỗ đàn hương</div>
+        <div>🌿 <strong>Cây may mắn:</strong> Kim tiền, Phú quý</div>
       </div>
     </div>
   </div>`;
-  document.getElementById('tuviDayFull').innerHTML=lunarBannerHTML(currentDate)+birthInfo+dayAnalysis+suggests;
+
+  document.getElementById('tuviDayFull').innerHTML=banner+birthInfo+dayAnalysis+cungPanel+suggests;
 }
 
 // ============================================================
