@@ -110,6 +110,24 @@ body{background-image:radial-gradient(ellipse at 20% 10%,rgba(200,151,42,.06) 0%
 .legend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;font-size:10px}
 .legend span{padding:2px 8px;border-radius:20px;border:1px solid}
 
+/* LÁ SỐ */
+.la-so-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.ls-cung{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:11px;transition:border-color .15s}
+.ls-cung:hover{border-color:rgba(200,151,42,.35)}
+.ls-cung-label{font-size:9px;font-weight:700;color:var(--muted);letter-spacing:.8px;text-transform:uppercase;margin-bottom:4px}
+.ls-cung-name{font-size:13px;font-weight:700;color:var(--gold2);margin-bottom:4px}
+.ls-cung-chi{font-size:10px;color:var(--muted);margin-bottom:5px}
+.ls-cung-desc{font-size:10px;line-height:1.6;color:var(--text)}
+.ls-cung.highlight{border-color:var(--gold);background:rgba(200,151,42,.06)}
+.nguyet-han-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px}
+.nh-card{background:var(--card);border:1px solid var(--border);border-radius:9px;padding:11px;transition:border-color .15s}
+.nh-card.cur-month{border-color:var(--gold);background:rgba(200,151,42,.07)}
+.nh-month{font-size:10px;font-weight:700;color:var(--muted);margin-bottom:3px}
+.nh-cung{font-size:13px;font-weight:700;color:var(--gold2);margin-bottom:4px}
+.nh-tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:5px}
+.nh-tag{font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;border:1px solid}
+.nh-desc{font-size:10px;line-height:1.6;color:var(--text)}
+.than-cu-card{background:linear-gradient(135deg,rgba(200,151,42,.1),rgba(139,105,20,.06));border:1px solid rgba(200,151,42,.25);border-radius:10px;padding:14px;margin-bottom:16px}
 /* TỨ TRỤ */
 .tu-tru-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
 .tru-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 8px;text-align:center}
@@ -206,9 +224,9 @@ body{background-image:radial-gradient(ellipse at 20% 10%,rgba(200,151,42,.06) 0%
     <div class="person-banner" id="personBanner"></div>
     <div class="tab-bar">
       <button class="tab-btn active" id="tab-ban-menh" onclick="switchTab('ban-menh')">🌟 Bản Mệnh</button>
+      <button class="tab-btn" id="tab-la-so" onclick="switchTab('la-so')">📜 Lá Số</button>
       <button class="tab-btn" id="tab-dai-van" onclick="switchTab('dai-van')">🌊 Đại/Tiểu Vận</button>
       <button class="tab-btn" id="tab-ngay" onclick="switchTab('ngay')">📅 Theo Ngày</button>
-      <button class="tab-btn" id="tab-thang" onclick="switchTab('thang')">🗓️ Tháng</button>
       <button class="tab-btn" id="tab-nam" onclick="switchTab('nam')">📆 Năm</button>
     </div>
     <div id="tab-content"></div>
@@ -413,6 +431,111 @@ function scoreClass(s){return s>=3?'great':s>=1?'good':s===0?'neutral':'bad'}
 function scoreColor(s){return s>=3?'var(--done)':s>=2?'var(--done)':s>=1?'#7ec8f0':s===0?'var(--muted)':s===-1?'var(--pending)':'var(--todo)'}
 
 // ============================================================
+//  LÁ SỐ – TIỂU HẠN & NGUYỆT HẠN ENGINE
+// ============================================================
+// Thân cư (where the body star resides) = based on birth hour chi
+// Traditional: Tý giờ→Tài Bạch, Sửu→Tử Tức,... one per 2-hour period
+const THAN_CU_MAP={
+  0:'Phụ Mẫu',1:'Phúc Đức',2:'Phúc Đức',3:'Điền Trạch',4:'Tài Bạch',
+  5:'Tài Bạch',6:'Tật Ách',7:'Thiên Di',8:'Thiên Di',9:'Nô Bộc',
+  10:'Quan Lộc',11:'Quan Lộc'
+};
+// 12 CUNG chi positions relative to Mệnh (index 0=Mệnh, 1=Phụ Mẫu ... 11=Huynh Đệ)
+const CUNG_DESC_MAP=[
+  {ten:'Mệnh',icon:'⭐',chu:'Bản ngã, sức khỏe, vận mệnh',
+   tot:'Khẳng định bản thân · Chăm sóc sức khỏe · Xây dựng hình ảnh',
+   tranh:'Bỏ bê sức khỏe · Sống không đúng với bản thân',
+   cat:'Trực tiếp, năng động',xau:'Cần giữ sức lực'},
+  {ten:'Phụ Mẫu',icon:'👨‍👩‍👧',chu:'Cấp trên, sếp, bề trên, cha mẹ, khách VIP',
+   tot:'Báo cáo cấp trên · Tiếp đón khách quan trọng · Xin tư vấn bề trên',
+   tranh:'Qua mặt cấp trên · Cứng nhắc với người có quyền',
+   cat:'Làm việc với bề trên',xau:'Tránh xung đột lên trên'},
+  {ten:'Phúc Đức',icon:'🙏',chu:'Tài lộc tích lũy, phước lành, tâm linh',
+   tot:'Tích lũy tài chính · Làm việc thiện · Chăm sóc tâm linh',
+   tranh:'Lãng phí · Bỏ bê nội tâm',
+   cat:'Thụ hưởng, tích lũy phúc',xau:'Tránh tiêu xài hoang phí'},
+  {ten:'Điền Trạch',icon:'🏠',chu:'Nhà ở, tài sản, bất động sản, môi trường',
+   tot:'Cải thiện không gian · Xem xét mua bán tài sản',
+   tranh:'Thay đổi chỗ ở đột ngột · Ra quyết định BĐS vội',
+   cat:'Sắp xếp, ổn định nhà cửa',xau:'Tránh tranh chấp tài sản'},
+  {ten:'Quan Lộc',icon:'💼',chu:'Sự nghiệp, thăng tiến, công danh',
+   tot:'Thể hiện năng lực · Đề xuất ý tưởng · Xin thăng tiến',
+   tranh:'Lười biếng, trì hoãn · Để xung đột ảnh hưởng công việc',
+   cat:'Bứt phá sự nghiệp',xau:'Cẩn thận tranh chấp công việc'},
+  {ten:'Nô Bộc',icon:'🤝',chu:'Cộng sự, nhân viên, đối tác thực hiện',
+   tot:'Giao việc rõ ràng · Brief ngắn gọn · Xây dựng lòng tin đội nhóm',
+   tranh:'Ôm đồm tất cả · Kỳ vọng quá cao',
+   cat:'Hợp tác, ủy quyền hiệu quả',xau:'Cẩn thận người xung quanh'},
+  {ten:'Thiên Di',icon:'✈️',chu:'Di chuyển, công tác, xuất hành, mở rộng',
+   tot:'Công tác đi xa · Mở rộng địa bàn · Gặp đối tác nơi khác',
+   tranh:'Đi lại không kế hoạch · Xuất hành ngày xấu',
+   cat:'Mở rộng, tiến ra bên ngoài',xau:'Cẩn thận rủi ro đi đường'},
+  {ten:'Tật Ách',icon:'🏥',chu:'Sức khỏe, tai nạn, bệnh tật, rủi ro',
+   tot:'Kiểm tra sức khỏe · Tập thể dục đều đặn · Phòng bệnh',
+   tranh:'Thức khuya, bỏ bữa · Bỏ qua triệu chứng bất thường',
+   cat:'Chăm sóc sức khỏe phòng ngừa',xau:'Cẩn thận bệnh tật, tai nạn'},
+  {ten:'Tài Bạch',icon:'💰',chu:'Thu nhập, dòng tiền, tài chính, giao dịch',
+   tot:'Đàm phán lương · Mở rộng thu nhập · Đầu tư có kế hoạch',
+   tranh:'Chi tiêu bốc đồng · Cho vay không giấy tờ',
+   cat:'Kiếm tiền, đầu tư thuận lợi',xau:'Cẩn thận thất thoát tài chính'},
+  {ten:'Tử Tức',icon:'🌱',chu:'Con cái, dự án mới, sáng kiến, người trẻ',
+   tot:'Triển khai dự án mới · Đào tạo người trẻ · Đổi mới sáng tạo',
+   tranh:'Bảo thủ, không muốn thay đổi · Áp đặt quan điểm',
+   cat:'Sáng tạo, khởi sự mới',xau:'Tránh bảo thủ cứng nhắc'},
+  {ten:'Phu Thê',icon:'💑',chu:'Tình cảm, hôn nhân, đối tác thân thiết',
+   tot:'Giao tiếp thẳng thắn với người thân · Dành thời gian gia đình',
+   tranh:'Bỏ bê gia đình · Giả định thay vì hỏi trực tiếp',
+   cat:'Vun đắp tình cảm, hôn nhân',xau:'Tránh mâu thuẫn tình cảm'},
+  {ten:'Huynh Đệ',icon:'👥',chu:'Anh chị em, đồng nghiệp ngang cấp, bạn bè',
+   tot:'Hợp tác chia sẻ thông tin · Nuôi dưỡng tình bạn',
+   tranh:'Ganh đua không lành mạnh · Để hiểu lầm phá vỡ quan hệ',
+   cat:'Kết nối cộng đồng, bạn bè',xau:'Cẩn thận tranh chấp ngang hàng'},
+];
+
+// THÂN CƯ: hours chi 0-11 map to which cung (0-based offset from mệnh)
+function getStanCung(gioChiIdx){
+  const THAN_OFFSETS=[8,7,6,5,4,3,2,1,0,11,10,9];
+  return THAN_OFFSETS[gioChiIdx];
+}
+
+// TIỂU HẠN: starting cung based on gender+year polarity, age calc
+function getTieuHanDir(birthYear,gender){
+  const isYang=canYearIdx(birthYear)%2===0;
+  return((gender==='male')===isYang)?1:-1;
+}
+function getTieuHanStart(gender,birthYear){
+  const dir=getTieuHanDir(birthYear,gender);
+  return dir===1?2:8; // thuận→Dần(2), nghịch→Thân(8)
+}
+function getTieuHanCung(birthYear,gender,targetYear){
+  const dir=getTieuHanDir(birthYear,gender);
+  const start=getTieuHanStart(gender,birthYear);
+  const age=targetYear-birthYear+1; // Vietnamese age
+  return((start+dir*(age-1))%12+12)%12;
+}
+
+// NGUYỆT HẠN: starts at tiểu hạn cung, rotates thuận each month
+function getNguyetHanCung(tieuHanCung,month){
+  return(tieuHanCung+(month-1))%12;
+}
+
+// Star keywords for each cung offset (simplified from traditional tử vi)
+const NGUYET_HAN_ADVICE=[
+  {label:'⭐ Cung Mệnh',score:3,tags:['Bản ngã','Sức khỏe'],desc:'Tháng vận khí trực chiếu cung Mệnh – năng lượng cá nhân cao, thuận lợi tự thể hiện bản thân và ra quyết định lớn. Nên chăm sóc sức khỏe, xây dựng hình ảnh cá nhân.',advice:'Khẳng định bản thân · Ra quyết định lớn · Chăm sóc sức khỏe'},
+  {label:'👨‍👩‍👧 Cung Phụ Mẫu',score:1,tags:['Bề trên','Cấp trên'],desc:'Tháng thuận lợi làm việc với cấp trên và người có quyền lực. Nên báo cáo, xin ý kiến bề trên, tiếp đón khách VIP. Tránh đối đầu hay qua mặt cấp trên.',advice:'Báo cáo cấp trên · Tiếp khách quan trọng · Xin tư vấn bề trên'},
+  {label:'🙏 Cung Phúc Đức',score:2,tags:['Tích lũy','Phước lành'],desc:'Tháng có lợi tích lũy tài lộc và phước duyên. Làm việc thiện sẽ được phước báo, tiền tích lũy dễ giữ. Nên đầu tư dài hạn, hành động từ thiện.',advice:'Tích lũy tài chính · Làm việc thiện · Chăm sóc tâm linh'},
+  {label:'🏠 Cung Điền Trạch',score:1,tags:['Nhà cửa','Tài sản'],desc:'Tháng liên quan đến nhà ở, bất động sản và môi trường sống. Thuận lợi sắp xếp, cải thiện không gian. Hạn chế thay đổi chỗ ở đột ngột.',advice:'Sắp xếp nhà cửa · Xem xét bất động sản · Cải thiện môi trường'},
+  {label:'💼 Cung Quan Lộc',score:3,tags:['Sự nghiệp','Thăng tiến'],desc:'Tháng đỉnh cao sự nghiệp và công danh – thuận lợi thể hiện năng lực, đề xuất ý tưởng, ký kết hợp đồng. Nên chủ động tiến lên, thể hiện thành tích.',advice:'Thể hiện năng lực · Ký kết, thăng tiến · Đề xuất ý tưởng mới'},
+  {label:'🤝 Cung Nô Bộc',score:1,tags:['Đội nhóm','Cộng sự'],desc:'Tháng tập trung vào quản lý đội nhóm và cộng sự. Nên phân công rõ ràng, xây dựng lòng tin. Cẩn thận người xung quanh có thể gây khó.',advice:'Giao việc rõ ràng · Xây dựng đội nhóm · Cẩn thận người tranh chấp'},
+  {label:'✈️ Cung Thiên Di',score:1,tags:['Di chuyển','Mở rộng'],desc:'Tháng thuận lợi di chuyển, công tác và mở rộng địa bàn. Ra ngoài dễ gặp cơ hội và quý nhân. Nên chủ động gặp gỡ ở nơi mới.',advice:'Công tác, gặp đối tác · Mở rộng quan hệ · Du lịch có lợi'},
+  {label:'🏥 Cung Tật Ách',score:-1,tags:['Sức khỏe','Cẩn thận'],desc:'Tháng cần chú ý sức khỏe và phòng tránh rủi ro thể chất. Nên kiểm tra sức khỏe định kỳ, nghỉ ngơi đầy đủ. Hạn chế hoạt động nguy hiểm.',advice:'Kiểm tra sức khỏe · Nghỉ ngơi đủ · Tránh hoạt động nguy hiểm'},
+  {label:'💰 Cung Tài Bạch',score:2,tags:['Tài chính','Thu nhập'],desc:'Tháng thuận lợi về tài chính và thu nhập. Dễ có món tiền bất ngờ, đàm phán lương thưởng thuận lợi. Nên đầu tư có kế hoạch và mở rộng nguồn thu.',advice:'Đàm phán lương thưởng · Đầu tư có kế hoạch · Mở rộng nguồn thu'},
+  {label:'🌱 Cung Tử Tức',score:1,tags:['Dự án mới','Sáng tạo'],desc:'Tháng thuận lợi khởi sự dự án mới và đổi mới sáng tạo. Nên triển khai ý tưởng mới, đào tạo người trẻ. Tránh bảo thủ cứng nhắc.',advice:'Khởi sự dự án mới · Đào tạo người trẻ · Đổi mới sáng tạo'},
+  {label:'💑 Cung Phu Thê',score:0,tags:['Tình cảm','Hôn nhân'],desc:'Tháng liên quan đến tình cảm và mối quan hệ thân thiết. Nên dành thời gian chất lượng cho người thân, giao tiếp thẳng thắn. Tránh hiểu lầm tích tụ.',advice:'Vun đắp tình cảm · Dành thời gian gia đình · Giao tiếp thẳng thắn'},
+  {label:'👥 Cung Huynh Đệ',score:1,tags:['Bạn bè','Đồng nghiệp'],desc:'Tháng có lợi cho mối quan hệ ngang hàng – bạn bè, đồng nghiệp. Nên kết nối, hợp tác và chia sẻ thông tin. Cẩn thận ganh đua nội bộ.',advice:'Kết nối bạn bè, đồng nghiệp · Hợp tác nhóm · Chia sẻ thông tin'},
+];
+
+// ============================================================
 //  TỨ TRỤ & ĐẠI VẬN ENGINE
 // ============================================================
 function canHourIdx(dayCanIdx,hourChiIdx){return(dayCanIdx*2+hourChiIdx)%10}
@@ -556,10 +679,12 @@ function renderPersonBanner(){
 // ============================================================
 function switchTab(tab){
   currentTab=tab;
-  ['ban-menh','dai-van','ngay','thang','nam'].forEach(t=>{
-    document.getElementById('tab-'+t).classList.toggle('active',t===tab);
+  ['ban-menh','la-so','dai-van','ngay','thang','nam'].forEach(t=>{
+    const el=document.getElementById('tab-'+t);
+    if(el)el.classList.toggle('active',t===tab);
   });
   if(tab==='ban-menh')renderBanMenh();
+  else if(tab==='la-so')renderLaSo();
   else if(tab==='dai-van')renderDaiVan();
   else if(tab==='ngay')renderNgay();
   else if(tab==='thang')renderThang();
@@ -661,6 +786,112 @@ function render12Cung(transitChiIdx,globalScore,transitHanh){
     </div>`;
   }).join('');
   return legend+cards;
+}
+
+// ============================================================
+//  LÁ SỐ CHI TIẾT – TIỂU HẠN, NGUYỆT HẠN
+// ============================================================
+function renderLaSo(){
+  const u=USER;
+  const now=new Date();
+  const curYear=now.getFullYear();
+  const curMonth=now.getMonth()+1;
+
+  // THÂN CƯ
+  const thanOffset=getStanCung(u.gioChiIdx);
+  const thanCungIdx=(u.menhChi+thanOffset)%12;
+  const thanCungName=CUNG_DESC_MAP[thanOffset].ten;
+
+  // TIỂU HẠN năm hiện tại
+  const thCung=getTieuHanCung(u.year,u.gender,curYear);
+  const thOffset=((thCung-u.menhChi)+12)%12;
+  const thInfo=NGUYET_HAN_ADVICE[thOffset];
+  const thName=CUNG_DESC_MAP[thOffset].ten;
+  const thAge=curYear-u.year+1;
+
+  // PHÂN TÍCH TỔNG QUAN (từ đặc điểm Thân cư, Sao Mệnh, Nạp Âm)
+  const tongQuanText=[
+    `<p style="margin-bottom:8px"><strong style="color:var(--gold2)">Thân cư cung ${thanCungName}:</strong> Thân cư tại ${thanCungName} biểu thị đây là người luôn xoay quanh vấn đề ${CUNG_DESC_MAP[thanOffset].chu.toLowerCase()}. Tâm lực và sức sống của bạn tập trung mạnh vào lĩnh vực này – đây là nơi bạn cống hiến nhiều nhất và cũng là nơi cần được nuôi dưỡng.</p>`,
+    `<p style="margin-bottom:8px"><strong style="color:var(--gold2)">Sao Chủ Mệnh – ${u.saoMenh.ten}:</strong> ${u.saoMenh.desc} Vận mệnh mang đặc tính của sao này xuyên suốt cuộc đời.</p>`,
+    `<p style="margin-bottom:8px"><strong style="color:var(--gold2)">Nạp Âm ${u.napAm.ten} (${u.napAm.hanh}):</strong> ${u.napAm.desc}</p>`,
+    `<p><strong style="color:var(--gold2)">Mệnh ${u.kuaInfo.ten} (${u.kuaInfo.hanh}):</strong> ${u.kuaInfo.desc}</p>`,
+  ].join('');
+
+  // 12 CUNG TỔNG QUAN
+  const cungGridHtml=CUNG_DESC_MAP.map((c,i)=>{
+    const chiIdx=(u.menhChi+i)%12;
+    const isMetnh=i===0;
+    const isThan=i===thanOffset;
+    return`<div class="ls-cung ${isMetnh||isThan?'highlight':''}">
+      <div class="ls-cung-label">${isMetnh?'⭐ Cung Chủ':''}${isThan?'🔥 Thân Cư':''} ${!isMetnh&&!isThan?'Cung':''}</div>
+      <div class="ls-cung-name">${c.icon} ${c.ten}</div>
+      <div class="ls-cung-chi">${CHI[chiIdx]} ${CHI_ICON[chiIdx]}</div>
+      <div class="ls-cung-desc">${c.chu}</div>
+    </div>`;
+  }).join('');
+
+  // TIỂU HẠN INFO
+  const thScoreCls=scoreClass(thInfo.score);
+  const thColor=scoreColor(thInfo.score);
+  const thTagsHtml=thInfo.tags.map(t=>`<span class="nh-tag chip-gold">${t}</span>`).join('');
+  const tieuHanHtml=`
+    <div class="score-banner ${thScoreCls}" style="margin-bottom:16px">
+      <div class="score-label" style="color:${thColor}">📍 Tiểu Hạn Năm ${curYear} (Tuổi ${thAge}): ${thInfo.label}</div>
+      <div class="score-detail">Cung ${CHI[thCung]} ${CHI_ICON[thCung]} · ${CUNG_DESC_MAP[thOffset].chu}</div>
+      <div class="score-advice">${thInfo.desc}</div>
+    </div>`;
+
+  // 12 THÁNG NGUYỆT HẠN
+  const nguyetHanHtml=Array.from({length:12},(_,i)=>{
+    const m=i+1;
+    const nhCung=getNguyetHanCung(thCung,m);
+    const nhOffset=((nhCung-u.menhChi)+12)%12;
+    const nhInfo=NGUYET_HAN_ADVICE[nhOffset];
+    const nhCungInfo=CUNG_DESC_MAP[nhOffset];
+    const isCur=m===curMonth;
+    const nhColor=scoreColor(nhInfo.score);
+    const nhTags=nhInfo.tags.map(t=>`<span class="nh-tag" style="color:${nhColor};border-color:${nhColor};background:rgba(255,255,255,.04)">${t}</span>`).join('');
+    return`<div class="nh-card ${isCur?'cur-month':''}">
+      <div class="nh-month">Tháng ${m}${isCur?' ◀ Hiện tại':''}</div>
+      <div class="nh-cung">${nhCungInfo.icon} ${nhCungInfo.ten} <span style="font-size:10px;color:var(--muted);font-weight:400">(${CHI[nhCung]})</span></div>
+      <div class="nh-tags">${nhTags}</div>
+      <div class="nh-desc">${nhInfo.advice}</div>
+    </div>`;
+  }).join('');
+
+  // CÁC NĂM TIỂU HẠN GẦN ĐÂY (±5 năm)
+  const nearYearsHtml=Array.from({length:11},(_,i)=>{
+    const yr=curYear-5+i;
+    const tc=getTieuHanCung(u.year,u.gender,yr);
+    const to=((tc-u.menhChi)+12)%12;
+    const ti=NGUYET_HAN_ADVICE[to];
+    const c=scoreColor(ti.score);
+    const isCur=yr===curYear;
+    return`<div style="display:flex;align-items:center;gap:10px;padding:7px 10px;background:${isCur?'rgba(200,151,42,.07)':'var(--card)'};border:1px solid ${isCur?'var(--gold)':'var(--border)'};border-radius:7px;margin-bottom:5px">
+      <span style="font-size:11px;font-weight:700;color:${isCur?'var(--gold2)':'var(--muted)'};min-width:60px">${yr}${isCur?' ◀':''}</span>
+      <span style="font-size:12px;color:var(--text)">Tuổi ${yr-u.year+1}</span>
+      <span style="font-size:12px;font-weight:700;color:var(--gold2)">${CUNG_DESC_MAP[to].icon} ${CUNG_DESC_MAP[to].ten}</span>
+      <span style="font-size:10px;color:${c};margin-left:auto">${ti.label.split(' ').slice(1).join(' ')}</span>
+    </div>`;
+  }).join('');
+
+  document.getElementById('tab-content').innerHTML=`
+    <!-- TỔNG QUAN -->
+    <div style="background:linear-gradient(135deg,rgba(200,151,42,.08),rgba(139,105,20,.04));border:1px solid rgba(200,151,42,.2);border-radius:10px;padding:16px;margin-bottom:20px">
+      <h3 style="font-family:'Noto Serif Display',serif;font-size:16px;color:var(--gold2);margin-bottom:12px">📜 Phân Tích Lá Số Tổng Quan</h3>
+      <div style="font-size:12px;line-height:1.9;color:var(--text)">${tongQuanText}</div>
+    </div>
+    <!-- 12 CUNG -->
+    <h3 style="font-family:'Noto Serif Display',serif;font-size:15px;color:var(--gold2);margin-bottom:10px">🏛️ 12 Cung Lá Số <span style="font-size:11px;font-weight:400;color:var(--muted)">(⭐=Cung Mệnh · 🔥=Thân Cư)</span></h3>
+    <div class="la-so-grid" style="margin-bottom:20px">${cungGridHtml}</div>
+    <!-- TIỂU HẠN -->
+    <h3 style="font-family:'Noto Serif Display',serif;font-size:15px;color:var(--gold2);margin-bottom:10px">📍 Tiểu Hạn & Nguyệt Hạn Năm ${curYear}</h3>
+    ${tieuHanHtml}
+    <h4 style="font-size:11px;font-weight:700;color:var(--gold2);margin-bottom:10px">🗓️ Nguyệt Hạn 12 Tháng Năm ${curYear}</h4>
+    <div class="nguyet-han-grid">${nguyetHanHtml}</div>
+    <!-- TIỂU HẠN CÁC NĂM -->
+    <h3 style="font-family:'Noto Serif Display',serif;font-size:15px;color:var(--gold2);margin-bottom:10px">📅 Tiểu Hạn Các Năm Gần Đây</h3>
+    <div style="margin-bottom:20px">${nearYearsHtml}</div>`;
 }
 
 // ============================================================
