@@ -284,6 +284,68 @@ body{
 .tag.finance{background:rgba(232,212,91,.12);color:var(--pending)}
 ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 @media(max-width:600px){.sidebar{display:none}.year-grid{grid-template-columns:repeat(2,1fr)}.suggest-grid{grid-template-columns:1fr}.gio-grid{grid-template-columns:repeat(6,1fr)}}
+
+/* ===== LỊCH TUYỂN DỤNG ===== */
+.rec-day-hdr{background:linear-gradient(135deg,rgba(200,151,42,.1),rgba(139,105,20,.06));border:1px solid rgba(200,151,42,.25);border-radius:var(--r);padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.rec-day-hdr h2{font-family:'Noto Serif Display',serif;font-size:18px;color:var(--gold2)}
+.rec-day-hdr p{font-size:11px;color:var(--muted);margin-top:2px}
+.rec-chips{display:flex;flex-wrap:wrap;gap:5px}
+.rec-chip{padding:3px 9px;border-radius:20px;font-size:10px;font-weight:700;border:1px solid}
+.rec-chip-gold{background:rgba(200,151,42,.12);color:var(--gold2);border-color:rgba(200,151,42,.25)}
+.rec-chip-green{background:rgba(91,232,168,.08);color:var(--done);border-color:rgba(91,232,168,.2)}
+.rec-chip-red{background:rgba(232,124,91,.08);color:var(--todo);border-color:rgba(232,124,91,.2)}
+.rec-chip-blue{background:rgba(41,128,185,.1);color:#7ec8f0;border-color:rgba(41,128,185,.25)}
+.rec-chip-purple{background:rgba(139,92,246,.1);color:#c4b5fd;border-color:rgba(139,92,246,.25)}
+.r-hd-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:14px}
+.r-hd-panel h4{font-size:11px;font-weight:700;color:var(--gold2);margin-bottom:8px}
+.r-hd-slots{display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
+.r-hd-slot{border-radius:6px;padding:5px 3px;text-align:center;border:1px solid}
+.r-hd-slot.hd{background:rgba(39,174,96,.1);border-color:rgba(91,232,168,.25);color:var(--done)}
+.r-hd-slot.hc{background:rgba(255,255,255,.02);border-color:var(--border);color:var(--muted)}
+.r-hd-slot .rchi{font-weight:700;font-size:11px}
+.r-hd-slot .rgio{font-size:9px;margin-top:1px}
+.r-advice-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:14px}
+.r-advice-panel h4{font-size:11px;font-weight:700;color:var(--gold2);margin-bottom:8px}
+.r-advice-row{display:flex;gap:8px;padding:6px 9px;background:rgba(200,151,42,.06);border:1px solid rgba(200,151,42,.15);border-radius:6px;margin-bottom:5px}
+.recruit-timeline{border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.rtl-header{background:var(--surface);padding:9px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--gold2)}
+.rtl-row{display:grid;grid-template-columns:60px 1fr;border-bottom:1px solid rgba(37,40,54,.6);min-height:42px}
+.rtl-row.rr-hd{background:rgba(39,174,96,.04)}
+.rtl-time{padding:8px 8px;font-size:10px;color:var(--muted);font-weight:600;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:2px;align-items:flex-end}
+.rtl-slot{padding:3px 7px;min-height:42px}
+.ev-blk{border-radius:6px;padding:6px 9px;margin-bottom:3px;border-left:3px solid}
+.ev-blk.work{background:rgba(59,122,191,.18);border-color:#3b7abf}
+.ev-blk.task{background:rgba(200,151,42,.14);border-color:var(--gold)}
+.ev-blk.task.priority{background:rgba(200,151,42,.24);border-color:var(--gold2);box-shadow:0 0 0 1px rgba(200,151,42,.2)}
+.ev-blk.seminar{background:rgba(139,92,246,.18);border-color:#8b5cf6}
+.ev-blk.sport{background:rgba(34,197,94,.15);border-color:#22c55e}
+.ev-blk.personal{background:rgba(122,112,96,.1);border-color:var(--muted)}
+.ev-b-time{font-size:10px;color:var(--muted);margin-bottom:2px}
+.ev-b-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:2px}
+.ev-b-desc{font-size:11px;color:var(--muted);line-height:1.5}
+.ev-b-hd{font-size:10px;color:var(--done);font-weight:700;margin-top:3px}
+.rec-legend{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;font-size:10px}
+.rec-legend span{display:flex;align-items:center;gap:4px;padding:3px 7px;border-radius:20px;border:1px solid}
+/* week grid */
+.rec-week-grid{display:grid;grid-template-columns:56px repeat(7,1fr);gap:0;border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:16px}
+.rwg-th-time{background:var(--surface);border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:7px 4px;text-align:center;font-size:10px;color:var(--muted)}
+.rwg-th-day{background:var(--surface);border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:7px;text-align:center;cursor:pointer;transition:background .15s}
+.rwg-th-day:hover{background:var(--card)}
+.rwg-th-day.rw-today{background:rgba(200,151,42,.12)}
+.rwg-th-day .rdnum{font-size:15px;font-weight:700;color:var(--gold2);line-height:1}
+.rwg-th-day .rdname{font-size:10px;color:var(--muted);margin-top:2px}
+.rwg-th-day .rdlunar{font-size:9px;color:var(--muted);margin-top:1px}
+.rwg-time-lbl{background:var(--surface);border-right:1px solid var(--border);border-bottom:1px solid rgba(37,40,54,.5);padding:3px;text-align:right;font-size:9px;color:var(--muted);min-height:26px;display:flex;align-items:center;justify-content:flex-end;padding-right:5px}
+.rwg-day-col{border-right:1px solid var(--border);border-bottom:1px solid rgba(37,40,54,.5);min-height:26px;position:relative;overflow:hidden}
+.rwg-day-col.rw-hd{background:rgba(39,174,96,.04)}
+.rwg-day-col.rw-off{background:rgba(255,255,255,.01)}
+.rw-chip{position:absolute;left:1px;right:1px;border-radius:3px;padding:1px 3px;font-size:8px;font-weight:700;overflow:hidden;z-index:2;line-height:1.3;white-space:nowrap;text-overflow:ellipsis}
+.rw-chip.work{background:rgba(59,122,191,.25);border-left:2px solid #3b7abf;color:#7ec8f0}
+.rw-chip.seminar{background:rgba(139,92,246,.25);border-left:2px solid #8b5cf6;color:#c4b5fd}
+.rw-chip.sport{background:rgba(34,197,94,.2);border-left:2px solid #22c55e;color:#5be8a8}
+.rw-chip.task{background:rgba(200,151,42,.18);border-left:2px solid var(--gold);color:var(--gold2)}
+.rw-chip.personal{background:rgba(122,112,96,.15);border-left:2px solid var(--muted);color:var(--muted)}
+.rw-hd-badge{background:rgba(39,174,96,.12);border:1px solid rgba(91,232,168,.25);color:var(--done);border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700}
 </style>
 </head>
 <body>
@@ -309,6 +371,11 @@ body{
     <button class="nav-btn" onclick="switchView('tuvi-month')"><span class="icon">🗺️</span>Tử vi theo tháng</button>
     <button class="nav-btn" onclick="switchView('tuvi-hour')"><span class="icon">⭐</span>Giờ hoàng đạo</button>
     <button class="nav-btn" onclick="switchView('ngay-dep')"><span class="icon">✨</span>Ngày đẹp tháng này</button>
+  </div>
+  <div class="nav-section" style="margin-top:6px">
+    <div class="nav-label">Lịch Tuyển Dụng</div>
+    <button class="nav-btn" onclick="switchView('recruit-day')"><span class="icon">📅</span>Lịch trình ngày</button>
+    <button class="nav-btn" onclick="switchView('recruit-week')"><span class="icon">📋</span>Lịch trình tuần</button>
   </div>
   <div class="nav-section" style="margin-top:6px">
     <div class="nav-label">Tổng kết</div>
@@ -405,6 +472,11 @@ body{
     <div class="view" id="view-sum-month"><div class="section-header"><h2>📈 Tổng Kết Tháng</h2></div><div id="sumMonthC"></div></div>
     <div class="view" id="view-sum-quarter"><div class="section-header"><h2>📉 Tổng Kết Quý</h2></div><div id="sumQuarterC"></div></div>
     <div class="view" id="view-sum-year"><div class="section-header"><h2>🏆 Tổng Kết Năm</h2></div><div id="sumYearC"></div></div>
+
+    <!-- RECRUIT DAY -->
+    <div class="view" id="view-recruit-day"></div>
+    <!-- RECRUIT WEEK -->
+    <div class="view" id="view-recruit-week"></div>
   </div>
 </div>
 </div>
@@ -615,112 +687,153 @@ const BIRTH = {
   nguHanh:'Thổ (Đường Thượng Thổ)',
   cungMenh:'Khôn (☷)', cungMenhDesc:'Đất – hướng Tây Nam, màu vàng & nâu',
   cuc:'Thủy Nhị Cục',
-  chủMenh:'Sao Tham Lang', chủMenhDesc:'Đa tài, tháo vát, duyên thành công muộn nhưng bền',
+  chủMenh:'Thái Dương + Hóa Lộc', chủMenhDesc:'Rạng rỡ, uy quyền, tài lộc theo sát cả đời',
   tuongSinh:'Kim', tuongKhac:'Mộc',
 };
 
 // ============================================================
-//   12 CUNG TỬ VI – Phạm Thị Thanh Huyền
-//   An cung từ Mệnh tại Ngọ (Chi index 6), đi thuận chiều
-//   Mỗi cung cách nhau 1 Chi
+//   LỊCH TUYỂN DỤNG – RECURRING EVENTS
 // ============================================================
-// chiIdx: vị trí chi của cung trên vòng 12 (Tý=0...Hợi=11)
+const DOW_FULL_REC=['Chủ Nhật','Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Thứ Sáu','Thứ Bảy'];
+const GIO_TIMES_REC=['23–1h','1–3h','3–5h','5–7h','7–9h','9–11h','11–13h','13–15h','15–17h','17–19h','19–21h','21–23h'];
+const RECURRING=[
+  {dow:[1,2,3,4,5], start:'08:30', end:'18:00', type:'work', title:'Giờ làm việc ABBank', desc:'Tuyển dụng nhân sự miền Bắc – 37 đơn vị'},
+  {dow:[1,2,3,4,5], start:'08:30', end:'09:00', type:'task', title:'Khởi động buổi sáng', desc:'Kiểm tra email, tin nhắn, pipeline ứng viên overnight'},
+  {dow:[1,2,3,4,5], start:'09:00', end:'10:00', type:'task', title:'Review CV & ứng viên pipeline', desc:'Xem xét hồ sơ nộp qua đêm, cập nhật trạng thái 37 đơn vị'},
+  {dow:[1,2,3,4,5], start:'10:00', end:'11:30', type:'task', title:'Gọi điện ứng viên fresh graduates', desc:'Liên hệ 20-30 ứng viên tiềm năng, tư vấn vị trí phù hợp'},
+  {dow:[1,2,3,4,5], start:'11:30', end:'12:00', type:'task', title:'Setup phỏng vấn & gửi lịch', desc:'Sắp xếp và xác nhận lịch phỏng vấn với ứng viên và GĐ đơn vị'},
+  {dow:[1,2,3,4,5], start:'12:00', end:'13:30', type:'personal', title:'Nghỉ trưa', desc:'Nghỉ ngơi giữa ngày – nạp năng lượng'},
+  {dow:[1,2,3,4,5], start:'13:30', end:'14:30', type:'task', title:'Soạn & gửi thư mời nhận việc', desc:'Chuẩn bị Offer Letter, thương lượng với ứng viên'},
+  {dow:[1,2,3,4,5], start:'14:30', end:'15:30', type:'task', title:'Đàm phán lương với GĐ đơn vị', desc:'Làm việc với Giám đốc chi nhánh về mức lương tuyển dụng'},
+  {dow:[1,2,3,4,5], start:'15:30', end:'16:30', type:'task', title:'Đăng tin & kiểm tra 37 đơn vị', desc:'Đăng bài tuyển dụng, kiểm tra tin đang chạy'},
+  {dow:[1,2,3,4,5], start:'16:30', end:'17:00', type:'task', title:'Nhắn tin mass fresh graduates', desc:'Gửi tin nhắn hàng loạt cho 50-80 ứng viên sinh viên mới'},
+  {dow:[1,2,3,4,5], start:'17:00', end:'17:30', type:'task', title:'Xử lý CV & cập nhật data', desc:'Lọc, phân loại hồ sơ nhận được trong ngày'},
+  {dow:[1,2,3,4,5], start:'17:30', end:'18:00', type:'task', title:'Báo cáo cuối ngày', desc:'Tổng kết kết quả tuyển dụng, kế hoạch ngày mai'},
+  {dow:[1], start:'09:00', end:'09:45', type:'task', title:'📋 Lên kế hoạch tuần', desc:'Xác định mục tiêu tuần, phân bổ nguồn lực 37 đơn vị'},
+  {dow:[3], start:'14:00', end:'15:00', type:'task', title:'📊 Review pipeline tuần giữa', desc:'Đánh giá tiến độ tuyển dụng, điều chỉnh ưu tiên'},
+  {dow:[5], start:'16:00', end:'17:00', type:'task', title:'📈 Tổng kết tuần', desc:'Báo cáo số liệu tuần: CV – PV – Offer – Hire. Kế hoạch tuần tới'},
+  {dow:[2], start:'18:55', end:'20:30', type:'seminar', title:'🎓 Hội thảo tuyển dụng', desc:'Hội thảo/webinar xu hướng tuyển dụng ngành ngân hàng'},
+  {dow:[4], start:'19:00', end:'21:30', type:'sport', title:'🏓 Pickleball', desc:'Luyện tập Pickleball – giải trí, tăng cường sức khỏe'},
+  {dow:[5], start:'19:00', end:'21:30', type:'sport', title:'🏓 Pickleball', desc:'Luyện tập Pickleball – năng lượng cuối tuần'},
+  {dow:[6], start:'08:00', end:'12:00', type:'personal', title:'🌅 Buổi sáng cuối tuần', desc:'Thời gian cá nhân, gia đình'},
+  {dow:[0], start:'08:00', end:'12:00', type:'personal', title:'🌅 Buổi sáng Chủ nhật', desc:'Nghỉ ngơi, hồi phục năng lượng'},
+];
+// Recruitment task advice by giờ hoàng đạo
+const TASK_SLOTS=[
+  {hour:7,  task:'Gọi điện / nhắn tin ứng viên sớm', reason:'Giờ Thìn – ứng viên thức dậy, sẵn sàng nhận liên lạc'},
+  {hour:9,  task:'Đàm phán lương & ký offer', reason:'Giờ Tỵ – kim khắc thổ lợi tài lộc, thương lượng dễ đồng thuận'},
+  {hour:11, task:'Phỏng vấn quan trọng & gửi offer', reason:'Giờ Ngọ – vượng khí cao điểm, tạo ấn tượng tốt'},
+  {hour:13, task:'Gọi điện fresh graduates', reason:'Giờ Mùi – nhẹ nhàng, ứng viên trẻ dễ tiếp thu'},
+  {hour:15, task:'Đăng tin tuyển dụng & mass message', reason:'Giờ Thân – lan tỏa rộng, nhiều người tiếp cận'},
+  {hour:17, task:'Báo cáo & follow-up ứng viên chờ phản hồi', reason:'Giờ Dậu – củng cố, chốt vấn đề trước khi kết thúc ngày'},
+];
+function getEventsForDate(date){const dow=date.getDay();return RECURRING.filter(e=>e.dow.includes(dow));}
+function timeToMinRec(t){const[h,m]=t.split(':').map(Number);return h*60+m;}
+
+// ============================================================
+//   12 CUNG TỬ VI – Phạm Thị Thanh Huyền
+//   Lá số theo file PDF: Mệnh an tại Tị (chiIdx=5), đi thuận chiều
+//   Thân cư Tài Bạch (Sửu, chiIdx=1)
+//   Cục: Thủy Nhị Cục – Hỏa Lục Cục (an theo tuổi)
+// ============================================================
+// chiIdx: vị trí chi trên vòng 12 (Tý=0, Sửu=1, Dần=2, Mão=3, Thìn=4, Tị=5, Ngọ=6, Mùi=7, Thân=8, Dậu=9, Tuất=10, Hợi=11)
 const CUNG_DATA = [
   {
-    ten:'Mệnh', chiIdx:6, icon:'⭐', loai:'menh',
-    saoChinh:['Tham Lang','Thiên Đồng'],
+    ten:'Mệnh', chiIdx:5, icon:'⭐', loai:'menh',
+    saoChinh:['Thái Dương','Hóa Lộc'],
     mucDich:'Bản ngã, tính cách, vận mệnh tổng thể',
-    natalDesc:'Tham Lang tọa Mệnh: bạn thông minh, linh hoạt, có năng khiếu giao tiếp và thuyết phục. Duyên thành công đến sau tuổi 30. Thiên Đồng đồng cung mang lại tính bình hòa, được quý nhân phù trợ.',
-    totCho:['Phát huy khả năng thuyết phục','Xây dựng mạng lưới quan hệ','Kiên nhẫn với mục tiêu dài hạn'],
-    tranh:['Nóng vội, bỏ cuộc sớm','Phân tán sức lực quá nhiều hướng'],
+    natalDesc:'Thái Dương tọa Mệnh cư Tị: vượng chiếu ban ngày, tính cách hướng ngoại, năng động và có sức ảnh hưởng rõ ràng. Hóa Lộc đồng cung – lộc tài theo sát suốt đời, đặc biệt trong lĩnh vực quan hệ con người và tuyển dụng. Mệnh Thái Dương tượng trưng cho ánh sáng, uy quyền và sự rõ ràng trong tư duy.',
+    totCho:['Xuất hiện công khai, dẫn dắt và trình bày','Tận dụng sáng sớm và buổi sáng cho việc quan trọng','Phát triển thương hiệu cá nhân trong ngành tuyển dụng'],
+    tranh:['Làm việc trong bóng tối, âm thầm quá mức','Để cảm xúc lấn át phán đoán lý trí'],
   },
   {
-    ten:'Phụ Mẫu', chiIdx:7, icon:'👨‍👩‍👧', loai:'phu-mau',
-    saoChinh:['Thái Dương','Thiên Lương'],
-    mucDich:'Quan hệ với cấp trên, sếp, khách hàng VIP',
-    natalDesc:'Thái Dương chiếu Phụ Mẫu: được cấp trên chú ý và hỗ trợ. Bạn có khả năng tạo ấn tượng tốt với người có quyền lực. Thiên Lương giúp duy trì quan hệ bền lâu.',
-    totCho:['Báo cáo, cập nhật tiến độ cho sếp','Tiếp đón khách hàng quan trọng','Xin hỗ trợ nguồn lực từ cấp trên'],
-    tranh:['Qua mặt sếp khi chưa được phép','Cứng nhắc trong giao tiếp với cấp trên'],
+    ten:'Phụ Mẫu', chiIdx:6, icon:'👨‍👩‍👧', loai:'phu-mau',
+    saoChinh:['Phá Quân'],
+    mucDich:'Quan hệ với cấp trên, sếp, ban lãnh đạo',
+    natalDesc:'Phá Quân cư Phụ Mẫu: mối quan hệ với cấp trên không phải lúc nào cũng suôn sẻ – có thể có những thay đổi đột ngột hoặc xáo trộn trong quản lý. Tuy nhiên, đây cũng là động lực để bạn tự lập và phát triển phong cách làm việc độc lập. Trong tuyển dụng, cần chủ động báo cáo và điều chỉnh theo định hướng lãnh đạo.',
+    totCho:['Chủ động báo cáo tiến độ với quản lý','Linh hoạt thích ứng khi có thay đổi chính sách','Giữ thái độ chuyên nghiệp dù áp lực từ cấp trên'],
+    tranh:['Đối đầu trực tiếp với cấp trên','Bỏ qua hướng dẫn của lãnh đạo'],
   },
   {
-    ten:'Phúc Đức', chiIdx:8, icon:'🙏', loai:'phuc-duc',
-    saoChinh:['Thiên Phủ','Tả Phù'],
-    mucDich:'Tài lộc tích lũy, phước lành, tâm linh',
-    natalDesc:'Thiên Phủ tọa Phúc Đức: phúc đức dày, tài lộc tích lũy tốt theo thời gian. Bạn có bản năng giữ tiền và xây dựng sự nghiệp bền vững. Tả Phù hỗ trợ quý nhân đến đúng lúc.',
-    totCho:['Tích lũy, tiết kiệm dài hạn','Làm việc thiện nguyện, hỗ trợ người khác','Chăm sóc tinh thần, tâm linh'],
-    tranh:['Lãng phí vào những thứ không cần thiết','Bỏ bê việc chăm sóc bản thân'],
+    ten:'Phúc Đức', chiIdx:7, icon:'🙏', loai:'phuc-duc',
+    saoChinh:['Thiên Cơ'],
+    mucDich:'Phước lành, tâm linh, tư duy chiến lược',
+    natalDesc:'Thiên Cơ cư Phúc Đức: phúc lành đến từ sự thông minh, linh hoạt và tư duy chiến lược. Bạn có phúc phần trí tuệ cao – càng học hỏi, nghiên cứu, phúc đức càng tăng. Thiên Cơ là sao mưu lược, cho thấy bạn thích hợp với các công việc cần suy nghĩ sâu và lập kế hoạch dài hạn.',
+    totCho:['Học hỏi, nâng cao chuyên môn tuyển dụng','Thiền định, chăm sóc sức khỏe tinh thần','Đọc sách, phân tích xu hướng nhân sự ngân hàng'],
+    tranh:['Suy nghĩ quá nhiều mà không hành động','Bỏ bê việc chăm sóc tâm linh và sức khỏe tinh thần'],
   },
   {
-    ten:'Điền Trạch', chiIdx:9, icon:'🏠', loai:'dien-trach',
-    saoChinh:['Vũ Khúc','Thiên Tướng'],
-    mucDich:'Bất động sản, tài sản, nơi làm việc',
-    natalDesc:'Vũ Khúc tọa Điền Trạch: có khả năng tích lũy tài sản, bất động sản ổn định. Thiên Tướng hỗ trợ môi trường làm việc tốt, văn phòng thuận lợi cho công việc.',
-    totCho:['Cải thiện không gian làm việc','Xem xét đầu tư bất động sản dài hạn'],
-    tranh:['Thay đổi chỗ ở/văn phòng đột ngột'],
+    ten:'Điền Trạch', chiIdx:8, icon:'🏠', loai:'dien-trach',
+    saoChinh:['Tử Vi','Thiên Phủ'],
+    mucDich:'Bất động sản, tài sản, môi trường làm việc',
+    natalDesc:'Tử Vi và Thiên Phủ song tọa Điền Trạch: cực kỳ cát – tài sản và bất động sản rất tốt. Bạn có khả năng sở hữu nhà đất vững chắc và tích lũy tài sản bền vững. Tử Vi cư Điền Trạch còn cho thấy văn phòng, nơi làm việc luôn thuận lợi, được quý nhân hỗ trợ môi trường. Đây là cung mạnh nhất trong lá số về tài sản.',
+    totCho:['Đầu tư bất động sản ở độ tuổi 35–45','Cải thiện, trang trí không gian làm việc','Giữ gìn tài sản hiện có, không đầu cơ ngắn hạn'],
+    tranh:['Thay đổi chỗ ở hoặc văn phòng đột ngột','Cho mượn tài sản lớn khi không chắc chắn'],
   },
   {
-    ten:'Quan Lộc', chiIdx:10, icon:'💼', loai:'quan-loc',
-    saoChinh:['Thiên Cơ','Thái Âm'],
-    mucDich:'Sự nghiệp, thăng tiến, công danh',
-    natalDesc:'Thiên Cơ tọa Quan Lộc: sự nghiệp phát triển qua trí tuệ và kỹ năng phân tích. Bạn giỏi đọc vị người khác, phù hợp với nghề liên quan đến con người như tuyển dụng, nhân sự, tư vấn. Thái Âm thêm vào sự nhạy cảm trong giao tiếp.',
-    totCho:['Thể hiện năng lực chuyên môn','Đề xuất ý tưởng mới với cấp trên','Networking với đồng nghiệp ngành'],
-    tranh:['Làm việc theo cảm tính, thiếu cơ sở','Bỏ qua cơ hội thăng tiến vì tự ti'],
+    ten:'Quan Lộc', chiIdx:9, icon:'💼', loai:'quan-loc',
+    saoChinh:['Thái Âm','Hồng Loan','Hóa Khoa','Kình Dương'],
+    mucDich:'Sự nghiệp, thăng tiến, danh tiếng nghề nghiệp',
+    natalDesc:'Thái Âm cư Quan Lộc: sự nghiệp phát triển nhờ sự tỉ mỉ, nhạy cảm và khả năng hiểu tâm lý người. Phù hợp hoàn toàn với nghề tuyển dụng nhân sự. Hóa Khoa tăng thêm danh tiếng học thuật và chuyên môn. Hồng Loan giúp bạn được yêu mến, tạo thiện cảm với ứng viên và lãnh đạo. Kình Dương đòi hỏi nỗ lực và kiên trì, nhưng thành công khi vượt qua thử thách sẽ rất bền vững.',
+    totCho:['Phát triển chuyên môn tuyển dụng chuyên sâu','Xây dựng danh tiếng qua kết quả thực tế','Học thêm chứng chỉ HR, tuyển dụng, phỏng vấn'],
+    tranh:['Thiếu kiên nhẫn khi gặp khó khăn trong sự nghiệp','Bỏ bê việc xây dựng thương hiệu cá nhân'],
   },
   {
-    ten:'Nô Bộc', chiIdx:11, icon:'🤝', loai:'no-boc',
-    saoChinh:['Thiên Đồng','Cự Môn'],
-    mucDich:'Cộng sự, nhân viên, đối tác thực hiện',
-    natalDesc:'Thiên Đồng tọa Nô Bộc: cộng sự trung thành, ít bị phản bội. Cự Môn đòi hỏi giao tiếp rõ ràng, tránh hiểu lầm. Bạn có khả năng đánh giá và chọn người cộng tác tốt.',
-    totCho:['Giao việc rõ ràng cho cộng sự','Họp brief ngắn gọn, đúng trọng tâm'],
-    tranh:['Ôm đồm mọi việc, không delegate','Kỳ vọng quá cao mà không hướng dẫn'],
+    ten:'Nô Bộc', chiIdx:10, icon:'🤝', loai:'no-boc',
+    saoChinh:['Tham Lang'],
+    mucDich:'Cộng sự, ứng viên, mạng lưới quan hệ',
+    natalDesc:'Tham Lang cư Nô Bộc: cộng sự và ứng viên thường đa dạng, linh hoạt và có nhiều tài năng tiềm ẩn. Bạn giỏi nhìn ra tiềm năng của người khác – đây là lợi thế lớn trong tuyển dụng. Tuy nhiên, cần cẩn thận vì Tham Lang cũng có tính dao động, một số cộng sự có thể không trung thành lâu dài.',
+    totCho:['Xây dựng mạng lưới ứng viên đa dạng','Giữ quan hệ tốt với cộng sự và đồng nghiệp ngành','Delegate công việc phù hợp với từng người'],
+    tranh:['Tin tưởng hoàn toàn mà không kiểm tra lại','Ôm đồm mọi việc, không trao quyền'],
   },
   {
-    ten:'Thiên Di', chiIdx:0, icon:'✈️', loai:'thien-di',
-    saoChinh:['Liêm Trinh','Thiên Phủ'],
-    mucDich:'Di chuyển, công tác, mở rộng địa bàn',
-    natalDesc:'Liêm Trinh tọa Thiên Di: hay di chuyển, đi xa có lợi. Bạn phù hợp với công việc cần đi lại nhiều, tiếp xúc nhiều vùng địa lý khác nhau. Quản lý 37 đơn vị trải rộng đúng với cung này.',
-    totCho:['Công tác, thăm đơn vị địa phương','Mở rộng vùng tuyển dụng mới'],
-    tranh:['Đi lại không có kế hoạch, lãng phí thời gian'],
+    ten:'Thiên Di', chiIdx:11, icon:'✈️', loai:'thien-di',
+    saoChinh:['Cự Môn'],
+    mucDich:'Di chuyển, công tác, quan hệ đối ngoại',
+    natalDesc:'Cự Môn cư Thiên Di: khi đi xa, giao lưu bên ngoài, đôi khi gặp miệng tiếng hoặc thông tin không chính xác. Cần chú trọng giao tiếp rõ ràng và cẩn thận trong các buổi gặp gỡ, sự kiện bên ngoài. Tuy vậy, Cự Môn cũng là sao hùng biện – bạn có khả năng thuyết phục cao khi đứng trước đám đông.',
+    totCho:['Chuẩn bị kỹ trước các buổi thuyết trình, hội thảo','Kiểm tra thông tin trước khi phát ngôn công khai','Tận dụng khả năng hùng biện tại hội thảo tuyển dụng'],
+    tranh:['Đi công tác mà không chuẩn bị thông tin kỹ','Phát ngôn vội vã khi không chắc chắn'],
   },
   {
-    ten:'Tật Ách', chiIdx:1, icon:'🏥', loai:'tat-ach',
-    saoChinh:['Phá Quân','Linh Tinh'],
-    mucDich:'Sức khỏe, tai nạn, bệnh tật',
-    natalDesc:'Phá Quân tọa Tật Ách: dễ bị căng thẳng, áp lực ảnh hưởng đến sức khỏe. Cần chủ động nghỉ ngơi và vận động thể chất. Linh Tinh nhắc nhở chú ý hệ thần kinh và giấc ngủ.',
-    totCho:['Tập thể dục đều đặn','Ngủ đủ giấc, không thức quá 23h','Ăn uống đúng bữa'],
-    tranh:['Bỏ bữa, ăn uống thất thường khi bận','Thức khuya kéo dài'],
+    ten:'Tật Ách', chiIdx:0, icon:'🏥', loai:'tat-ach',
+    saoChinh:['Liêm Trinh','Thiên Tướng'],
+    mucDich:'Sức khỏe, năng lượng, đề kháng cơ thể',
+    natalDesc:'Liêm Trinh và Thiên Tướng cư Tật Ách: sức khỏe nói chung ổn định, nhưng Liêm Trinh đòi hỏi kỷ luật trong sinh hoạt. Nếu làm việc quá sức hoặc căng thẳng kéo dài, cơ thể dễ phản ứng mạnh. Thiên Tướng hỗ trợ hệ miễn dịch tốt khi lối sống điều độ.',
+    totCho:['Duy trì lịch tập thể dục đều đặn (Pickleball T5&T6)','Ngủ đủ giấc, không thức sau 23h thường xuyên','Ăn uống đúng bữa, tránh bỏ bữa khi bận'],
+    tranh:['Làm việc liên tục nhiều giờ không nghỉ','Thức khuya kéo dài, bỏ bê sức khỏe'],
   },
   {
-    ten:'Tài Bạch', chiIdx:2, icon:'💰', loai:'tai-bach',
-    saoChinh:['Tử Vi','Tham Lang'],
+    ten:'Tài Bạch', chiIdx:1, icon:'💰', loai:'tai-bach',
+    saoChinh:['Thiên Lương'],
     mucDich:'Thu nhập, dòng tiền, tài chính cá nhân',
-    natalDesc:'Tử Vi tọa Tài Bạch: tài lộc gắn với vị thế và quyền lực. Thu nhập tăng theo thăng tiến sự nghiệp. Tham Lang đồng cung: có thêm thu nhập từ nhiều nguồn, cần kiên nhẫn tích lũy.',
-    totCho:['Đàm phán lương, hoa hồng, bonus','Mở rộng nguồn thu nhập qua mạng lưới'],
-    tranh:['Chi tiêu bốc đồng, mua sắm không kế hoạch','Cho vay tiền người quen'],
+    thanCu:true, // Thân cư Tài Bạch
+    natalDesc:'Thiên Lương cư Tài Bạch, và quan trọng nhất – Thân cư tại cung này! Điều này có nghĩa là tài vận gắn liền với bản thân bạn: tiền bạc đến từ chính năng lực và uy tín cá nhân. Thiên Lương là sao phúc thọ và trí tuệ – tài lộc bền vững, đặc biệt phát triển ở tuổi trung niên trở đi. Thu nhập tăng theo kinh nghiệm và danh tiếng chuyên môn.',
+    totCho:['Đàm phán lương, phúc lợi dựa trên năng lực thực tế','Tích lũy dài hạn, không đầu cơ rủi ro','Phát triển thu nhập từ chuyên môn (tư vấn, training)'],
+    tranh:['Chi tiêu bốc đồng, mua sắm không kế hoạch','Cho vay tiền người quen chưa có kế hoạch hoàn trả'],
   },
   {
-    ten:'Tử Tức', chiIdx:3, icon:'🌱', loai:'tu-tuc',
-    saoChinh:['Thái Dương','Thiên Đức'],
+    ten:'Tử Tức', chiIdx:2, icon:'🌱', loai:'tu-tuc',
+    saoChinh:['Thất Sát'],
     mucDich:'Sáng tạo, dự án mới, đội nhóm trẻ',
-    natalDesc:'Thái Dương tọa Tử Tức: các dự án mới được chiếu sáng, dễ thành công. Bạn có khả năng truyền cảm hứng cho thế hệ trẻ hơn. Thiên Đức phù hộ các khởi đầu mới thuận lợi.',
-    totCho:['Triển khai ý tưởng mới','Hướng dẫn, mentoring ứng viên trẻ'],
-    tranh:['Bảo thủ, ngại thay đổi phương pháp cũ'],
+    natalDesc:'Thất Sát cư Tử Tức: trong các dự án và sáng kiến mới, bạn có xu hướng tiếp cận trực tiếp, quyết đoán và không ngại thay đổi. Điều này phù hợp với tuyển dụng khi cần đổi mới phương pháp, thử nghiệm kênh tuyển dụng mới. Các đội nhóm trẻ cần được định hướng rõ ràng và kỷ luật để phát huy tốt nhất.',
+    totCho:['Thử nghiệm phương pháp tuyển dụng mới','Dẫn dắt nhóm trẻ với mục tiêu rõ ràng','Khởi động dự án cần tính quyết đoán cao'],
+    tranh:['Cứng nhắc, không lắng nghe ý kiến mới','Bỏ cuộc sớm khi gặp khó khăn ban đầu'],
   },
   {
-    ten:'Phu Thê', chiIdx:4, icon:'💑', loai:'phu-the',
-    saoChinh:['Vũ Khúc','Thiên Tướng'],
+    ten:'Phu Thê', chiIdx:3, icon:'💑', loai:'phu-the',
+    saoChinh:['Thiên Đồng'],
     mucDich:'Hôn nhân, tình cảm, đối tác thân thiết',
-    natalDesc:'Vũ Khúc tọa Phu Thê: hôn nhân/tình cảm cần thực tế, xây dựng trên nền tảng vật chất và sự tin tưởng. Người bạn đời phù hợp là người có tính ổn định, đáng tin cậy.',
-    totCho:['Giao tiếp thẳng thắn, rõ ràng với người thân','Dành thời gian chất lượng cho gia đình'],
-    tranh:['Ôm việc quá nhiều đến mức bỏ bê gia đình'],
+    natalDesc:'Thiên Đồng cư Phu Thê: tình cảm và hôn nhân mang tính bình hòa, dễ chịu và thoải mái. Người bạn đời có xu hướng hiền lành, không tranh chấp, tạo môi trường gia đình yên ổn. Thiên Đồng là sao hưởng thụ – mối quan hệ tình cảm đem lại niềm vui và sự thư giãn cho cả hai.',
+    totCho:['Dành thời gian chất lượng cho gia đình','Giao tiếp nhẹ nhàng, không áp đặt','Tạo không khí gia đình thoải mái để nạp năng lượng'],
+    tranh:['Ôm quá nhiều việc công ty đến mức bỏ bê gia đình','Kỳ vọng quá cao về người thân'],
   },
   {
-    ten:'Huynh Đệ', chiIdx:5, icon:'👥', loai:'huynh-de',
-    saoChinh:['Thiên Lương','Thiên Mã'],
-    mucDich:'Anh chị em, đồng nghiệp ngang cấp, bạn bè',
-    natalDesc:'Thiên Lương tọa Huynh Đệ: quan hệ đồng nghiệp ngang cấp tốt, được tin tưởng. Thiên Mã cho thấy các mối quan hệ này thường xuyên thay đổi, cần chủ động duy trì.',
-    totCho:['Hợp tác với đồng nghiệp cùng cấp','Chia sẻ thông tin, hỗ trợ nhau'],
-    tranh:['Ganh đua, cạnh tranh không lành mạnh nội bộ'],
+    ten:'Huynh Đệ', chiIdx:4, icon:'👥', loai:'huynh-de',
+    saoChinh:['Vũ Khúc','Thiên Tướng'],
+    mucDich:'Anh chị em, đồng nghiệp ngang cấp, bạn bè thân',
+    natalDesc:'Vũ Khúc và Thiên Tướng cư Huynh Đệ: quan hệ anh em, bạn bè đồng nghiệp ngang cấp mang tính thực tế, xây dựng trên nền tảng tin tưởng và hành động cụ thể. Vũ Khúc là sao tài lộc và cương quyết – bạn trân trọng những người bạn/đồng nghiệp làm việc hiệu quả và trung thực. Thiên Tướng giúp mối quan hệ được bảo vệ và bền vững.',
+    totCho:['Xây dựng quan hệ đồng nghiệp qua công việc thực tế','Hỗ trợ lẫn nhau trong nhóm tuyển dụng','Giữ gìn tình bạn cũ – nguồn giới thiệu ứng viên tốt'],
+    tranh:['Cạnh tranh không lành mạnh với đồng nghiệp','Bỏ bê việc duy trì quan hệ cũ'],
   },
 ];
 
@@ -939,6 +1052,8 @@ function render(){
   else if(currentView==='tuvi-month')renderTuviMonth();
   else if(currentView==='tuvi-hour')renderTuviHour();
   else if(currentView==='ngay-dep')renderNgayDep();
+  else if(currentView==='recruit-day')renderRecruitDay();
+  else if(currentView==='recruit-week')renderRecruitWeek();
   else if(currentView.startsWith('sum-'))renderSummary(currentView.replace('sum-',''));
   updateSidebar();
 }
@@ -952,13 +1067,16 @@ function updateNavLabel(){
     'ngay-dep':`${MONTHS_VI[d.getMonth()]} ${d.getFullYear()}`,
     'sum-day':fmt(d),'sum-month':`${MONTHS_VI[d.getMonth()]} ${d.getFullYear()}`,
     'sum-quarter':`Năm ${d.getFullYear()}`,'sum-year':`Năm ${d.getFullYear()}`,
+    'recruit-day':fmt(d),'recruit-week':fmt(d),
   };
   document.getElementById('navLabel').textContent=labels[currentView]||'';
 }
 
 function navDate(dir){
-  if(['hour','day','tuvi-day','tuvi-hour','sum-day'].includes(currentView)){
+  if(['hour','day','tuvi-day','tuvi-hour','sum-day','recruit-day'].includes(currentView)){
     currentDate=new Date(currentDate.getTime()+dir*86400000);
+  }else if(currentView==='recruit-week'){
+    currentDate=new Date(currentDate.getTime()+dir*7*86400000);
   }else if(['month','sum-month','ngay-dep','tuvi-month'].includes(currentView)){
     currentDate=new Date(currentDate.getFullYear(),currentDate.getMonth()+dir,1);
   }else{
@@ -1661,6 +1779,182 @@ function renderNgayDep(){
   document.getElementById('ngayDepContent').innerHTML=html;
 }
 function goDay(dkk){currentDate=new Date(dkk);switchView('hour')}
+
+// ============================================================
+//   RECRUITMENT CALENDAR VIEWS
+// ============================================================
+function renderRecruitDay(){
+  const y=currentDate.getFullYear(),m=currentDate.getMonth()+1,d=currentDate.getDate();
+  const dow=currentDate.getDay();
+  const lunar=solarToLunar(y,m,d);
+  const dc=canDay(y,m,d), dch=chiDay(y,m,d);
+  const mc=canMonth(y,m), mch=chiMonth(m);
+  const yc=canYear(y), ych=chiYear(y);
+  const hdList=getGioHD(y,m,d);
+  const sc=getTuviDay(y,m,d).dayScore;
+  const isWorkDay=[1,2,3,4,5].includes(dow);
+  const lunarStr=`${lunar.day}/${lunar.month}${lunar.leap?' (Nhuận)':''} ${canYear(lunar.year)} ${chiYear(lunar.year)}`;
+
+  const scColor=sc>=2?'var(--done)':sc===1?'var(--done)':sc<0?'var(--todo)':'var(--muted)';
+  const scLabel=sc>=2?'🌟 Đại Cát':sc===1?'✅ Cát':sc<0?'⚠️ Cần thận':'☯️ Bình thường';
+
+  // Day header
+  const hdr=`<div class="rec-day-hdr">
+    <div>
+      <h2>${DOW_FULL_REC[dow]}, ${d}/${m}/${y}</h2>
+      <p>Âm lịch: ${lunarStr} · Ngày ${dc} ${dch} · Tháng ${mc} ${mch}</p>
+    </div>
+    <div class="rec-chips">
+      <span class="rec-chip rec-chip-gold">Ngày ${dc} ${dch}</span>
+      <span class="rec-chip" style="color:${scColor};border-color:${scColor};background:${sc>=0?'rgba(91,232,168,.07)':'rgba(232,124,91,.07)'}">${scLabel}</span>
+      ${isWorkDay?'<span class="rec-chip rec-chip-blue">💼 Ngày làm việc</span>':'<span class="rec-chip" style="color:var(--muted);border-color:var(--border)">🌿 Cuối tuần</span>'}
+      ${dow===2?'<span class="rec-chip rec-chip-purple">🎓 Hội thảo tối</span>':''}
+      ${dow===4||dow===5?'<span class="rec-chip rec-chip-green">🏓 Pickleball tối</span>':''}
+    </div>
+  </div>`;
+
+  // Giờ hoàng đạo panel
+  const hdSlotsHtml=CHI.map((chi,i)=>{
+    const isHD=hdList.includes(i);
+    return`<div class="r-hd-slot ${isHD?'hd':'hc'}">
+      <div class="rchi">${chi}</div>
+      <div class="rgio">${GIO_TIMES_REC[i].replace('–','-')}</div>
+      <div style="font-size:9px;margin-top:1px">${isHD?'⭐':'·'}</div>
+    </div>`;
+  }).join('');
+  const hdPanel=`<div class="r-hd-panel"><h4>⏰ Giờ Hoàng Đạo Hôm Nay</h4><div class="r-hd-slots">${hdSlotsHtml}</div></div>`;
+
+  // Recruitment advice
+  let advHtml='';
+  if(isWorkDay){
+    TASK_SLOTS.forEach(ts=>{
+      if(isHoangDao(ts.hour,y,m,d)){
+        advHtml+=`<div class="r-advice-row">
+          <span style="color:var(--done);font-size:12px">✅</span>
+          <div><strong style="color:var(--gold2)">${ts.hour}:00h – ${ts.task}</strong><br><span style="font-size:11px;color:var(--muted)">${ts.reason}</span></div>
+        </div>`;
+      }
+    });
+  }
+  const advPanel=advHtml?`<div class="r-advice-panel"><h4>🎯 Ưu tiên hôm nay tại giờ Hoàng Đạo</h4>${advHtml}</div>`:'';
+
+  // Timeline
+  const events=getEventsForDate(currentDate).filter(e=>!(e.type==='work'&&e.title==='Giờ làm việc ABBank'));
+  const HOURS=[];for(let h=7;h<=22;h++)HOURS.push(h);
+  const rowsHtml=HOURS.map(h=>{
+    const chiIdx2=hourToGioChi(h);
+    const isHD=hdList.includes(chiIdx2);
+    const eventsInHour=events.filter(e=>{
+      const eS=timeToMinRec(e.start),eE=timeToMinRec(e.end);
+      return eS<(h+1)*60&&eE>h*60;
+    });
+    const evHtml=eventsInHour.map(e=>{
+      if(timeToMinRec(e.start)<h*60||timeToMinRec(e.start)>=(h+1)*60)return'';
+      const isPriority=e.type==='task'&&isHoangDao(timeToMinRec(e.start)/60|0,y,m,d);
+      return`<div class="ev-blk ${e.type}${isPriority?' priority':''}">
+        <div class="ev-b-time">${e.start} – ${e.end}</div>
+        <div class="ev-b-title">${e.title}</div>
+        <div class="ev-b-desc">${e.desc}</div>
+        ${isPriority?'<div class="ev-b-hd">⭐ Giờ Hoàng Đạo – Ưu tiên thực hiện!</div>':''}
+      </div>`;
+    }).filter(Boolean).join('');
+    return`<div class="rtl-row ${isHD?'rr-hd':''}">
+      <div class="rtl-time"><span>${h}:00</span><span style="width:6px;height:6px;border-radius:50%;background:${isHD?'var(--done)':'var(--todo)'};opacity:${isHD?1:.3};margin-left:auto"></span></div>
+      <div class="rtl-slot">${evHtml}</div>
+    </div>`;
+  }).join('');
+
+  const legend=`<div class="rec-legend">
+    <span style="background:rgba(59,122,191,.15);color:#7ec8f0;border-color:rgba(59,122,191,.3)">💼 Giờ làm</span>
+    <span style="background:rgba(200,151,42,.12);color:var(--gold2);border-color:rgba(200,151,42,.25)">📋 Nhiệm vụ</span>
+    <span style="background:rgba(200,151,42,.2);color:var(--gold2);border-color:var(--gold)">⭐ Nhiệm vụ HD</span>
+    <span style="background:rgba(139,92,246,.15);color:#c4b5fd;border-color:rgba(139,92,246,.3)">🎓 Hội thảo</span>
+    <span style="background:rgba(34,197,94,.12);color:var(--done);border-color:rgba(34,197,94,.3)">🏓 Pickleball</span>
+    <span style="background:rgba(39,174,96,.06);color:var(--done);border-color:transparent">🟢 Nền = giờ hoàng đạo</span>
+  </div>`;
+
+  const timeline=`<div class="recruit-timeline">
+    <div class="rtl-header">📅 Lịch trình ${DOW_FULL_REC[dow]}, ${fmt(currentDate)}</div>
+    <div>${rowsHtml}</div>
+  </div>`;
+
+  document.getElementById('view-recruit-day').innerHTML=hdr+hdPanel+advPanel+legend+timeline;
+}
+
+function renderRecruitWeek(){
+  const dow=currentDate.getDay();
+  const monday=new Date(currentDate);
+  monday.setDate(currentDate.getDate()-((dow+6)%7));
+  const days=Array.from({length:7},(_,i)=>{const d=new Date(monday);d.setDate(monday.getDate()+i);return d;});
+  const todayStr=dk(new Date());
+
+  document.getElementById('view-recruit-week').innerHTML=''; // clear
+
+  const HOURS=[];for(let h=7;h<=22;h++)HOURS.push(h);
+
+  // Header row
+  const headerCols=days.map(day=>{
+    const lunar=solarToLunar(day.getFullYear(),day.getMonth()+1,day.getDate());
+    const isToday=dk(day)===todayStr;
+    const dc2=canDay(day.getFullYear(),day.getMonth()+1,day.getDate());
+    const dch2=chiDay(day.getFullYear(),day.getMonth()+1,day.getDate());
+    return`<div class="rwg-th-day ${isToday?'rw-today':''}" onclick="currentDate=new Date(${day.getTime()});switchView('recruit-day')">
+      <div class="rdnum">${day.getDate()}</div>
+      <div class="rdname">${DAYS_VI[day.getDay()]}</div>
+      <div class="rdlunar">${lunar.day}/${lunar.month} · ${dc2} ${dch2}</div>
+    </div>`;
+  }).join('');
+
+  // Body rows
+  const bodyHtml=HOURS.map(h=>{
+    const timeLbl=`<div class="rwg-time-lbl">${h}:00</div>`;
+    const dayCols=days.map(day=>{
+      const y2=day.getFullYear(),m2=day.getMonth()+1,d2=day.getDate();
+      const hdList2=getGioHD(y2,m2,d2);
+      const chiIdx2=hourToGioChi(h);
+      const isHD=hdList2.includes(chiIdx2);
+      const isOff=[0,6].includes(day.getDay());
+      const evs=getEventsForDate(day).filter(e=>{
+        if(e.type==='work')return false;
+        const eH=parseInt(e.start.split(':')[0]);
+        return eH===h;
+      });
+      const evHtml=evs.map(e=>`<div class="rw-chip ${e.type}" title="${e.title}: ${e.desc}">${e.title.length>18?e.title.substring(0,16)+'…':e.title}</div>`).join('');
+      return`<div class="rwg-day-col ${isHD?'rw-hd':''} ${isOff?'rw-off':''}">${evHtml}</div>`;
+    }).join('');
+    return timeLbl+dayCols;
+  }).join('');
+
+  const legend=`<div class="rec-legend">
+    <span style="background:rgba(200,151,42,.12);color:var(--gold2);border-color:rgba(200,151,42,.25)">📋 Công việc tuyển dụng</span>
+    <span style="background:rgba(139,92,246,.15);color:#c4b5fd;border-color:rgba(139,92,246,.3)">🎓 Hội thảo T3</span>
+    <span style="background:rgba(34,197,94,.12);color:var(--done);border-color:rgba(34,197,94,.3)">🏓 Pickleball T5&T6</span>
+    <span style="background:rgba(39,174,96,.06);color:var(--done);border-color:transparent">🟢 Nền = giờ hoàng đạo</span>
+  </div>`;
+
+  const weekRange=`${fmt(days[0])} – ${fmt(days[6])}`;
+  const grid=`<div style="margin-bottom:14px;font-family:'Noto Serif Display',serif;font-size:16px;color:var(--gold2)">📋 Tuần ${weekRange}</div>
+  ${legend}
+  <div class="rec-week-grid">
+    <div class="rwg-th-time">Giờ</div>${headerCols}
+    ${bodyHtml}
+  </div>`;
+
+  // Weekly schedule summary
+  const summaryHtml=`<div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-top:16px">
+    <h4 style="font-size:11px;font-weight:700;color:var(--gold2);margin-bottom:10px">📌 Lịch cố định hàng tuần</h4>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:11px">
+      <div style="padding:8px;background:rgba(59,122,191,.1);border-radius:6px;border-left:3px solid #3b7abf"><strong style="color:#7ec8f0">T2–T6</strong><br><span style="color:var(--muted)">8:30–18:00 Giờ làm việc ABBank</span></div>
+      <div style="padding:8px;background:rgba(139,92,246,.1);border-radius:6px;border-left:3px solid #8b5cf6"><strong style="color:#c4b5fd">T3 tối</strong><br><span style="color:var(--muted)">18:55–20:30 Hội thảo tuyển dụng</span></div>
+      <div style="padding:8px;background:rgba(34,197,94,.1);border-radius:6px;border-left:3px solid #22c55e"><strong style="color:var(--done)">T5 & T6 tối</strong><br><span style="color:var(--muted)">19:00–21:30 Pickleball</span></div>
+      <div style="padding:8px;background:rgba(200,151,42,.1);border-radius:6px;border-left:3px solid var(--gold)"><strong style="color:var(--gold2)">T2 sáng</strong><br><span style="color:var(--muted)">09:00–09:45 Lên kế hoạch tuần</span></div>
+      <div style="padding:8px;background:rgba(200,151,42,.08);border-radius:6px;border-left:3px solid var(--gold)"><strong style="color:var(--gold2)">T4 chiều</strong><br><span style="color:var(--muted)">14:00–15:00 Review pipeline tuần giữa</span></div>
+      <div style="padding:8px;background:rgba(200,151,42,.08);border-radius:6px;border-left:3px solid var(--gold)"><strong style="color:var(--gold2)">T6 chiều</strong><br><span style="color:var(--muted)">16:00–17:00 Tổng kết tuần</span></div>
+    </div>
+  </div>`;
+
+  document.getElementById('view-recruit-week').innerHTML=grid+summaryHtml;
+}
 
 // ============================================================
 //   SUMMARY
