@@ -541,7 +541,7 @@ const LEAP_MONTH_OFFSET = [
 ];
 function INT(v){return Math.floor(v)}
 function solarToLunar(y,m,d){
-  let offset=Math.floor((new Date(y,m-1,d)-new Date(1900,0,31))/86400000);
+  let offset=Math.floor((Date.UTC(y,m-1,d)-Date.UTC(1900,0,31))/86400000);
   let i,temp=0;
   for(i=1900;i<2100&&offset>0;i++){
     temp=lunarYearDays(i);offset-=temp;
@@ -608,12 +608,11 @@ function julianDay(y,m,d){
   if(m<=2){m+=12;y--;}
   return INT(365.25*(y+4716))+INT(30.6001*(m+1))+d-1524;
 }
+// Can chi giờ: Giáp/Kỷ→Giáp Tý; Ất/Canh→Bính Tý; Bính/Tân→Mậu Tý; Đinh/Nhâm→Canh Tý; Mậu/Quý→Nhâm Tý
 function canChiHour(h,dayCanIdx){
-  const gioCan=['Tý','Sửu','Dần','Mão','Thìn','Tỵ','Ngọ','Mùi','Thân','Dậu','Tuất','Hợi'];
   const gioIdx=Math.floor((h+1)/2)%12;
-  const base=[0,2,4,6,8,0,2,4,6,8,0,2,4,6,8,0,2,4,6,8,0,2,4,6,8,0,2,4,6,8];
   const canBase=dayCanIdx%5;
-  return CAN[(base[canBase*12+gioIdx])%10]+CHI[gioIdx];
+  return CAN[(canBase*2+gioIdx)%10]+CHI[gioIdx];
 }
 function getDayCanIdx(y,m,d){return (julianDay(y,m,d)+40)%10}
 
@@ -1100,7 +1099,7 @@ function lunarBannerHTML(d){
   const lunar=solarToLunar(y,m,day);
   const dc=canDay(y,m,day);const dch=chiDay(y,m,day);
   const mc=canMonth(lunar.year,lunar.month);const mch=chiMonth(lunar.month);
-  const yc=canYear(y);const ych=chiYear(y);
+  const yc=canYear(lunar.year);const ych=chiYear(lunar.year);
   const chiIdx=julianDay(y,m,day)%12;
   const hdList=getGioHD(y,m,day);
   const isGoodDay=isNgayDep(y,m,day)&&!isNgayXau(y,m,day);
@@ -1469,7 +1468,7 @@ function renderTuviMonth(){
   const mch=chiMonth(lunarRef.month);
   const mChiIdx=CHI.indexOf(mch);
   const mHanh=canToHanh(mc);
-  const yc=canYear(y), ych=chiYear(y);
+  const yc=canYear(lunarRef.year), ych=chiYear(lunarRef.year);
 
   // Điểm tháng với bản mệnh Thổ
   let mScore=0;
@@ -1796,11 +1795,11 @@ function renderRecruitDay(){
   const lunar=solarToLunar(y,m,d);
   const dc=canDay(y,m,d), dch=chiDay(y,m,d);
   const mc=canMonth(lunar.year,lunar.month), mch=chiMonth(lunar.month);
-  const yc=canYear(y), ych=chiYear(y);
+  const yc=canYear(lunar.year), ych=chiYear(lunar.year);
   const hdList=getGioHD(y,m,d);
   const sc=getTuviDay(y,m,d).dayScore;
   const isWorkDay=[1,2,3,4,5].includes(dow);
-  const lunarStr=`${lunar.day}/${lunar.month}${lunar.leap?' (Nhuận)':''} ${canYear(lunar.year)} ${chiYear(lunar.year)}`;
+  const lunarStr=`${lunar.day}/${lunar.month}${lunar.leap?' (Nhuận)':''} ${yc} ${ych}`;
 
   const scColor=sc>=2?'var(--done)':sc===1?'var(--done)':sc<0?'var(--todo)':'var(--muted)';
   const scLabel=sc>=2?'🌟 Đại Cát':sc===1?'✅ Cát':sc<0?'⚠️ Cần thận':'☯️ Bình thường';
