@@ -592,7 +592,13 @@ const CHI_ICON=['🐭','🐮','🐯','🐰','🐲','🐍','🐴','🐑','🐵','
 const NAP_AM=['Kim Thổ','Kim Lửa','Hỏa Đất','Mộc Lửa','Thủy Đất','Thổ Kim','Kim Mộc','Hỏa Kim','Mộc Thủy','Thủy Hỏa','Hỏa Mộc','Thổ Mộc','Mộc Đất','Kim Nước','Thủy Lửa','Hỏa Kim','Mộc Đất','Thổ Hỏa','Kim Mộc','Hỏa Đất','Thủy Kim','Kim Hỏa','Mộc Nước','Thủy Mộc','Hỏa Đất','Thổ Kim','Kim Mộc','Hỏa Thủy','Mộc Kim','Thổ Hỏa'];
 function canYear(y){return CAN[(y-4)%10]}
 function chiYear(y){return CHI[(y-4)%12]}
-function canMonth(y,m){let c=(y*12+m)%10;return CAN[(c+10)%10]}
+// Can tháng: dựa vào can năm và tháng âm lịch (m = 1-12)
+// Năm Giáp/Kỷ → T1 Bính; Ất/Canh → T1 Mậu; Bính/Tân → T1 Canh; Đinh/Nhâm → T1 Nhâm; Mậu/Quý → T1 Giáp
+function canMonth(lunarYear, lunarMonth){
+  const yci=(lunarYear-4+400)%10; // can năm index (0-9)
+  return CAN[((yci%5)*2+lunarMonth+1)%10];
+}
+// Chi tháng: T1=Dần, T2=Mão, ..., T12=Sửu (m = lunar month 1-12)
 function chiMonth(m){return CHI[(m+1)%12]}
 function canDay(y,m,d){
   let total=julianDay(y,m,d);return CAN[(total+40)%10];
@@ -1093,7 +1099,7 @@ function lunarBannerHTML(d){
   const y=d.getFullYear(),m=d.getMonth()+1,day=d.getDate();
   const lunar=solarToLunar(y,m,day);
   const dc=canDay(y,m,day);const dch=chiDay(y,m,day);
-  const mc=canMonth(y,m);const mch=chiMonth(m);
+  const mc=canMonth(lunar.year,lunar.month);const mch=chiMonth(lunar.month);
   const yc=canYear(y);const ych=chiYear(y);
   const chiIdx=julianDay(y,m,day)%12;
   const hdList=getGioHD(y,m,day);
@@ -1458,8 +1464,9 @@ function renderTuviDay(){
 // ============================================================
 function renderTuviMonth(){
   const y=currentDate.getFullYear(), mo=currentDate.getMonth()+1;
-  const mc=canMonth(y,mo);
-  const mch=chiMonth(mo);
+  const lunarRef=solarToLunar(y,mo,15); // dùng ngày 15 làm đại diện tháng
+  const mc=canMonth(lunarRef.year,lunarRef.month);
+  const mch=chiMonth(lunarRef.month);
   const mChiIdx=CHI.indexOf(mch);
   const mHanh=canToHanh(mc);
   const yc=canYear(y), ych=chiYear(y);
@@ -1559,7 +1566,7 @@ function renderTuviMonth(){
     // Highlight tháng tốt nhất cho cung này trong năm
     let bestMonth=''; let bestScore=-99;
     for(let bm=1;bm<=12;bm++){
-      const bmc=canMonth(y,bm); const bmch=chiMonth(bm);
+      const bmc=canMonth(y,bm); const bmch=chiMonth(bm); // bm là tháng âm lịch 1-12
       const bmChiIdx=CHI.indexOf(bmch);
       const bmHanh=canToHanh(bmc);
       let bms=0;
@@ -1788,7 +1795,7 @@ function renderRecruitDay(){
   const dow=currentDate.getDay();
   const lunar=solarToLunar(y,m,d);
   const dc=canDay(y,m,d), dch=chiDay(y,m,d);
-  const mc=canMonth(y,m), mch=chiMonth(m);
+  const mc=canMonth(lunar.year,lunar.month), mch=chiMonth(lunar.month);
   const yc=canYear(y), ych=chiYear(y);
   const hdList=getGioHD(y,m,d);
   const sc=getTuviDay(y,m,d).dayScore;
