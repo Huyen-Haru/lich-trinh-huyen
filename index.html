@@ -442,7 +442,6 @@ body{
       <div class="stat-row"><span style="color:var(--muted)">Còn lại</span><span class="stat-val" id="sb-todo" style="color:var(--todo)">0</span></div>
       <div class="progress-bar"><div class="progress-fill" id="sb-prog" style="width:0%"></div></div>
     </div>
-    <button class="nav-btn" onclick="openClaudeSettings()" style="margin-top:10px;width:100%;justify-content:center;font-size:11px;color:#a78bfa"><span class="icon">⚙️</span>Cài đặt Claude AI</button>
   </div>
 </div>
 
@@ -541,105 +540,6 @@ body{
 </div>
 </div>
 
-<!-- FLOATING AI BUTTON (hiện khi chưa có key) -->
-<button id="floatingAiBtn" onclick="openClaudeSettings()"
-  style="display:none;position:fixed;bottom:24px;right:24px;z-index:150;
-         background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;
-         border-radius:50px;padding:12px 20px;cursor:pointer;font-size:13px;font-weight:700;
-         font-family:inherit;box-shadow:0 4px 20px rgba(124,58,237,.5);
-         animation:floatPulse 2s ease-in-out infinite;">
-  🤖 Kích hoạt AI Luận Giải
-</button>
-<style>
-@keyframes floatPulse{0%,100%{box-shadow:0 4px 20px rgba(124,58,237,.5)}50%{box-shadow:0 4px 30px rgba(124,58,237,.8)}}
-</style>
-
-<!-- CLAUDE WELCOME MODAL (tự động hiện khi chưa có API Key) -->
-<div class="claude-settings-modal" id="claudeWelcomeModal">
-  <div class="claude-settings-box" style="width:520px;max-height:92vh;overflow-y:auto">
-    <div style="text-align:center;margin-bottom:20px">
-      <div style="font-size:48px;margin-bottom:8px">🤖</div>
-      <h2 style="font-size:20px;margin-bottom:6px">Kích hoạt Claude AI Luận Giải Tử Vi</h2>
-      <p style="font-size:12px;color:var(--muted);line-height:1.7">
-        Claude AI sẽ tự động đọc lá số tử vi của bạn và viết bài luận giải<br>
-        <strong style="color:var(--gold2)">mỗi sáng khi mở trang</strong> – hoàn toàn cá nhân hóa cho Phạm Huyền
-      </p>
-    </div>
-
-    <!-- BƯỚC 1 -->
-    <div style="background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:10px;padding:14px;margin-bottom:12px">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-        <div style="width:28px;height:28px;background:linear-gradient(135deg,#7c3aed,#4f46e5);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:13px;flex-shrink:0">1</div>
-        <strong style="color:#a78bfa;font-size:13px">Đăng ký tài khoản Anthropic (miễn phí)</strong>
-      </div>
-      <p style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.6;padding-left:38px">
-        Truy cập trang web Anthropic để tạo tài khoản và lấy API Key.<br>
-        Anthropic cấp <strong style="color:var(--done)">$5 credit miễn phí</strong> khi đăng ký – dùng được ~1–2 năm cho tính năng này.
-      </p>
-      <a href="https://console.anthropic.com/settings/keys" target="_blank"
-         style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;padding:9px 18px;border-radius:7px;text-decoration:none;font-size:12px;font-weight:700;margin-left:38px">
-        🔑 Mở trang lấy API Key →
-      </a>
-      <p style="font-size:10px;color:var(--muted);margin-top:8px;padding-left:38px">
-        (Sau khi đăng ký/đăng nhập → nhấn <strong>"Create Key"</strong> → copy đoạn code bắt đầu bằng <code style="background:var(--card);padding:1px 4px;border-radius:3px;color:#a78bfa">sk-ant-...</code>)
-      </p>
-    </div>
-
-    <!-- BƯỚC 2 -->
-    <div style="background:rgba(200,151,42,.06);border:1px solid rgba(200,151,42,.2);border-radius:10px;padding:14px;margin-bottom:16px">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-        <div style="width:28px;height:28px;background:linear-gradient(135deg,var(--gold),var(--accent));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:13px;flex-shrink:0">2</div>
-        <strong style="color:var(--gold2);font-size:13px">Dán API Key vào đây</strong>
-      </div>
-      <div style="padding-left:38px">
-        <label style="display:block;font-size:11px;color:var(--muted);margin-bottom:5px;font-weight:700">API Key của bạn</label>
-        <input class="claude-key-input" id="claudeWelcomeKey" type="text"
-               placeholder="sk-ant-api03-xxxxxxxxxxxx..."
-               style="margin-bottom:8px;font-size:13px;padding:10px 12px">
-        <p style="font-size:10px;color:var(--muted);margin-bottom:10px">
-          🔒 Key chỉ lưu trong trình duyệt của bạn, không gửi đi đâu khác ngoài Anthropic
-        </p>
-        <button class="claude-btn" onclick="_saveWelcomeKey()"
-                style="padding:10px 24px;font-size:13px;width:100%">
-          ✨ Bắt Đầu Luận Giải Ngay
-        </button>
-      </div>
-    </div>
-
-    <div style="text-align:center">
-      <button onclick="closeWelcomeModal()"
-              style="background:none;border:none;color:var(--muted);font-size:11px;cursor:pointer;font-family:inherit;padding:4px 12px">
-        Bỏ qua, tôi sẽ cài đặt sau
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- CLAUDE SETTINGS MODAL (cài đặt lại sau) -->
-<div class="claude-settings-modal" id="claudeSettingsModal" onclick="if(event.target===this)closeClaudeSettings()">
-  <div class="claude-settings-box">
-    <h2>⚙️ Cài Đặt Claude AI</h2>
-    <p style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6">
-      Claude AI tự động luận giải Tử Vi cá nhân của bạn mỗi ngày khi mở trang.<br>
-      API Key lưu trong trình duyệt, riêng tư hoàn toàn.
-    </p>
-    <label>Anthropic API Key</label>
-    <input class="claude-key-input" id="claudeKeyModal" type="password" placeholder="sk-ant-api03-..." style="margin-bottom:4px">
-    <div style="margin-bottom:12px">
-      <a href="https://console.anthropic.com/settings/keys" target="_blank" style="font-size:11px;color:#a78bfa;text-decoration:none">🔗 Lấy API Key tại console.anthropic.com →</a>
-    </div>
-    <div style="background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.15);border-radius:7px;padding:10px;font-size:11px;color:var(--muted);line-height:1.7;margin-bottom:14px">
-      <strong style="color:#a78bfa">Model:</strong> claude-haiku-4-5 (nhanh, ~$0.001/ngày)<br>
-      <strong style="color:#a78bfa">Tự động:</strong> Mỗi ngày 1 lần khi mở trang, cache lại<br>
-      <strong style="color:#a78bfa">Nội dung:</strong> Vận khí, công việc HR, tài lộc, giờ vàng
-    </div>
-    <div id="claudeKeyStatus" style="font-size:11px;margin-bottom:8px"></div>
-    <div class="claude-settings-actions">
-      <button class="btn-cancel" onclick="closeClaudeSettings()">Đóng</button>
-      <button class="claude-btn" onclick="saveClaudeSettings()">💾 Lưu & Áp Dụng</button>
-    </div>
-  </div>
-</div>
 
 <!-- MODAL -->
 <div class="overlay" id="overlay" onclick="closeOut(event)">
@@ -2305,267 +2205,215 @@ function sIcon(s){return{done:'✅',pending:'⏳',todo:'🔴'}[s]||''}
 function catL(c){return{work:'Công việc',personal:'Cá nhân',health:'Sức khỏe',finance:'Tài chính'}[c]||c}
 function emptyHTML(msg){return`<div class="empty"><div class="ei">📭</div><p>${msg}</p><p style="font-size:10px;margin-top:5px">Nhấn + Thêm việc để bắt đầu</p></div>`}
 
+
 // ============================================================
-//   CLAUDE AI LUẬN GIẢI TỬ VI HÀNG NGÀY
+//   LUẬN GIẢI TỬ VI TỰ ĐỘNG (Miễn phí, không cần API Key)
 // ============================================================
-const _CLAUDE_API = 'https://api.anthropic.com/v1/messages';
-const _CLAUDE_MODEL = 'claude-haiku-4-5-20251001';
-const _CLAUDE_DOW = ['Chủ Nhật','Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Thứ Sáu','Thứ Bảy'];
-const _CLAUDE_GIO = ['23:00–01:00','01:00–03:00','03:00–05:00','05:00–07:00','07:00–09:00','09:00–11:00','11:00–13:00','13:00–15:00','15:00–17:00','17:00–19:00','19:00–21:00','21:00–23:00'];
+const _DOW = ['Chủ Nhật','Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Thứ Sáu','Thứ Bảy'];
+const _GIO = ['23:00–01:00','01:00–03:00','03:00–05:00','05:00–07:00','07:00–09:00','09:00–11:00','11:00–13:00','13:00–15:00','15:00–17:00','17:00–19:00','19:00–21:00','21:00–23:00'];
+const _HOUR_START = [23,1,3,5,7,9,11,13,15,17,19,21];
 
-function _getKey(){return localStorage.getItem('claude_api_key')||'';}
-function _setKey(k){localStorage.setItem('claude_api_key',k.trim());}
-function _getCache(ds){try{const r=localStorage.getItem('claude_tv_'+ds);return r?JSON.parse(r):null;}catch{return null;}}
-function _setCache(ds,data){try{localStorage.setItem('claude_tv_'+ds,JSON.stringify(data));}catch{}}
+function _getCache(ds){try{const r=localStorage.getItem('tv_reading_'+ds);return r?JSON.parse(r):null;}catch{return null;}}
+function _setCache(ds,data){try{localStorage.setItem('tv_reading_'+ds,JSON.stringify(data));}catch{}}
 
-function _buildPrompt(y,m,d){
-  const tv=getTuviDay(y,m,d);
-  const hdList=getGioHD(y,m,d);
-  const hdText=hdList.map(i=>`${CHI[i]} (${_CLAUDE_GIO[i]})`).join(', ');
-  const dow=new Date(y,m-1,d).getDay();
-  const cungSum=CUNG_DATA.map(c=>{
-    const inf=getCungDayInfluence(c,tv.dChiIdx,tv.dayScore,tv.thuHanh);
-    return `• Cung ${c.ten}: ${inf.tag} – ${inf.detail.replace(/<[^>]*>/g,'').slice(0,90)}`;
-  }).join('\n');
+// ── Bộ lời khuyên theo giờ chi ────────────────────────────
+const _GIO_TASK = [
+  'Giờ Tý: Xử lý email & chuẩn bị kế hoạch ngày',
+  'Giờ Sửu: Đọc hồ sơ, nghiên cứu chiến lược tuyển dụng',
+  'Giờ Dần: Gọi điện sớm cho ứng viên tiềm năng',
+  'Giờ Mão: Lọc CV & cập nhật pipeline ứng viên',
+  'Giờ Thìn: ⭐ Giờ vàng gọi điện – ứng viên tỉnh táo, dễ tiếp nhận',
+  'Giờ Tỵ: ⭐ Đàm phán lương & chốt offer – kim tiền vượng',
+  'Giờ Ngọ: ⭐ Phỏng vấn trực tiếp – khí vượng, tạo ấn tượng mạnh',
+  'Giờ Mùi: Tư vấn ứng viên trẻ, sinh viên mới ra trường',
+  'Giờ Thân: Đăng tin tuyển dụng – lan tỏa rộng, nhiều người xem',
+  'Giờ Dậu: Theo dõi & nhắc ứng viên, chốt các vấn đề cuối ngày',
+  'Giờ Tuất: Tổng kết & lên kế hoạch ngày mai',
+  'Giờ Hợi: Nghỉ ngơi, sạc năng lượng cho ngày mới'
+];
 
-  return `Bạn là thầy phong thủy tử vi người Việt, hãy luận giải vận khí hôm nay cho tôi.
+function _generateReading(y, m, d) {
+  const tv  = getTuviDay(y, m, d);
+  const hd  = getGioHD(y, m, d);
+  const dow = new Date(y, m-1, d).getDay();
+  const sc  = tv.dayScore;
+  const hanh = tv.thuHanh;
+  const can  = tv.dc, chi = tv.dch;
+  const lunar = tv.lunar;
+  const isWork = [1,2,3,4,5].includes(dow);
 
-📋 LÁ SỐ TỬ VI CỦA TÔI:
-• Họ tên: Phạm Huyền (Phạm Thị Thanh Huyền), nữ, sinh tại miền Bắc Việt Nam
-• Ngày sinh dương lịch: 06/10/1990 lúc 8 giờ 18 phút sáng
-• Năm sinh: Canh Ngọ (1990) 🐴 – Ngũ Hành bản mệnh: Thổ (Thổ Nhị Cục)
-• Cung Mệnh: Ngọ – Sao chủ: Tham Lang (linh hoạt, giao tiếp giỏi, đa tài)
-• Hành được sinh: Hỏa sinh Thổ ✅ | Hành khắc: Mộc khắc Thổ ⚠️
-• Nghề nghiệp: Chuyên viên tuyển dụng nhân sự ngân hàng ABBank, quản lý 37 đơn vị miền Bắc
+  // Giờ hoàng đạo trong giờ làm (7h–18h)
+  const workHD = hd
+    .map(i => ({i, chi: CHI[i], time: _GIO[i], h: _HOUR_START[i]}))
+    .filter(x => x.h >= 7 && x.h <= 17);
 
-📅 NGÀY HÔM NAY: ${d}/${m}/${y} – ${_CLAUDE_DOW[dow]}
-• Âm lịch: ${tv.lunar.day}/${tv.lunar.month}${tv.lunar.leap?' (Nhuận)':''}
-• Can Chi ngày: ${tv.dc} ${tv.dch} – Ngũ Hành: ${tv.thuHanh}
-• Đánh giá tổng: ${tv.dayScore>=2?'ĐẠI CÁT 🌟':tv.dayScore===1?'CÁT ✅':tv.dayScore<0?'CẦN THẬN ⚠️':'TRUNG BÌNH ☯️'}
-• Giờ Hoàng Đạo hôm nay: ${hdText}
-• Nên: ${tv.nen.join(' · ')}
-• Tránh: ${tv.khong.join(' · ')}
+  // ── 1. Tổng quan vận khí ──────────────────────────────────
+  const intro_map = {
+    2: [
+      `☀️ Chào buổi sáng Huyền ơi! Ngày **${can} ${chi}** hôm nay thực sự là "ngày vàng" – hành **${hanh}** tương sinh mạnh với bản mệnh **Thổ** của bạn. Năng lượng từ sáng sớm đã rất dồi dào, mọi việc bạn chủ động khởi xướng hôm nay đều có xu hướng diễn ra thuận lợi và nhanh chóng hơn bình thường.`,
+      `🌟 Ngày **${can} ${chi}** – hành **${hanh}** đang đổ đầy năng lượng vào bản mệnh Thổ của bạn, Huyền ơi! Đây là loại vận khí hiếm gặp trong tuần – hãy tận dụng ngay từ buổi sáng để làm những việc quan trọng nhất.`
+    ],
+    1: [
+      `🌤️ Ngày **${can} ${chi}** hôm nay khá thuận lợi cho bạn – hành **${hanh}** hỗ trợ bản mệnh Thổ, tạo ra sự ổn định và bình an. Không phải ngày "đại cát" nhưng mọi việc làm có chủ đích đều sẽ ra kết quả tốt.`,
+      `✨ Chào ngày **${can} ${chi}**! Vận khí hôm nay thuận cho mệnh Thổ của bạn – làn gió nhẹ nhàng nhưng đủ để đẩy những công việc đang dang dở tiến về phía trước.`
+    ],
+    0: [
+      `☯️ Ngày **${can} ${chi}** mang hành **${hanh}** – vận khí hôm nay bình ổn, không có biến động lớn. Đây là ngày phù hợp để duy trì nhịp làm việc đều đặn và hoàn thiện những gì đã có kế hoạch từ trước.`,
+      `🌿 Huyền ơi, ngày **${can} ${chi}** là ngày "không nhanh không chậm" – bình ổn và dễ chịu. Hành **${hanh}** không xung không hợp với mệnh Thổ, tạo ra môi trường ổn định để bạn làm việc tập trung.`
+    ],
+    '-1': [
+      `⚠️ Ngày **${can} ${chi}** hôm nay có chút thử thách – hành **${hanh}** tạo ma sát nhẹ với bản mệnh Thổ. Đừng lo, Huyền ơi – chỉ cần chậm lại một chút, thận trọng hơn trong các quyết định, và chọn đúng giờ hoàng đạo là mọi việc sẽ ổn.`,
+      `🌧️ Ngày **${can} ${chi}** hơi có thách thức với mệnh của bạn. Hành **${hanh}** xung với Thổ – ngày hôm nay phù hợp hơn để xử lý công việc đã có sẵn thay vì mở ra những hướng hoàn toàn mới.`
+    ]
+  };
+  const intro_arr = intro_map[Math.max(-1,sc)] || intro_map[0];
+  const intro = intro_arr[d % intro_arr.length];
 
-🔮 ẢNH HƯỞNG 12 CUNG HÔM NAY:
-${cungSum}
+  const special = lunar.day===1 ? '\n\n🙏 Hôm nay **Mùng 1 âm lịch** – ngày thiêng liêng để cầu an, bày tỏ lòng biết ơn và đặt định hướng cho tháng mới.'
+    : lunar.day===15 ? '\n\n🌕 Hôm nay **Rằm âm lịch** – trăng tròn sáng nhất, ánh sáng và vận khí đều ở đỉnh. Rất tốt để cầu nguyện và hoàn tất những việc đang dang dở.'
+    : '';
 
-Hãy viết bài luận giải vận khí hôm nay theo phong cách thầy bói tử vi Việt Nam, thân mật, ấm áp, cụ thể. Gồm các mục:
+  // ── 2. Công việc & Tuyển dụng ────────────────────────────
+  const dow_note = {
+    1: 'Đầu tuần là thời điểm tốt để lên kế hoạch và liên hệ ứng viên mới – họ cũng đang "khởi động" sau cuối tuần.',
+    2: 'Thứ Ba – nhịp làm việc đang vào guồng, rất tốt để gọi điện và đàm phán.',
+    3: 'Thứ Tư – giữa tuần, ứng viên ổn định tâm lý nhất. Lý tưởng để phỏng vấn hoặc thảo luận offer.',
+    4: 'Thứ Năm – áp lực cuối tuần chưa đến, ứng viên dễ đưa ra quyết định nhất.',
+    5: 'Thứ Sáu – ngày cuối tuần, nên chốt các vấn đề quan trọng trước 15h. Buổi chiều ứng viên thường bận rộn hơn.',
+    6: 'Cuối tuần – thời gian tốt để đọc hồ sơ, lên kế hoạch tuần tới hoặc nhắn tin nhẹ nhàng qua Zalo.',
+    0: 'Chủ nhật – thời gian nghỉ ngơi và tái tạo năng lượng cho tuần mới.'
+  }[dow] || '';
 
-**1. 🌅 Tổng quan vận khí ngày**
-(3–4 câu: ngày ${tv.dc} ${tv.dch} tương quan như thế nào với mệnh Thổ của tôi)
+  const work_map = {
+    2: `💼 **Công việc & Tuyển dụng:** Ngày đại cát, sức thuyết phục của bạn đang ở đỉnh cao! Hãy ưu tiên gọi cho những ứng viên đang "do dự" – hôm nay bạn có khả năng thuyết phục rất cao. Chốt offer, đàm phán lương với GĐ đơn vị đều rất thuận. ${dow_note}`,
+    1: `💼 **Công việc & Tuyển dụng:** Ngày khá tốt – hãy tập trung vào các ứng viên chất lượng trong pipeline. Review CV, xác nhận lịch phỏng vấn và gửi tin nhắn follow-up là những việc phù hợp nhất hôm nay. ${dow_note}`,
+    0: `💼 **Công việc & Tuyển dụng:** Ngày phù hợp xử lý công việc thường ngày: cập nhật data, đăng tin, trả lời email ứng viên. Tránh những quyết định tuyển dụng lớn – hãy để chúng sang ngày vận khí tốt hơn. ${dow_note}`,
+    '-1': `⚠️ **Công việc – cần thận trọng:** Hôm nay nên hạn chế đưa ra quyết định quan trọng như offer hay từ chối ứng viên. Tập trung vào công việc an toàn: lọc hồ sơ, cập nhật báo cáo, chuẩn bị tài liệu. Nếu bắt buộc gọi điện, nhớ chọn đúng giờ hoàng đạo bên dưới. ${dow_note}`
+  }[Math.max(-1,sc)] || '';
 
-**2. 💼 Công việc & Tuyển dụng**
-(Lời khuyên cụ thể cho công việc HR: phỏng vấn, gọi điện ứng viên, đàm phán lương, ký kết)
+  // ── 3. Tài lộc ───────────────────────────────────────────
+  const tai_map = {
+    'Hỏa': '💰 **Tài lộc:** Hỏa sinh Thổ – dấu hiệu cực tốt cho tài chính hôm nay! Đàm phán lương, ký kết thỏa thuận, thu tiền về – mọi giao dịch đều thuận chiều. Nếu cần quyết định mức lương cho ứng viên, hôm nay là ngày lý tưởng.',
+    'Thổ': '💰 **Tài lộc:** Bản mệnh Thổ gặp ngày Thổ – tài chính ổn định, không có biến động bất ngờ. Phù hợp để quản lý và củng cố dòng tiền hiện có, không phải ngày để mạo hiểm.',
+    'Kim': '💰 **Tài lộc:** Thổ sinh Kim – dòng tiền tương đối thuận. Tốt cho việc thu hồi các khoản đang chờ và hoàn tất thanh toán. Có thể xem xét các khoản tích lũy nhỏ.',
+    'Mộc': '💰 **Tài lộc – cẩn thận:** Mộc khắc Thổ, hôm nay nên hạn chế các giao dịch tài chính lớn. Tránh ký kết hợp đồng giá trị cao hoặc đưa ra mức offer cao bất thường – hãy chờ ngày vận tốt hơn.',
+    'Thủy': '💰 **Tài lộc – lưu ý:** Thổ khắc Thủy tạo ma sát nhẹ trong chuyện tiền bạc. Kiểm soát chi tiêu, không nên vay mượn hay cho vay hôm nay. Các giao dịch thường ngày thì ổn.'
+  };
+  const tai = tai_map[hanh] || '💰 **Tài lộc:** Hôm nay tài chính ở mức bình thường, phù hợp các giao dịch thường ngày.';
 
-**3. 💰 Tài lộc & Giao dịch**
-(Có nên tiến hành giao dịch tài chính? Đàm phán lương hôm nay?)
+  // ── 4. Quan hệ & Giao tiếp ──────────────────────────────
+  const rel_pool = [
+    `🤝 **Quan hệ & Giao tiếp:** Sao Tham Lang trong cung Mệnh Ngọ của bạn vốn rất linh hoạt và nhạy bén. ${sc>=1 ? 'Hôm nay khả năng đọc tâm lý ứng viên của bạn đang rất sắc – hãy tận dụng để nắm bắt điều họ thực sự muốn.' : 'Hôm nay hãy lắng nghe nhiều hơn nói – đây là cách tốt nhất để xây dựng lòng tin.'} Với cấp trên, ${sc>=1 ? 'chủ động chia sẻ kết quả và đề xuất ý tưởng sẽ được đón nhận tích cực.' : 'hãy báo cáo đầy đủ và tránh hứa hẹn những điều chưa chắc chắn.'}`,
+    `🤝 **Giao tiếp hôm nay:** ${sc>=1 ? 'Năng lượng giao tiếp của bạn đang dồi dào – ứng viên và đồng nghiệp đều dễ bị thu hút bởi sự nhiệt tình và chân thành của bạn.' : 'Hôm nay nên tiếp cận ứng viên bằng sự chân thành và kiên nhẫn thay vì tạo áp lực.'} Đặc biệt với các ứng viên fresh graduate đang cân nhắc, ${sc>=1 ? 'lời khuyên của bạn sẽ có trọng lượng hơn bình thường.' : 'hãy để họ có thời gian suy nghĩ thay vì chốt gấp.'}`
+  ];
+  const rel = rel_pool[m % rel_pool.length];
 
-**4. 🤝 Quan hệ & Giao tiếp**
-(Với ứng viên, cấp trên, đồng nghiệp hôm nay nên chú ý điều gì?)
+  // ── 5. Giờ vàng hành động ────────────────────────────────
+  let gio_section = '⏰ **Giờ vàng hành động hôm nay:**\n';
+  if (workHD.length > 0) {
+    workHD.forEach(x => {
+      gio_section += `• **${x.time}** (giờ ${x.chi}): ${_GIO_TASK[x.i]}\n`;
+    });
+  } else {
+    const anyHD = hd.map(i => ({i, chi: CHI[i], time: _GIO[i]}));
+    if (anyHD.length > 0) {
+      gio_section += `• **${anyHD[0].time}** (giờ ${anyHD[0].chi}): ${_GIO_TASK[anyHD[0].i]}\n`;
+      if (anyHD[1]) gio_section += `• **${anyHD[1].time}** (giờ ${anyHD[1].chi}): ${_GIO_TASK[anyHD[1].i]}\n`;
+    } else {
+      gio_section += '• Hôm nay không có giờ hoàng đạo trong giờ làm – hãy tập trung việc nhẹ và tránh quyết định lớn.\n';
+    }
+  }
 
-**5. ⏰ Giờ vàng hành động**
-(Từ các giờ Hoàng Đạo trên, nên làm gì vào giờ nào cụ thể?)
+  // ── 6. Lời nhắn nhủ ─────────────────────────────────────
+  const close_map = {
+    2: [
+      '🌙 **Lời nhắn nhủ:** Hôm nay là món quà của vũ trụ dành cho bạn, Huyền ơi! Hãy tự tin bước ra và tạo nên những kết quả phi thường. Tin vào bản thân – bạn đang làm rất tốt! ✨',
+      '🌙 **Kết:** Ngày "vàng" như hôm nay thật hiếm – hãy cứ tiến về phía trước thật mạnh mẽ! Chúc bạn một ngày rực rỡ và đầy thành tựu! 🚀'
+    ],
+    1: [
+      '🌙 **Lời nhắn nhủ:** Từng bước nhỏ hôm nay đang xây nền móng cho thành công lớn hơn ngày mai. Cứ kiên định và làm tốt những gì đang có – bạn đang đi đúng hướng rồi! 💛',
+      '🌙 **Kết:** Chúc bạn một ngày làm việc thuận lợi và tràn đầy năng lượng, Huyền ơi! Mỗi ứng viên bạn giúp tìm được việc phù hợp đều là một điều tốt đẹp bạn trao cho đời. 🌸'
+    ],
+    0: [
+      '🌙 **Lời nhắn nhủ:** Ngày bình ổn không phải ngày xấu – đó là ngày để tích lũy và dưỡng sức. Hoàn thiện tốt những việc nhỏ hôm nay là nền tảng cho thành công lớn ngày mai! 🌿',
+      '🌙 **Kết:** Hãy trân trọng những khoảnh khắc bình yên, Huyền ơi. Một ngày "bình thường" được sống trọn vẹn đôi khi lại là ngày đáng nhớ nhất! ☯️'
+    ],
+    '-1': [
+      '🌙 **Lời nhắn nhủ:** Thử thách nhỏ hôm nay chỉ là bài tập để bạn mạnh mẽ hơn thôi. Cẩn thận, nhẫn nại, và bạn sẽ vượt qua dễ dàng. Ngày tốt đẹp hơn đang chờ phía trước! 💪',
+      '🌙 **Kết:** Hôm nay hãy "ít làm nhưng làm chắc" – một việc hoàn thành trọn vẹn còn hơn mười việc dở dang. Tin vào mình, Huyền ơi! 🛡️'
+    ]
+  };
+  const close_arr = close_map[Math.max(-1,sc)] || close_map[0];
+  const closing = close_arr[y % close_arr.length];
 
-**6. 🌙 Lời nhắn nhủ cuối ngày**
-(1–2 câu ngắn gọn, ấm áp, động viên)
-
-Viết bằng tiếng Việt, ~350 từ, dùng emoji phù hợp, giọng như bạn thân tâm sự.`;
+  return [intro + special, '', work_map, '', tai, '', rel, '', gio_section.trim(), '', closing].join('\n');
 }
 
-function _panelHTML(state,ds,y,m,d){
-  if(!_getKey()){
+// ── Hiển thị panel ────────────────────────────────────────
+function _panelHTML(state, ds, y, m, d) {
+  if (state && state.text) {
+    const ts = state.ts ? new Date(state.ts).toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'}) : '';
+    const html = state.text
+      .replace(/\*\*(.+?)\*\*/g, '<strong style="color:var(--gold2)">$1</strong>')
+      .replace(/\n\n/g, '</p><p style="margin-top:10px">')
+      .replace(/\n/g, '<br>');
     return `<div class="claude-panel">
-      <h3>🤖 Claude AI Luận Giải Tử Vi Hàng Ngày</h3>
-      <div class="claude-key-wrap">
-        <p>Claude AI sẽ tự động đọc lá số Tử Vi và luận giải vận khí mỗi ngày khi bạn mở trang web.<br>
-        Nhập <strong style="color:#a78bfa">Anthropic API Key</strong> để bắt đầu – lưu trong trình duyệt, riêng tư hoàn toàn.</p>
-        <input class="claude-key-input" id="claudeInlineKey" type="password" placeholder="sk-ant-api03-...">
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-          <button class="claude-btn" onclick="_saveInlineKey()">✨ Lưu & Luận Giải Ngay</button>
-          <a href="https://console.anthropic.com/settings/keys" target="_blank"
-             style="font-size:11px;color:#a78bfa;text-decoration:none">🔑 Lấy API Key miễn phí →</a>
-        </div>
-      </div>
-    </div>`;
-  }
-  if(state==='loading'){
-    return `<div class="claude-panel">
-      <h3>🤖 Claude AI đang luận giải hôm nay...</h3>
-      <div class="claude-loading">
-        <div class="claude-spinner"></div>
-        <span>Đang phân tích lá số Tử Vi ngày ${d}/${m}/${y}...</span>
-      </div>
-    </div>`;
-  }
-  if(state&&state.error){
-    return `<div class="claude-panel">
-      <h3>🤖 Claude AI Luận Giải</h3>
-      <p style="color:var(--todo);font-size:12px;margin-bottom:10px">⚠️ Lỗi kết nối: ${state.error}</p>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="claude-btn" onclick="_trigger(${y},${m},${d})">🔄 Thử lại</button>
-        <button class="claude-btn secondary" onclick="openClaudeSettings()">⚙️ Kiểm tra API Key</button>
-      </div>
-    </div>`;
-  }
-  if(state&&state.text){
-    const ts=state.ts?new Date(state.ts).toLocaleTimeString('vi-VN',{hour:'2-digit',minute:'2-digit'}):'';
-    const html=state.text
-      .replace(/\*\*(.+?)\*\*/g,'<strong style="color:var(--gold2)">$1</strong>')
-      .replace(/\n\n/g,'</p><p style="margin-top:10px">')
-      .replace(/\n/g,'<br>');
-    return `<div class="claude-panel">
-      <h3>🤖 Claude AI Luận Giải – ${d}/${m}/${y}</h3>
+      <h3>🔮 Luận Giải Tử Vi – ${d}/${m}/${y}</h3>
       <div class="claude-content"><p>${html}</p></div>
       <div class="claude-meta">
-        <span>✨ Luận giải lúc ${ts}</span>
+        <span>🌙 Luận giải lúc ${ts}</span>
         <span style="flex:1"></span>
         <button class="claude-btn" style="padding:3px 10px;font-size:10px" onclick="_trigger(${y},${m},${d},true)">🔄 Làm mới</button>
-        <button class="claude-btn secondary" style="padding:3px 10px;font-size:10px" onclick="openClaudeSettings()">⚙️</button>
       </div>
     </div>`;
   }
-  // No cache, has key – offer manual trigger
-  const isToday=_isToday(y,m,d);
   return `<div class="claude-panel">
-    <h3>🤖 Claude AI Luận Giải</h3>
-    <p style="font-size:12px;color:var(--muted);margin-bottom:10px">
-      ${isToday?'Chưa có luận giải hôm nay.':'Chưa có luận giải cho ngày '+d+'/'+m+'/'+y+'.'}</p>
-    <button class="claude-btn" onclick="_trigger(${y},${m},${d})">✨ Luận giải ngày này</button>
+    <h3>🔮 Luận Giải Tử Vi</h3>
+    <p style="font-size:12px;color:var(--muted);margin-bottom:10px">Chưa có luận giải cho ngày ${d}/${m}/${y}.</p>
+    <button class="claude-btn" onclick="_trigger(${y},${m},${d})">✨ Xem luận giải ngày này</button>
   </div>`;
+}
+
+function _updatePanels(state, y, m, d) {
+  const ds = `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  ['claudeDayPanel','claudeHourBanner','claudeAiViewContent'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = _panelHTML(state, ds, y, m, d);
+  });
 }
 
 function _isToday(y,m,d){const t=new Date();return y===t.getFullYear()&&m===t.getMonth()+1&&d===t.getDate();}
 
-function _updatePanels(state,y,m,d){
-  const ds=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-  ['claudeDayPanel','claudeHourBanner','claudeAiViewContent'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el)el.innerHTML=_panelHTML(state,ds,y,m,d);
-  });
-}
-
-async function _trigger(y,m,d,force){
-  const ds=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-  if(!force){const cached=_getCache(ds);if(cached){_updatePanels(cached,y,m,d);return;}}
-  _updatePanels('loading',y,m,d);
-  const key=_getKey();
-  if(!key){_updatePanels(null,y,m,d);return;}
-  try{
-    const res=await fetch(_CLAUDE_API,{
-      method:'POST',
-      headers:{
-        'x-api-key':key,
-        'anthropic-version':'2023-06-01',
-        'anthropic-dangerous-direct-browser-access':'true',
-        'content-type':'application/json'
-      },
-      body:JSON.stringify({
-        model:_CLAUDE_MODEL,
-        max_tokens:1200,
-        messages:[{role:'user',content:_buildPrompt(y,m,d)}]
-      })
-    });
-    if(!res.ok){
-      let msg=`HTTP ${res.status}`;
-      try{const e=await res.json();msg=e.error?.message||msg;}catch{}
-      const result={error:msg};
-      _updatePanels(result,y,m,d);
-      return;
-    }
-    const data=await res.json();
-    const result={
-      text:data.content?.[0]?.text||'',
-      ts:new Date().toISOString()
-    };
-    _setCache(ds,result);
-    _updatePanels(result,y,m,d);
-  }catch(e){
-    _updatePanels({error:e.message},y,m,d);
+function _trigger(y, m, d, force) {
+  const ds = `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  if (!force) {
+    const cached = _getCache(ds);
+    if (cached) { _updatePanels(cached, y, m, d); return; }
   }
+  // Tạo luận giải ngay lập tức (không cần internet)
+  const text = _generateReading(y, m, d);
+  const result = { text, ts: new Date().toISOString() };
+  _setCache(ds, result);
+  _updatePanels(result, y, m, d);
 }
 
-function _loadForDate(y,m,d){
-  const ds=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-  const cached=_getCache(ds);
-  if(cached){_updatePanels(cached,y,m,d);return;}
-  if(!_getKey()){_updatePanels(null,y,m,d);return;}
-  if(_isToday(y,m,d)){_trigger(y,m,d);}
-  else{_updatePanels(null,y,m,d);}
+function _loadForDate(y, m, d) {
+  const ds = `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  const cached = _getCache(ds);
+  if (cached) { _updatePanels(cached, y, m, d); return; }
+  // Tự động tạo cho ngày hôm nay
+  if (_isToday(y,m,d)) { _trigger(y,m,d); }
+  else { _updatePanels(null, y, m, d); }
 }
 
-function _saveInlineKey(){
-  const k=(document.getElementById('claudeInlineKey')||{}).value||'';
-  if(!k.trim())return;
-  _setKey(k);
-  const y=currentDate.getFullYear(),m=currentDate.getMonth()+1,d=currentDate.getDate();
-  _trigger(y,m,d);
-}
-
-function _saveWelcomeKey(){
-  const k=(document.getElementById('claudeWelcomeKey')||{}).value||'';
-  if(!k.trim()){
-    const inp=document.getElementById('claudeWelcomeKey');
-    if(inp){inp.style.borderColor='var(--todo)';inp.placeholder='⚠️ Vui lòng nhập API Key trước!';}
-    return;
-  }
-  _setKey(k);
-  const btn=document.getElementById('floatingAiBtn');
-  if(btn)btn.style.display='none';
-  closeWelcomeModal();
-  const y=currentDate.getFullYear(),m=currentDate.getMonth()+1,d=currentDate.getDate();
-  _trigger(y,m,d);
-  // Chuyển sang view Claude AI để thấy kết quả
-  switchView('claude-ai');
-}
-
-function closeWelcomeModal(){
-  const m=document.getElementById('claudeWelcomeModal');
-  if(m)m.classList.remove('open');
-  localStorage.setItem('claude_welcome_dismissed','1');
-}
-
-function _checkShowWelcome(){
-  const btn=document.getElementById('floatingAiBtn');
-  if(!_getKey()){
-    if(btn)btn.style.display='block';
-    const dismissed=localStorage.getItem('claude_welcome_dismissed');
-    if(!dismissed){
-      const m=document.getElementById('claudeWelcomeModal');
-      if(m)m.classList.add('open');
-    }
-  } else {
-    if(btn)btn.style.display='none';
-  }
-}
-
-function openClaudeSettings(){
-  // Nếu chưa có key → show hướng dẫn đầy đủ
-  if(!_getKey()){
-    localStorage.removeItem('claude_welcome_dismissed');
-    const wm=document.getElementById('claudeWelcomeModal');
-    if(wm)wm.classList.add('open');
-    return;
-  }
-  const modal=document.getElementById('claudeSettingsModal');
-  if(!modal)return;
-  const inp=document.getElementById('claudeKeyModal');
-  if(inp)inp.value=_getKey();
-  const st=document.getElementById('claudeKeyStatus');
-  if(st)st.textContent='✅ Đã lưu API Key';
-  modal.classList.add('open');
-}
-
-function closeClaudeSettings(){
-  document.getElementById('claudeSettingsModal')?.classList.remove('open');
-}
-
-function saveClaudeSettings(){
-  const k=(document.getElementById('claudeKeyModal')||{}).value||'';
-  if(k.trim())_setKey(k);
-  closeClaudeSettings();
-  const y=currentDate.getFullYear(),m=currentDate.getMonth()+1,d=currentDate.getDate();
-  _trigger(y,m,d,true);
-}
+// Các hàm cũ giữ lại để tránh lỗi tham chiếu
+function openClaudeSettings(){}
+function closeClaudeSettings(){}
+function saveClaudeSettings(){}
+function _saveInlineKey(){}
+function _saveWelcomeKey(){}
+function closeWelcomeModal(){}
+function _checkShowWelcome(){}
 </script>
 </body>
 </html>
