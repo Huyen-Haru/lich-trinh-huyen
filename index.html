@@ -541,23 +541,97 @@ body{
 </div>
 </div>
 
-<!-- CLAUDE SETTINGS MODAL -->
+<!-- FLOATING AI BUTTON (hiện khi chưa có key) -->
+<button id="floatingAiBtn" onclick="openClaudeSettings()"
+  style="display:none;position:fixed;bottom:24px;right:24px;z-index:150;
+         background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;border:none;
+         border-radius:50px;padding:12px 20px;cursor:pointer;font-size:13px;font-weight:700;
+         font-family:inherit;box-shadow:0 4px 20px rgba(124,58,237,.5);
+         animation:floatPulse 2s ease-in-out infinite;">
+  🤖 Kích hoạt AI Luận Giải
+</button>
+<style>
+@keyframes floatPulse{0%,100%{box-shadow:0 4px 20px rgba(124,58,237,.5)}50%{box-shadow:0 4px 30px rgba(124,58,237,.8)}}
+</style>
+
+<!-- CLAUDE WELCOME MODAL (tự động hiện khi chưa có API Key) -->
+<div class="claude-settings-modal" id="claudeWelcomeModal">
+  <div class="claude-settings-box" style="width:520px;max-height:92vh;overflow-y:auto">
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:48px;margin-bottom:8px">🤖</div>
+      <h2 style="font-size:20px;margin-bottom:6px">Kích hoạt Claude AI Luận Giải Tử Vi</h2>
+      <p style="font-size:12px;color:var(--muted);line-height:1.7">
+        Claude AI sẽ tự động đọc lá số tử vi của bạn và viết bài luận giải<br>
+        <strong style="color:var(--gold2)">mỗi sáng khi mở trang</strong> – hoàn toàn cá nhân hóa cho Phạm Huyền
+      </p>
+    </div>
+
+    <!-- BƯỚC 1 -->
+    <div style="background:rgba(124,58,237,.08);border:1px solid rgba(124,58,237,.2);border-radius:10px;padding:14px;margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <div style="width:28px;height:28px;background:linear-gradient(135deg,#7c3aed,#4f46e5);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:13px;flex-shrink:0">1</div>
+        <strong style="color:#a78bfa;font-size:13px">Đăng ký tài khoản Anthropic (miễn phí)</strong>
+      </div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:10px;line-height:1.6;padding-left:38px">
+        Truy cập trang web Anthropic để tạo tài khoản và lấy API Key.<br>
+        Anthropic cấp <strong style="color:var(--done)">$5 credit miễn phí</strong> khi đăng ký – dùng được ~1–2 năm cho tính năng này.
+      </p>
+      <a href="https://console.anthropic.com/settings/keys" target="_blank"
+         style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;padding:9px 18px;border-radius:7px;text-decoration:none;font-size:12px;font-weight:700;margin-left:38px">
+        🔑 Mở trang lấy API Key →
+      </a>
+      <p style="font-size:10px;color:var(--muted);margin-top:8px;padding-left:38px">
+        (Sau khi đăng ký/đăng nhập → nhấn <strong>"Create Key"</strong> → copy đoạn code bắt đầu bằng <code style="background:var(--card);padding:1px 4px;border-radius:3px;color:#a78bfa">sk-ant-...</code>)
+      </p>
+    </div>
+
+    <!-- BƯỚC 2 -->
+    <div style="background:rgba(200,151,42,.06);border:1px solid rgba(200,151,42,.2);border-radius:10px;padding:14px;margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <div style="width:28px;height:28px;background:linear-gradient(135deg,var(--gold),var(--accent));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:13px;flex-shrink:0">2</div>
+        <strong style="color:var(--gold2);font-size:13px">Dán API Key vào đây</strong>
+      </div>
+      <div style="padding-left:38px">
+        <label style="display:block;font-size:11px;color:var(--muted);margin-bottom:5px;font-weight:700">API Key của bạn</label>
+        <input class="claude-key-input" id="claudeWelcomeKey" type="text"
+               placeholder="sk-ant-api03-xxxxxxxxxxxx..."
+               style="margin-bottom:8px;font-size:13px;padding:10px 12px">
+        <p style="font-size:10px;color:var(--muted);margin-bottom:10px">
+          🔒 Key chỉ lưu trong trình duyệt của bạn, không gửi đi đâu khác ngoài Anthropic
+        </p>
+        <button class="claude-btn" onclick="_saveWelcomeKey()"
+                style="padding:10px 24px;font-size:13px;width:100%">
+          ✨ Bắt Đầu Luận Giải Ngay
+        </button>
+      </div>
+    </div>
+
+    <div style="text-align:center">
+      <button onclick="closeWelcomeModal()"
+              style="background:none;border:none;color:var(--muted);font-size:11px;cursor:pointer;font-family:inherit;padding:4px 12px">
+        Bỏ qua, tôi sẽ cài đặt sau
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- CLAUDE SETTINGS MODAL (cài đặt lại sau) -->
 <div class="claude-settings-modal" id="claudeSettingsModal" onclick="if(event.target===this)closeClaudeSettings()">
   <div class="claude-settings-box">
     <h2>⚙️ Cài Đặt Claude AI</h2>
     <p style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6">
-      Claude AI sẽ tự động luận giải Tử Vi cá nhân của bạn mỗi ngày khi mở trang.<br>
-      API Key được lưu trong trình duyệt (<code style="background:var(--card);padding:1px 4px;border-radius:3px">localStorage</code>), không gửi đến máy chủ khác.
+      Claude AI tự động luận giải Tử Vi cá nhân của bạn mỗi ngày khi mở trang.<br>
+      API Key lưu trong trình duyệt, riêng tư hoàn toàn.
     </p>
     <label>Anthropic API Key</label>
     <input class="claude-key-input" id="claudeKeyModal" type="password" placeholder="sk-ant-api03-..." style="margin-bottom:4px">
     <div style="margin-bottom:12px">
-      <a href="https://console.anthropic.com/settings/keys" target="_blank" style="font-size:10px;color:#a78bfa;text-decoration:none">🔗 Lấy API Key miễn phí tại console.anthropic.com →</a>
+      <a href="https://console.anthropic.com/settings/keys" target="_blank" style="font-size:11px;color:#a78bfa;text-decoration:none">🔗 Lấy API Key tại console.anthropic.com →</a>
     </div>
     <div style="background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.15);border-radius:7px;padding:10px;font-size:11px;color:var(--muted);line-height:1.7;margin-bottom:14px">
-      <strong style="color:#a78bfa">Model sử dụng:</strong> claude-haiku-4-5 (nhanh, tiết kiệm ~$0.001/ngày)<br>
-      <strong style="color:#a78bfa">Tự động luận giải:</strong> Mỗi ngày 1 lần khi mở trang, cache lại để tái sử dụng<br>
-      <strong style="color:#a78bfa">Nội dung:</strong> Vận khí ngày, công việc tuyển dụng, tài lộc, giờ vàng hành động
+      <strong style="color:#a78bfa">Model:</strong> claude-haiku-4-5 (nhanh, ~$0.001/ngày)<br>
+      <strong style="color:#a78bfa">Tự động:</strong> Mỗi ngày 1 lần khi mở trang, cache lại<br>
+      <strong style="color:#a78bfa">Nội dung:</strong> Vận khí, công việc HR, tài lộc, giờ vàng
     </div>
     <div id="claudeKeyStatus" style="font-size:11px;margin-bottom:8px"></div>
     <div class="claude-settings-actions">
@@ -1113,6 +1187,8 @@ window.onload=()=>{
   seedTodayRecruit();
   document.getElementById('todayLabel').textContent='Hôm nay: '+fmt(new Date());
   render();updateSidebar();
+  // Hiện hướng dẫn kích hoạt Claude AI nếu chưa cài đặt
+  setTimeout(_checkShowWelcome, 800);
 };
 function seedDemo(){
   tasks=[];
@@ -2425,13 +2501,57 @@ function _saveInlineKey(){
   _trigger(y,m,d);
 }
 
+function _saveWelcomeKey(){
+  const k=(document.getElementById('claudeWelcomeKey')||{}).value||'';
+  if(!k.trim()){
+    const inp=document.getElementById('claudeWelcomeKey');
+    if(inp){inp.style.borderColor='var(--todo)';inp.placeholder='⚠️ Vui lòng nhập API Key trước!';}
+    return;
+  }
+  _setKey(k);
+  const btn=document.getElementById('floatingAiBtn');
+  if(btn)btn.style.display='none';
+  closeWelcomeModal();
+  const y=currentDate.getFullYear(),m=currentDate.getMonth()+1,d=currentDate.getDate();
+  _trigger(y,m,d);
+  // Chuyển sang view Claude AI để thấy kết quả
+  switchView('claude-ai');
+}
+
+function closeWelcomeModal(){
+  const m=document.getElementById('claudeWelcomeModal');
+  if(m)m.classList.remove('open');
+  localStorage.setItem('claude_welcome_dismissed','1');
+}
+
+function _checkShowWelcome(){
+  const btn=document.getElementById('floatingAiBtn');
+  if(!_getKey()){
+    if(btn)btn.style.display='block';
+    const dismissed=localStorage.getItem('claude_welcome_dismissed');
+    if(!dismissed){
+      const m=document.getElementById('claudeWelcomeModal');
+      if(m)m.classList.add('open');
+    }
+  } else {
+    if(btn)btn.style.display='none';
+  }
+}
+
 function openClaudeSettings(){
+  // Nếu chưa có key → show hướng dẫn đầy đủ
+  if(!_getKey()){
+    localStorage.removeItem('claude_welcome_dismissed');
+    const wm=document.getElementById('claudeWelcomeModal');
+    if(wm)wm.classList.add('open');
+    return;
+  }
   const modal=document.getElementById('claudeSettingsModal');
   if(!modal)return;
   const inp=document.getElementById('claudeKeyModal');
   if(inp)inp.value=_getKey();
   const st=document.getElementById('claudeKeyStatus');
-  if(st)st.textContent=_getKey()?'✅ Đã lưu API Key':'⚠️ Chưa có API Key';
+  if(st)st.textContent='✅ Đã lưu API Key';
   modal.classList.add('open');
 }
 
