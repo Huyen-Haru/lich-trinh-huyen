@@ -1095,23 +1095,23 @@ function seedDemo(){
   save();
 }
 function seedTodayRecruit(){
-  const d='2026-04-07';
-  if(tasks.some(t=>t.date===d&&t.startTime==='08:00'))return;
+  const d='2026-08-17';
+  if(tasks.some(t=>t.date===d&&t.title==='Chuẩn bị hợp đồng, thư mời và hồ sơ ứng viên mới'))return;
   const newTasks=[
-    {id:uid(),title:'Di chuyển đến văn phòng',date:d,startTime:'08:00',endTime:'08:30',status:'todo',category:'personal',note:'Mặc đồ trắng hoặc vàng nhạt – màu may mắn ngày Canh Dần (Kim tương sinh Thổ)'},
-    {id:uid(),title:'★ Khởi động: lọc 50 fresh tiềm năng & kiểm tra email/Zalo 37 đơn vị',date:d,startTime:'08:30',endTime:'08:45',status:'todo',category:'work',note:'Giờ Thìn Hoàng Đạo – Xác định top 3 GĐ cần chốt lương, phân loại yêu cầu tuyển dụng cấp bách'},
-    {id:uid(),title:'★ Gửi tin nhắn mass toàn bộ 190 fresh (template giới thiệu chương trình)',date:d,startTime:'08:45',endTime:'09:15',status:'todo',category:'work',note:'Giờ Thìn Hoàng Đạo – Gửi qua Zalo/SMS/LinkedIn. Fresh đọc đầu giờ sáng, tỷ lệ reply cao hơn'},
-    {id:uid(),title:'★ Setup 6 lịch phỏng vấn – gọi xác nhận từng ứng viên (~5 phút/cuộc)',date:d,startTime:'09:15',endTime:'09:45',status:'todo',category:'work',note:'Giờ Tỵ – Gửi kèm tin nhắn xác nhận lịch ngay sau mỗi cuộc gọi'},
-    {id:uid(),title:'⚠ Soạn 10 thư mời ứng viên đã phỏng vấn – CHƯA GỬI, đợi 11:00',date:d,startTime:'09:45',endTime:'11:00',status:'todo',category:'work',note:'Giờ Tỵ Hắc Đạo – Tập trung soạn, kiểm tra kỹ: tên, vị trí, đơn vị, lương, ngày vào làm'},
-    {id:uid(),title:'★★ GỬI 10 thư mời chính thức – Giờ Ngọ Hoàng Đạo',date:d,startTime:'11:00',endTime:'11:15',status:'todo',category:'work',note:'Giờ Ngọ – Khung giờ vàng nhất trong ngày để gửi văn bản và offer quan trọng'},
-    {id:uid(),title:'★★ Chốt lương với Giám đốc chi nhánh – gọi lần lượt từng GĐ',date:d,startTime:'11:15',endTime:'12:30',status:'todo',category:'work',note:'Giờ Ngọ–Mùi Hoàng Đạo – Gọi GĐ khó nhất trước khi năng lượng còn cao. ~10-15 phút/người. Ghi kết quả ngay'},
-    {id:uid(),title:'Nghỉ trưa – nạp năng lượng cho buổi gọi 50 fresh buổi chiều',date:d,startTime:'12:30',endTime:'13:00',status:'todo',category:'health',note:'Bắt buộc nghỉ đủ. Buổi chiều gọi 50 fresh rất tốn sức – cần tỉnh táo để thuyết phục'},
-    {id:uid(),title:'★★ Gọi điện fresh Batch 1 – ~15 người tiềm năng nhất',date:d,startTime:'13:00',endTime:'13:30',status:'todo',category:'work',note:'Giờ Mùi Hoàng Đạo – Fresh vừa ăn trưa xong, rảnh, tỷ lệ bắt máy cao nhất trong ngày'},
-    {id:uid(),title:'★★ Gọi điện fresh Batch 2 – ~35 người còn lại trong danh sách ưu tiên',date:d,startTime:'13:30',endTime:'15:00',status:'todo',category:'work',note:'Giờ Mùi Hoàng Đạo – Dành khung giờ đẹp nhất để thuyết phục các bạn còn phân vân'},
-    {id:uid(),title:'Đăng bài tuyển dụng 5 đơn vị gấp + tìm ứng viên trên database',date:d,startTime:'15:00',endTime:'15:45',status:'todo',category:'work',note:'Vietnamworks / TopCV / LinkedIn / Fanpage. Ưu tiên đơn vị cấp bách nhất trước. ~15 phút/đơn vị'},
-    {id:uid(),title:'⚠ Kiểm tra tin đăng 37 đơn vị – lọc & phân loại toàn bộ CV mới apply',date:d,startTime:'15:45',endTime:'17:00',status:'todo',category:'work',note:'Giờ Thân Hắc Đạo – Phù hợp xử lý data. Phân loại CV: phù hợp / cần xem thêm / loại'},
-    {id:uid(),title:'Chuyển hồ sơ phù hợp cho đơn vị + Reply fresh phản hồi sáng',date:d,startTime:'17:00',endTime:'17:30',status:'todo',category:'work',note:'Cập nhật toàn bộ pipeline. Thêm fresh quan tâm vào danh sách theo dõi'},
-    {id:uid(),title:'★ Báo cáo cuối ngày + Follow-up GĐ chưa chốt & fresh chưa reply',date:d,startTime:'17:30',endTime:'18:00',status:'todo',category:'work',note:'Giờ Dậu Hoàng Đạo – Gửi tóm tắt kết quả cho quản lý. Gọi lại GĐ còn phân vân (sau họp chiều)'},
+    {id:uid(),title:'Chuẩn bị hợp đồng, thư mời và hồ sơ ứng viên mới',date:d,startTime:'08:00',endTime:'08:20',status:'todo',category:'work',note:'Kiểm tra trước thông tin và giấy tờ của từng ứng viên'},
+    {id:uid(),title:'Khoảng đệm đầu ngày',date:d,startTime:'08:20',endTime:'08:30',status:'todo',category:'personal',note:'Dành cho việc chuẩn bị hoặc phát sinh đầu ngày'},
+    {id:uid(),title:'Đón và hướng dẫn ứng viên mới',date:d,startTime:'08:30',endTime:'09:00',status:'todo',category:'work',note:'Ưu tiên hoàn tất thủ tục cần ký trực tiếp'},
+    {id:uid(),title:'Họp chương trình FIA',date:d,startTime:'09:00',endTime:'10:00',status:'todo',category:'work',note:'Ghi lại đầu việc, người phụ trách và thời hạn'},
+    {id:uid(),title:'Họp HRIS',date:d,startTime:'10:00',endTime:'11:00',status:'todo',category:'work',note:'Hai cuộc họp liền nhau; chuẩn bị tài liệu từ trước'},
+    {id:uid(),title:'Ghi lại đầu việc sau họp, xử lý phát sinh',date:d,startTime:'11:00',endTime:'11:15',status:'todo',category:'work',note:'Không chủ động xếp thêm việc mới'},
+    {id:uid(),title:'Lên kế hoạch cho các vị trí cần tuyển gấp – phần 1',date:d,startTime:'11:15',endTime:'12:00',status:'todo',category:'work',note:'Xác định thứ tự ưu tiên và nguồn tuyển'},
+    {id:uid(),title:'Nghỉ trưa',date:d,startTime:'12:00',endTime:'13:00',status:'todo',category:'health',note:'Hạn chế xử lý công việc nếu không khẩn cấp'},
+    {id:uid(),title:'Hoàn thiện kế hoạch tuyển gấp – phần 2',date:d,startTime:'13:00',endTime:'13:15',status:'todo',category:'work',note:'Chốt hành động và thời hạn thực hiện'},
+    {id:uid(),title:'Gọi và thiết lập lịch phỏng vấn cho 6 ứng viên',date:d,startTime:'13:15',endTime:'14:15',status:'todo',category:'work',note:'Chuẩn bị sẵn 2–3 khung giờ để chốt nhanh'},
+    {id:uid(),title:'Khoảng đệm, gửi lịch xác nhận',date:d,startTime:'14:15',endTime:'14:30',status:'todo',category:'work',note:'Cập nhật lịch ngay sau khi ứng viên xác nhận'},
+    {id:uid(),title:'Làm 5 tờ trình ứng viên',date:d,startTime:'14:30',endTime:'16:10',status:'todo',category:'work',note:'Dùng mẫu chung; xử lý liên tục từng hồ sơ'},
+    {id:uid(),title:'Nghỉ và xử lý công việc phát sinh',date:d,startTime:'16:10',endTime:'16:30',status:'todo',category:'health',note:'Giữ nguyên khoảng đệm, không lấp bằng việc khác'},
+    {id:uid(),title:'Làm poster ERP cho FIA',date:d,startTime:'16:30',endTime:'18:30',status:'todo',category:'work',note:'Nếu phát sinh kéo dài, hoàn thành nội dung trước và chỉnh hình thức vào sáng hôm sau'},
   ];
   tasks=[...tasks.filter(t=>t.date!==d),...newTasks];
   save();
