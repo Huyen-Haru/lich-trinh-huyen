@@ -1630,19 +1630,37 @@ function gioBarHTML(hdList,y,m,d,curH){
 }
 
 function tuviMiniPanel(tv,d){
-  const mauHtml=tv.mauSac.slice(0,3).map(c=>`<span class="color-chip"><span class="color-dot" style="background:${c.color}"></span>${c.name}</span>`).join('');
-  const scoreLabel=['',  '☯️ Trung bình','✅ Cát','🌟 Đại Cát'][Math.max(0,tv.dayScore+1)]||'⚠️ Cần thận';
-  return`<div class="tuvi-panel" style="margin-bottom:14px">
-    <h3>🔮 Tử Vi Hôm Nay – ${PERSON.name}</h3>
-    <div class="tuvi-grid">
-      <div class="tuvi-card"><h4>Can Chi Ngày</h4><div class="tuvi-val">${tv.dc} ${tv.dch} <small>(${tv.thuHanh})</small></div></div>
-      <div class="tuvi-card"><h4>Đánh Giá Ngày</h4><div class="tuvi-val">${tv.dayScore>=2?'🌟 Đại Cát':tv.dayScore===1?'✅ Cát':tv.dayScore<0?'⚠️ Cần thận':'☯️ Trung bình'}</div></div>
-      <div class="tuvi-card"><h4>Màu May Mắn</h4><div class="color-chips">${mauHtml}</div></div>
-      <div class="tuvi-card"><h4>Âm Lịch</h4><div class="tuvi-val">${tv.lunar.day}/${tv.lunar.month}${tv.lunar.leap?' Nhuận':''} <small>${canYear(tv.lunar.year)} ${chiYear(tv.lunar.year)}</small></div></div>
+  const ctx=tv.ctx, R=tv.cungRank, top=R.slice(0,2), bot=R[11];
+  const hd=getGioHD(ctx.y,ctx.m,ctx.d);
+  const gioTot=hd.map(g=>{
+      const hr=g===0?23:g*2-1, gc=canHourIdx(hr,ctx.dCanI);
+      const loc=tuHoaTheoCan(gc).find(x=>x.loai===0);
+      const cl=cungTenTaiChi(loc.chiIdx);
+      return {g, cl, rank:R.findIndex(r=>r.cung.ten===cl), s:hr};
+    }).filter(x=>x.s>=7&&x.s<=19).sort((a,b)=>a.rank-b.rank).slice(0,2);
+  const bar=(v,mau)=>`<div style="height:6px;border-radius:3px;background:rgba(255,255,255,.07);overflow:hidden"><div style="height:100%;width:${v*10}%;background:${mau}"></div></div>`;
+  return`<div class="tuvi-panel" style="margin-bottom:14px;border:1px solid rgba(200,151,42,.3)">
+    <div style="display:flex;align-items:baseline;gap:9px;flex-wrap:wrap">
+      <h3 style="margin:0">🔮 Tử Vi Hôm Nay</h3>
+      <span style="font-size:11px;color:var(--muted)">${tv.dc} ${tv.dch} · ${ctx.lunar.day}/${ctx.lunar.month} âm · Trực ${ctx.truc.ten} · ${ctx.than.ten} ${ctx.than.hoangDao?'Hoàng Đạo':'Hắc Đạo'}</span>
+      ${ctx.ngayLe.length?`<span style="font-size:11px;font-weight:700;color:var(--gold2)">${ctx.ngayLe.join(' · ')}</span>`:''}
     </div>
-    <div style="margin-top:10px;padding:10px;background:rgba(200,151,42,.06);border-radius:7px;font-size:12px;line-height:1.6;color:var(--text)">
-      ${tv.loiKhuyen}
+    <div style="font-size:13px;line-height:1.8;margin:10px 0 12px">
+      Dồn sức vào <strong style="color:var(--done)">${top[0].cung.ten}</strong>${top[1].cn.score>0?` và <strong style="color:var(--done)">${top[1].cung.ten}</strong>`:''},
+      nhẹ tay với <strong style="color:var(--todo)">${bot.cung.ten}</strong>.
+      ${gioTot.length?`Giờ tốt nhất <strong style="color:var(--gold2)">${GIO_CHI_TIME[gioTot[0].g]}</strong>${gioTot[1]?` và <strong style="color:var(--gold2)">${GIO_CHI_TIME[gioTot[1].g]}</strong>`:''}.`:''}
     </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:10px">
+      <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span>Vận khí lá số</span><strong style="color:var(--gold2)">${tv.diemLaSo}/10</strong></div>${bar(tv.diemLaSo,'#7ec8f0')}</div>
+      <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span>Vận khí hoàng lịch</span><strong style="color:var(--gold2)">${ctx.diemLichPhap}/10</strong></div>${bar(ctx.diemLichPhap,'var(--gold)')}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:11px;line-height:1.6">
+      <div style="background:rgba(91,232,168,.06);border-radius:7px;padding:9px 11px">
+        <strong style="color:var(--done)">✅ ${top[0].cung.icon} ${top[0].cung.ten}</strong><br><span style="color:var(--muted)">${VIEC_THEO_CUNG[top[0].cung.ten].tot}</span></div>
+      <div style="background:rgba(232,124,91,.06);border-radius:7px;padding:9px 11px">
+        <strong style="color:var(--todo)">❌ ${bot.cung.icon} ${bot.cung.ten}</strong><br><span style="color:var(--muted)">${VIEC_THEO_CUNG[bot.cung.ten].xau}</span></div>
+    </div>
+    <div style="margin-top:10px"><button class="nav-btn" style="width:auto;padding:6px 14px;font-size:11px" onclick="switchView('tuvi-day')">Xem chi tiết 12 cung →</button></div>
   </div>`;
 }
 
@@ -1749,225 +1767,150 @@ function renderTuviDay(){
   const y=currentDate.getFullYear(),m=currentDate.getMonth()+1,d=currentDate.getDate();
   const isToday=dk(currentDate)===dk(new Date());
   const hour=isToday?new Date().getHours():8;
-  const tv=getTuviDay(y,m,d,hour);
-  const ctx=tv.ctx;
+  const tv=getTuviDay(y,m,d,hour); const ctx=tv.ctx;
+  const R=tv.cungRank, top=R.slice(0,3), bot=R.slice(-3).reverse();
 
-  const banner=lunarBannerHTML(currentDate);
-  const chip=(t,c)=>`<span style="display:inline-block;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:700;background:rgba(255,255,255,.05);color:${c};border:1px solid ${c}">${t}</span>`;
+  // Giờ tốt nhất: hoàng đạo, ưu tiên giờ có Lộc rơi vào cung đang mạnh
+  const hd=getGioHD(y,m,d);
+  const gioXep=hd.map(g=>{
+    const hr=g===0?23:g*2-1, gc=canHourIdx(hr,ctx.dCanI), h4=tuHoaTheoCan(gc);
+    const loc=h4.find(x=>x.loai===0), ky=h4.find(x=>x.loai===3);
+    const cungLoc=cungTenTaiChi(loc.chiIdx);
+    const rank=R.findIndex(r=>r.cung.ten===cungLoc);
+    return {g,gc,cungLoc,cungKy:cungTenTaiChi(ky.chiIdx),rank,than:getThanGio(y,m,d,g).ten};
+  }).sort((a,b)=>a.rank-b.rank);
+  const gioTot=gioXep.filter(x=>{const s=x.g===0?23:x.g*2-1;return s>=7&&s<=19}).slice(0,3);
+  const gioBest=gioTot[0]||gioXep[0];
 
-  // ── 1. BẢN MỆNH ────────────────────────────────────────────
-  const birthInfo=`<div class="tuvi-panel" style="margin-bottom:14px">
-    <h3>🌟 Lá Số Gốc – ${PERSON.name}</h3>
-    <div class="tuvi-grid">
-      <div class="tuvi-card"><h4>Sinh (Dương lịch)</h4><div class="tuvi-val">06/10/1990 <small>8:18 SA</small></div></div>
-      <div class="tuvi-card"><h4>Âm lịch</h4><div class="tuvi-val">18/8 ${BIRTH.yearCan} ${BIRTH.yearChi} 🐴</div></div>
-      <div class="tuvi-card"><h4>Giờ sinh</h4><div class="tuvi-val">Giờ ${BIRTH.gioSinhChi} <small>${BIRTH.gioSinhTime}</small></div></div>
-      <div class="tuvi-card"><h4>Âm Dương</h4><div class="tuvi-val">${BIRTH.amDuong} <small style="display:block;color:var(--muted)">Đại vận đi nghịch</small></div></div>
-      <div class="tuvi-card"><h4>Bản mệnh</h4><div class="tuvi-val">${BIRTH.nguHanh}</div></div>
-      <div class="tuvi-card"><h4>Cục</h4><div class="tuvi-val">${BIRTH.cuc} <small style="display:block;color:var(--muted)">Khởi đại vận từ 4 tuổi</small></div></div>
-      <div class="tuvi-card"><h4>Cung Mệnh</h4><div class="tuvi-val">Tại ${CHI[BIRTH.menhChiIdx]} <small style="display:block;color:var(--muted)">${BIRTH.chủMenh}</small></div></div>
-      <div class="tuvi-card"><h4>Thân cư</h4><div class="tuvi-val">${BIRTH.thanCungTen} <small style="display:block;color:var(--muted)">tại ${CHI[BIRTH.thanChiIdx]}</small></div></div>
-    </div>
-  </div>`;
-
-  // ── 1b. LỊCH PHÁP CỔ TRUYỀN + HAI THANG ĐIỂM ───────────────
-  const nh=ctx.nguHanhChiTiet;
-  const bar=(v,mau)=>`<div style="height:6px;border-radius:3px;background:rgba(255,255,255,.07);overflow:hidden">
+  const P=(v,mau)=>`<div style="height:7px;border-radius:4px;background:rgba(255,255,255,.07);overflow:hidden">
       <div style="height:100%;width:${v*10}%;background:${mau}"></div></div>`;
-  const lichPhap=`<div class="tuvi-panel" style="margin-bottom:14px">
-    <h3>📜 Lịch Pháp Cổ Truyền – Ngày ${fmt(currentDate)}</h3>
-    ${ctx.ngayLe.length?`<div style="margin-bottom:10px;padding:9px 12px;border-radius:8px;background:rgba(200,151,42,.10);border:1px solid rgba(200,151,42,.25);font-size:12px;font-weight:700;color:var(--gold2)">${ctx.ngayLe.join(' · ')}</div>`:''}
-    <div class="tuvi-grid">
-      <div class="tuvi-card"><h4>Tiết Khí</h4><div class="tuvi-val">${ctx.tiet.ten} <small style="display:block;color:var(--muted)">kinh độ MT ${ctx.tiet.deg.toFixed(1)}°</small></div></div>
-      <div class="tuvi-card"><h4>Trực</h4><div class="tuvi-val">${ctx.truc.ten} <small style="display:block;color:var(--muted)">${ctx.truc.nghia}</small></div></div>
-      <div class="tuvi-card"><h4>12 Thần</h4><div class="tuvi-val" style="color:${ctx.than.hoangDao?'var(--done)':'var(--todo)'}">${ctx.than.ten} ${ctx.than.hoangDao?'(Hoàng Đạo)':'(Hắc Đạo)'} <small style="display:block;color:var(--muted)">${ctx.than.nghia}</small></div></div>
-      <div class="tuvi-card"><h4>Ngày Kiêng</h4><div class="tuvi-val">${ctx.nguyetKy?'⛔ Nguyệt Kỵ':''}${ctx.tamNuong?'⛔ Tam Nương':''}${!ctx.nguyetKy&&!ctx.tamNuong?'✅ Không phạm':''}</div></div>
+
+  // ── THẺ KẾT LUẬN ───────────────────────────────────────────
+  const chot=`Hôm nay dồn sức vào <strong style="color:var(--done)">${top[0].cung.ten}</strong>`+
+    (top[1].cn.score>0?` và <strong style="color:var(--done)">${top[1].cung.ten}</strong>`:'')+
+    `, giữ nhẹ tay với <strong style="color:var(--todo)">${bot[0].cung.ten}</strong>. `+
+    (ctx.than.hoangDao?'Ngày Hoàng Đạo':`Ngày Hắc Đạo (${ctx.than.ten}) – việc lớn nên chọn giờ tốt`)+
+    ` · Trực ${ctx.truc.ten}.`;
+
+  const nenNgan=top.filter(r=>r.cn.score>0.5).slice(0,3)
+    .map(r=>`<li style="margin-bottom:5px">${r.cung.icon} <strong>${r.cung.ten}</strong> – ${VIEC_THEO_CUNG[r.cung.ten].tot}</li>`).join('');
+  const tranhNgan=bot.filter(r=>r.cn.score<0.5).slice(0,2)
+    .map(r=>`<li style="margin-bottom:5px">${r.cung.icon} <strong>${r.cung.ten}</strong> – ${VIEC_THEO_CUNG[r.cung.ten].xau}</li>`).join('');
+
+  const ketLuan=`<div class="tuvi-panel" style="margin-bottom:14px;border:1px solid rgba(200,151,42,.3)">
+    <div style="display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px">
+      <h3 style="margin:0">📌 ${fmt(currentDate)} · ${tv.dc} ${tv.dch}</h3>
+      <span style="font-size:11px;color:var(--muted)">${ctx.lunar.day}/${ctx.lunar.month} âm lịch · ${CAN[ctx.yCanI]} ${CHI[ctx.yChiI]}</span>
+      ${ctx.ngayLe.length?`<span style="font-size:11px;font-weight:700;color:var(--gold2)">${ctx.ngayLe.join(' · ')}</span>`:''}
     </div>
-    <div style="margin-top:12px;padding:11px;background:rgba(255,255,255,.02);border-radius:8px">
-      <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:8px">Ngũ hành ngày so với bản mệnh Thổ – xét riêng ba tầng</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;font-size:11px;line-height:1.6">
-        <div><strong style="color:var(--gold2)">Thiên Can ${CAN[ctx.dCanI]} · ${nh.can.hanh}</strong><br><span style="color:var(--muted)">${nh.can.t}</span></div>
-        <div><strong style="color:var(--gold2)">Địa Chi ${CHI[ctx.dChiI]} · ${nh.chi.hanh}</strong><br><span style="color:var(--muted)">${nh.chi.t}</span></div>
-        <div><strong style="color:var(--gold2)">Nạp Âm ${nh.napAm.ten} · ${nh.napAm.hanh}</strong><br><span style="color:var(--muted)">${nh.napAm.t}</span></div>
+    <div style="font-size:13px;line-height:1.8;margin:10px 0 14px">${chot}</div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin-bottom:14px">
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px">
+          <span style="font-weight:700">Vận khí lá số (riêng bạn)</span><strong style="color:var(--gold2)">${tv.diemLaSo}/10</strong></div>
+        ${P(tv.diemLaSo,'#7ec8f0')}
+      </div>
+      <div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px">
+          <span style="font-weight:700">Vận khí hoàng lịch (chọn ngày)</span><strong style="color:var(--gold2)">${ctx.diemLichPhap}/10</strong></div>
+        ${P(ctx.diemLichPhap,'var(--gold)')}
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
-      <div style="padding:11px;border:1px solid var(--border);border-radius:8px">
-        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
-          <span style="font-size:11px;font-weight:700;color:var(--text)">Vận khí lịch pháp</span>
-          <strong style="font-size:18px;color:var(--gold2)">${ctx.diemLichPhap}<span style="font-size:11px;color:var(--muted)">/10</span></strong>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px">
+      <div style="background:rgba(91,232,168,.06);border-radius:8px;padding:11px 13px">
+        <div style="font-size:10px;font-weight:700;color:var(--done);letter-spacing:1px;text-transform:uppercase;margin-bottom:7px">✅ Nên làm</div>
+        <ul style="margin:0;padding-left:16px;font-size:12px;line-height:1.6">${nenNgan||'<li>Ngày bình – duy trì nhịp thường lệ</li>'}</ul>
+      </div>
+      <div style="background:rgba(232,124,91,.06);border-radius:8px;padding:11px 13px">
+        <div style="font-size:10px;font-weight:700;color:var(--todo);letter-spacing:1px;text-transform:uppercase;margin-bottom:7px">❌ Tránh</div>
+        <ul style="margin:0;padding-left:16px;font-size:12px;line-height:1.6">${tranhNgan||'<li>Không có cung nào bị khắc nặng</li>'}</ul>
+      </div>
+      <div style="background:rgba(200,151,42,.07);border-radius:8px;padding:11px 13px">
+        <div style="font-size:10px;font-weight:700;color:var(--gold2);letter-spacing:1px;text-transform:uppercase;margin-bottom:7px">⏰ Giờ tốt nhất</div>
+        <div style="font-size:12px;line-height:1.7">
+          ${gioTot.map(x=>`<div><strong>${GIO_CHI_TIME[x.g]}</strong> <span style="color:var(--muted)">giờ ${CHI[x.g]} → lộc vào ${x.cungLoc}</span></div>`).join('')||'<div style="color:var(--muted)">Không có giờ hoàng đạo trong khung 7–19h</div>'}
         </div>
-        ${bar(ctx.diemLichPhap,'var(--gold)')}
-        <div style="font-size:10px;color:var(--muted);margin-top:6px;line-height:1.6">Hoàng/hắc đạo + trực + ngũ hành + ngày kiêng. Đây là hệ hoàng lịch dùng để chọn ngày.</div>
       </div>
-      <div style="padding:11px;border:1px solid var(--border);border-radius:8px">
-        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
-          <span style="font-size:11px;font-weight:700;color:var(--text)">Vận khí lá số</span>
-          <strong style="font-size:18px;color:var(--gold2)">${tv.diemLaSo}<span style="font-size:11px;color:var(--muted)">/10</span></strong>
-        </div>
-        ${bar(tv.diemLaSo,'#7ec8f0')}
-        <div style="font-size:10px;color:var(--muted);margin-top:6px;line-height:1.6">Tứ hóa 5 tầng rơi vào 12 cung riêng của bạn. Đây là hệ Tử Vi, trả lời "hôm nay cung nào của TÔI sáng".</div>
-      </div>
-    </div>
-    <div style="margin-top:10px;font-size:11px;color:var(--muted);line-height:1.7">
-      Hai điểm số đo hai thứ khác nhau và có thể lệch nhau: hoàng lịch chấm <em>ngày</em> tốt cho mọi người,
-      lá số chấm <em>ngày này với riêng bạn</em>. Khi lệch, ưu tiên hoàng lịch cho việc nghi lễ – khai trương,
-      ký kết, động thổ; ưu tiên lá số cho việc cá nhân – nên dồn sức vào lĩnh vực nào trong ngày.
     </div>
   </div>`;
 
-  // ── 2. NĂM TẦNG VẬN HẠN ────────────────────────────────────
-  const tangRows=ctx.tang.map(t=>{
-    const hoa=t.tuHoa.map(th=>
-      `<span style="display:inline-block;margin:2px 4px 2px 0;padding:2px 8px;border-radius:6px;font-size:10px;
-       background:${th.loai===3?'rgba(232,124,91,.12)':'rgba(91,232,168,.10)'};
-       color:${th.loai===3?'var(--todo)':'var(--done)'};border:1px solid ${th.loai===3?'rgba(232,124,91,.25)':'rgba(91,232,168,.22)'}">
-       ${HOA_ICON[th.loai]} ${th.sao} → ${HOA_TEN[th.loai].replace('Hóa ','')} <strong>@${cungTenTaiChi(th.chiIdx)}</strong></span>`).join('');
-    return `<div style="border:1px solid var(--border);border-radius:9px;padding:10px 12px;margin-bottom:8px;background:rgba(255,255,255,.015)">
-      <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:6px">
-        <span style="font-size:14px">${t.icon}</span>
-        <strong style="font-size:13px;color:var(--gold2)">${t.ten}</strong>
-        <span style="font-size:10px;color:var(--muted)">${t.phu}</span>
-        <span style="margin-left:auto;font-size:10px;color:var(--muted)">an tại cung <strong style="color:var(--text)">${t.cungTen}</strong></span>
-      </div>
-      <div>${hoa}</div>
-    </div>`;
+  // ── BẢNG 12 CUNG (1 dòng / cung) ───────────────────────────
+  const rows=R.map((r,i)=>{
+    const {cung,cn}=r;
+    const ly=cn.hits.length
+      ? cn.hits.map(h=>`${HOA_ICON[h.loai]} ${h.sao} ${HOA_TEN[h.loai].replace('Hóa ','')}`).join(', ')
+      : cn.qh.tag.replace(/[^\p{L}\s]/gu,'').trim()||'—';
+    return `<tr style="border-top:1px solid var(--border)">
+      <td style="padding:8px 6px;color:var(--muted);font-size:11px">${i+1}</td>
+      <td style="padding:8px 6px;white-space:nowrap"><strong style="font-size:12px">${cung.icon} ${cung.ten}</strong></td>
+      <td style="padding:8px 6px"><span style="font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;color:${cn.LV.mau};border:1px solid ${cn.LV.mau}">${cn.LV.ten}</span></td>
+      <td style="padding:8px 6px;font-size:11px;color:var(--muted)">${cn.qh.tag}</td>
+      <td style="padding:8px 6px;font-size:11px;color:var(--text)">${ly}</td>
+      <td style="padding:8px 6px;font-size:11px;color:var(--muted)">${cn.score>0?VIEC_THEO_CUNG[cung.ten].tot:VIEC_THEO_CUNG[cung.ten].xau}</td>
+    </tr>`;
   }).join('');
 
-  const vanPanel=`<div class="tuvi-panel" style="margin-bottom:14px">
-    <h3>🧭 Năm Tầng Vận Hạn Đang Chiếu – ${fmt(currentDate)}</h3>
-    <div style="font-size:11px;color:var(--muted);line-height:1.7;margin-bottom:10px">
-      Lá số gốc đứng yên, nhưng <strong>Can của đại vận – năm – tháng – ngày – giờ</strong> mỗi lúc lại dẫn một bộ
-      Tứ Hóa khác nhau bay vào 12 cung. Đây chính là lý do cùng một lá số mà mỗi ngày, mỗi giờ luận ra khác nhau.
-      Tầng <strong>Lưu Nhật</strong> đổi mỗi ngày, tầng <strong>Lưu Thời</strong> đổi mỗi 2 tiếng.
-    </div>
-    ${tangRows}
-    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;font-size:10px">
-      ${chip('💵 Lưu Lộc Tồn @ '+cungTenTaiChi(ctx.luuLoc.locTon),'var(--done)')}
-      ${chip('🗡️ Lưu Kình Dương @ '+cungTenTaiChi(ctx.luuLoc.kinhDuong),'var(--todo)')}
-      ${chip('🌀 Lưu Đà La @ '+cungTenTaiChi(ctx.luuLoc.daLa),'var(--pending)')}
-      ${chip('🐎 Lưu Thiên Mã @ '+cungTenTaiChi(ctx.luuMa),'#7ec8f0')}
-    </div>
+  const bangCung=`<div class="tuvi-panel" style="margin-bottom:14px">
+    <h3>🔮 12 Cung Hôm Nay</h3>
+    <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:640px">
+      <thead><tr style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);text-align:left">
+        <th style="padding:4px 6px">#</th><th style="padding:4px 6px">Cung</th><th style="padding:4px 6px">Mức</th>
+        <th style="padding:4px 6px">Quan hệ</th><th style="padding:4px 6px">Vì sao</th><th style="padding:4px 6px">Gợi ý</th>
+      </tr></thead><tbody>${rows}</tbody></table></div>
   </div>`;
 
-  // ── 3. PHÂN TÍCH NGÀY ──────────────────────────────────────
-  const mauHtml=tv.mauSac.map(c=>`<span class="color-chip" title="${c.note}"><span class="color-dot" style="background:${c.color}"></span>${c.name}</span>`).join('');
-  const dayAnalysis=`<div class="tuvi-panel" style="margin-bottom:14px">
-    <h3>📅 Ngày ${fmt(currentDate)} · ${tv.dc} ${tv.dch}</h3>
-    <div class="tuvi-grid">
-      <div class="tuvi-card"><h4>Can Chi Ngày</h4><div class="tuvi-val">${tv.dc} ${tv.dch}</div></div>
-      <div class="tuvi-card"><h4>Nạp Âm Ngày</h4><div class="tuvi-val">${tv.napAm} <small style="display:block;color:var(--muted)">hành ${tv.thuHanh}</small></div></div>
-      <div class="tuvi-card"><h4>Âm Lịch</h4><div class="tuvi-val">${ctx.lunar.day}/${ctx.lunar.month}${ctx.lunar.leap?' (Nhuận)':''} <small style="display:block;color:var(--muted)">${CAN[ctx.yCanI]} ${CHI[ctx.yChiI]}</small></div></div>
-      <div class="tuvi-card"><h4>Tuổi âm</h4><div class="tuvi-val">${ctx.tuoi} tuổi</div></div>
-      <div class="tuvi-card"><h4>Đại Vận</h4><div class="tuvi-val">${ctx.dv.cungTen} <small style="display:block;color:var(--muted)">${ctx.dv.tuoiTu}–${ctx.dv.tuoiDen} tuổi</small></div></div>
-      <div class="tuvi-card"><h4>Tiểu Hạn</h4><div class="tuvi-val">${ctx.th.cungTen} <small style="display:block;color:var(--muted)">năm ${y}</small></div></div>
-    </div>
-    <div style="margin-top:10px;padding:12px;background:rgba(200,151,42,.07);border-radius:8px;font-size:12px;line-height:1.8">${tv.loiKhuyen}</div>
-    <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-      <span style="font-size:11px;color:var(--muted);font-weight:700">Màu hợp hôm nay:</span>${mauHtml}
-    </div>
-  </div>`;
-
-  // ── 4. 12 CUNG – XẾP THEO ĐỘ NÓNG CỦA NGÀY ─────────────────
-  const cungCards=tv.cungRank.map(({cung,cn},i)=>{
-    const luan=luanCung(cung,cn,ctx).map(s=>`<div style="display:flex;gap:6px;margin-bottom:5px"><span style="color:${cn.LV.mau};flex-shrink:0">▸</span><span>${s}</span></div>`).join('');
-    const marks=cn.marks.map(mk=>`<span style="display:inline-block;margin:2px 4px 2px 0;padding:2px 8px;border-radius:20px;font-size:10px;background:rgba(200,151,42,.12);color:var(--gold2);border:1px solid rgba(200,151,42,.25)">${mk.icon} ${mk.ten}${mk.phu?' · '+mk.phu:''}</span>`).join('');
-    const phu=(PHU_TINH[cung.ten]||[]).join(' · ');
-    return `<div style="background:${cn.LV.bg};border:1px solid var(--border);border-left:3px solid ${cn.LV.mau};border-radius:10px;padding:14px;margin-bottom:10px">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap">
-        <span style="font-size:11px;color:var(--muted);font-weight:700;min-width:18px">#${i+1}</span>
-        <span style="font-size:18px">${cung.icon}</span>
-        <div style="flex:1;min-width:150px">
-          <div style="font-weight:700;font-size:14px;color:var(--gold2)">Cung ${cung.ten} <span style="font-size:10px;color:var(--muted);font-weight:400">· an tại ${CHI[cung.chiIdx]}</span></div>
-          <div style="font-size:10px;color:var(--muted)">${cung.mucDich}</div>
-        </div>
-        <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(255,255,255,.05);color:${cn.LV.mau};border:1px solid ${cn.LV.mau}">${cn.LV.ten} · ${cn.score>0?'+':''}${cn.score}</span>
-        <span style="font-size:10px;color:var(--muted)">${cn.qh.tag}</span>
-      </div>
-      ${marks?`<div style="margin-bottom:8px">${marks}</div>`:''}
-      <div style="font-size:11px;color:var(--muted);margin-bottom:8px">
-        <strong style="color:var(--text)">Chính tinh:</strong> ${cung.saoChinh.join(', ')}${phu?` <br><strong style="color:var(--text)">Phụ tinh:</strong> ${phu}`:''}
-      </div>
-      <div style="font-size:11px;line-height:1.7;color:var(--text);padding:9px;background:rgba(255,255,255,.025);border-radius:6px;margin-bottom:8px">
-        <div style="font-size:9px;font-weight:700;color:${cn.LV.mau};letter-spacing:1px;text-transform:uppercase;margin-bottom:5px">Luận theo ngày ${tv.dc} ${tv.dch}</div>
-        ${luan}
-      </div>
-      <details style="font-size:11px;line-height:1.7;color:var(--muted)">
-        <summary style="cursor:pointer;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted)">Bản chất gốc của cung</summary>
-        <div style="margin-top:6px">${cung.natalDesc}</div>
-      </details>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
-        <div style="background:rgba(91,232,168,.06);border-radius:6px;padding:8px">
-          <div style="font-size:9px;font-weight:700;color:var(--done);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">✅ Nên</div>
-          <div style="font-size:11px;line-height:1.6">${VIEC_THEO_CUNG[cung.ten].tot}</div>
-        </div>
-        <div style="background:rgba(232,124,91,.06);border-radius:6px;padding:8px">
-          <div style="font-size:9px;font-weight:700;color:var(--todo);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">❌ Tránh</div>
-          <div style="font-size:11px;line-height:1.6">${VIEC_THEO_CUNG[cung.ten].xau}</div>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-
-  const cungPanel=`<div style="margin-bottom:14px">
-    <div style="display:flex;align-items:baseline;gap:10px;margin-bottom:10px;flex-wrap:wrap">
-      <h2 style="font-family:'Noto Serif Display',serif;font-size:18px;color:var(--gold2)">🔮 12 Cung Trong Ngày ${fmt(currentDate)}</h2>
-      <span style="font-size:11px;color:var(--muted)">Xếp từ cung nóng nhất → nguội nhất · chi ngày ${CHI[ctx.dChiI]} chiếu cung ${cungTenTaiChi(ctx.dChiI)}</span>
-    </div>
-    ${cungCards}
-  </div>`;
-
-  // ── 5. GIỜ TỐT THEO LÁ SỐ ──────────────────────────────────
-  const hdList=getGioHD(y,m,d);
-  const gioCards=[...Array(12)].map((_,g)=>{
-    const hr=g===0?23:g*2-1;
-    const gc=canHourIdx(hr,ctx.dCanI);
-    const hoa=tuHoaTheoCan(gc);
-    const loc=hoa.find(h=>h.loai===0), ky=hoa.find(h=>h.loai===3);
-    const isHD=hdList.includes(g);
+  // ── BẢNG GIỜ (gọn) ─────────────────────────────────────────
+  const gioRows=[...Array(12)].map((_,g)=>{
+    const hr=g===0?23:g*2-1, gc=canHourIdx(hr,ctx.dCanI), h4=tuHoaTheoCan(gc);
+    const tg=getThanGio(y,m,d,g);
     const cur=isToday&&hourToGioChi(new Date().getHours())===g;
-    return `<div style="border:1px solid ${cur?'var(--gold)':'var(--border)'};border-radius:8px;padding:9px 11px;background:${isHD?'rgba(91,232,168,.05)':'rgba(232,124,91,.03)'}">
-      <div style="display:flex;align-items:baseline;gap:6px;flex-wrap:wrap">
-        <strong style="font-size:12px;color:${isHD?'var(--done)':'var(--muted)'}">${isHD?'🟢':'⬛'} Giờ ${CHI[g]}</strong>
-        <span style="font-size:10px;color:var(--muted)">${GIO_CHI_TIME[g]} · ${CAN[gc]} ${CHI[g]}</span>
-        ${cur?'<span style="font-size:10px;color:var(--gold2);font-weight:700">← đang ở đây</span>':''}
-      </div>
-      <div style="font-size:10px;color:var(--muted);margin-top:4px;line-height:1.6">
-        💰 Lộc → <strong style="color:var(--done)">${cungTenTaiChi(loc.chiIdx)}</strong> ·
-        ⚠️ Kỵ → <strong style="color:var(--todo)">${cungTenTaiChi(ky.chiIdx)}</strong>
-      </div>
-    </div>`;
+    return `<tr style="border-top:1px solid var(--border);${cur?'background:rgba(200,151,42,.08)':''}">
+      <td style="padding:7px 6px;white-space:nowrap;font-size:11px"><strong>${GIO_CHI_TIME[g]}</strong> ${cur?'👈':''}</td>
+      <td style="padding:7px 6px;font-size:11px;color:var(--muted)">${CAN[gc]} ${CHI[g]}</td>
+      <td style="padding:7px 6px;font-size:11px;color:${tg.hoangDao?'var(--done)':'var(--todo)'}">${tg.hoangDao?'🟢':'⬛'} ${tg.ten}</td>
+      <td style="padding:7px 6px;font-size:11px;color:var(--done)">${cungTenTaiChi(h4.find(x=>x.loai===0).chiIdx)}</td>
+      <td style="padding:7px 6px;font-size:11px;color:var(--todo)">${cungTenTaiChi(h4.find(x=>x.loai===3).chiIdx)}</td>
+    </tr>`;
   }).join('');
-
-  const gioPanel=`<div class="tuvi-panel" style="margin-bottom:14px">
-    <h3>⏰ 12 Giờ Trong Ngày – Tứ Hóa Đổi Cung Mỗi 2 Tiếng</h3>
-    <div style="font-size:11px;color:var(--muted);margin-bottom:10px">Can giờ dẫn Lộc và Kỵ vào những cung khác nhau. Chọn giờ có Lộc rơi vào cung ứng với việc bạn định làm.</div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px">${gioCards}</div>
+  const bangGio=`<div class="tuvi-panel" style="margin-bottom:14px">
+    <h3>⏰ 12 Giờ Trong Ngày</h3>
+    <div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;min-width:520px">
+      <thead><tr style="font-size:9px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);text-align:left">
+        <th style="padding:4px 6px">Giờ</th><th style="padding:4px 6px">Can chi</th><th style="padding:4px 6px">Thần</th>
+        <th style="padding:4px 6px">Lộc vào</th><th style="padding:4px 6px">Kỵ vào</th>
+      </tr></thead><tbody>${gioRows}</tbody></table></div>
   </div>`;
 
-  // ── 6. NÊN / TRÁNH ─────────────────────────────────────────
-  const suggests=`<div class="suggest-grid" style="margin-bottom:14px">
-    <div class="suggest-card good">
-      <h4>✅ Nên Làm Hôm Nay</h4>
-      ${tv.nen.map(i=>`<div class="suggest-item"><span class="dot"></span><span>${i}</span></div>`).join('')}
-    </div>
-    <div class="suggest-card bad">
-      <h4>❌ Không Nên Làm</h4>
-      ${tv.khong.map(i=>`<div class="suggest-item"><span class="dot"></span><span>${i}</span></div>`).join('')}
-    </div>
-    <div class="suggest-card advice">
-      <h4>💎 Phong Thủy Theo Ngày</h4>
-      <div style="font-size:11px;line-height:1.9;color:var(--text)">
-        <div>🧭 <strong>Hướng tốt:</strong> ${['Bắc','Đông Bắc','Đông','Đông Nam','Nam','Tây Nam','Tây','Tây Bắc'][ctx.dChiI%8]}, Tây Nam (hợp mệnh Thổ)</div>
-        <div>🔢 <strong>Số may mắn:</strong> ${[(ctx.dCanI%9)+1, (ctx.dChiI%9)+1, 2, 8].filter((v,i,a)=>a.indexOf(v)===i).join(', ')}</div>
-        <div>💍 <strong>Đá hợp mệnh:</strong> Thạch anh vàng, Hổ phách, Mắt hổ</div>
-        <div>🕯️ <strong>Hương:</strong> Trầm hương, Gỗ đàn hương</div>
-        <div>🌿 <strong>Cây:</strong> Kim tiền, Phú quý</div>
-      </div>
-    </div>
+  // ── CHI TIẾT (ẩn sẵn) ──────────────────────────────────────
+  const dt=(tieu,noi)=>`<details style="margin-bottom:8px;border:1px solid var(--border);border-radius:9px;padding:10px 13px;background:rgba(255,255,255,.015)">
+    <summary style="cursor:pointer;font-size:12px;font-weight:700;color:var(--gold2)">${tieu}</summary>
+    <div style="margin-top:10px;font-size:11px;line-height:1.8;color:var(--muted)">${noi}</div></details>`;
+
+  const tangHtml=ctx.tang.map(t=>`<div style="margin-bottom:7px">
+    <strong style="color:var(--text)">${t.icon} ${t.ten}</strong> <span style="color:var(--muted)">(${t.phu})</span><br>
+    ${t.tuHoa.map(h=>`${HOA_ICON[h.loai]} ${h.sao} ${HOA_TEN[h.loai].replace('Hóa ','')} → ${cungTenTaiChi(h.chiIdx)}`).join(' · ')}</div>`).join('');
+
+  const chiTietCung=R.map(r=>`<div style="margin-bottom:9px"><strong style="color:var(--text)">${r.cung.icon} ${r.cung.ten}</strong> (${CHI[r.cung.chiIdx]}) – ${r.cung.saoChinh.join(', ')}<br>
+    ${luanCung(r.cung,r.cn,ctx).join('<br>')}</div>`).join('');
+
+  const chiTiet=`<div style="margin-bottom:14px">
+    ${dt('📖 Vì sao hôm nay lại thế – luận từng cung', chiTietCung)}
+    ${dt('🧭 Năm tầng vận hạn đang chiếu', tangHtml+
+      `<div style="margin-top:8px">💵 Lưu Lộc Tồn → ${cungTenTaiChi(ctx.luuLoc.locTon)} · 🗡️ Lưu Kình → ${cungTenTaiChi(ctx.luuLoc.kinhDuong)} · 🌀 Lưu Đà → ${cungTenTaiChi(ctx.luuLoc.daLa)} · 🐎 Lưu Mã → ${cungTenTaiChi(ctx.luuMa)}</div>`)}
+    ${dt('📜 Lịch pháp cổ truyền',
+      `Tiết <strong>${ctx.tiet.ten}</strong> · Trực <strong>${ctx.truc.ten}</strong>: ${ctx.truc.nghia}<br>
+       12 Thần: <strong>${ctx.than.ten}</strong> – ${ctx.than.hoangDao?'Hoàng Đạo':'Hắc Đạo'}: ${ctx.than.nghia}<br>
+       ${ctx.nguyetKy?'⛔ Ngày Nguyệt Kỵ<br>':''}${ctx.tamNuong?'⛔ Ngày Tam Nương<br>':''}
+       Ngũ hành: ${ctx.dayRel}`)}
+    ${dt('🌟 Lá số gốc của bạn',
+      `Sinh 06/10/1990 8h18 · âm lịch 18/8 ${BIRTH.yearCan} ${BIRTH.yearChi} · giờ ${BIRTH.gioSinhChi} · ${BIRTH.amDuong}<br>
+       Bản mệnh ${BIRTH.nguHanh} · ${BIRTH.cuc} · Mệnh an tại ${CHI[BIRTH.menhChiIdx]} (${BIRTH.chủMenh}) · Thân cư ${BIRTH.thanCungTen}<br>
+       Đại Vận hiện tại: cung ${ctx.dv.cungTen} (${ctx.dv.tuoiTu}–${ctx.dv.tuoiDen} tuổi) · Tiểu Hạn ${y}: cung ${ctx.th.cungTen} · Tuổi âm ${ctx.tuoi}`)}
   </div>`;
 
-  document.getElementById('tuviDayFull').innerHTML=banner+birthInfo+lichPhap+vanPanel+dayAnalysis+cungPanel+gioPanel+suggests;
+  document.getElementById('tuviDayFull').innerHTML=ketLuan+bangCung+bangGio+chiTiet;
 }
 
 // ============================================================
